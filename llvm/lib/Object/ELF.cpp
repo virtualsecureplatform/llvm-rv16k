@@ -109,6 +109,13 @@ StringRef llvm::object::getELFRelocationTypeName(uint32_t Machine,
       break;
     }
     break;
+  case ELF::EM_RV16K:
+    switch (Type) {
+#include "llvm/BinaryFormat/ELFRelocs/RV16K.def"
+    default:
+      break;
+    }
+    break;
   case ELF::EM_S390:
     switch (Type) {
 #include "llvm/BinaryFormat/ELFRelocs/SystemZ.def"

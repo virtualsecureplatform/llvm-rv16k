@@ -32,6 +32,7 @@ subdirectories =
  Mips
  PowerPC
  RISCV
+ RV16K
  Sparc
  SystemZ
  WebAssembly
