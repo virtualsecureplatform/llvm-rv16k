@@ -82,3 +82,9 @@ sb t0, 32767(a3)
 # CHECK-INST: sb t0, -32768(a3)
 # CHECK: encoding: [0xeb,0x9a,0x00,0x80]
 sb t0, -32768(a3)
+# CHECK-INST: lwsp t0, 510(sp)
+# CHECK: encoding: [0xfe,0xaf]
+lwsp t0, 510(sp)
+# CHECK-INST: swsp t0, 510(sp)
+# CHECK: encoding: [0xef,0x8f]
+swsp t0, 510(sp)

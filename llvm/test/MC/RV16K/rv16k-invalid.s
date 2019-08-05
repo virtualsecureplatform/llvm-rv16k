@@ -9,6 +9,10 @@ cmpi a0, -9 # CHECK: :[[@LINE]]:10: error: immediate must be an integer in the r
 cmpi a0, 8 # CHECK: :[[@LINE]]:10: error: immediate must be an integer in the range [-8, 7]
 lw t0, 32767(a3) # CHECK: :[[@LINE]]:8: error: immediate must be a multiple of 2 bytes in the range [-32768, 32766]
 sw t0, 32767(a3) # CHECK: :[[@LINE]]:8: error: immediate must be a multiple of 2 bytes in the range [-32768, 32766]
+lwsp t0, -2(sp) # CHECK: :[[@LINE]]:10: error: immediate must be a multiple of 2 bytes in the range [0, 510]
+lwsp t0, 1(sp) # CHECK: :[[@LINE]]:10: error: immediate must be a multiple of 2 bytes in the range [0, 510]
+swsp t0, -2(sp) # CHECK: :[[@LINE]]:10: error: immediate must be a multiple of 2 bytes in the range [0, 510]
+swsp t0, 1(sp) # CHECK: :[[@LINE]]:10: error: immediate must be a multiple of 2 bytes in the range [0, 510]
 
 # Invalid mnemonics
 subs x1, x2 # CHECK: :[[@LINE]]:1: error: unrecognized instruction mnemonic

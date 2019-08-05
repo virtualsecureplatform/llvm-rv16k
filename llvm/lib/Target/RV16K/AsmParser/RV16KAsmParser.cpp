@@ -295,7 +295,7 @@ bool RV16KAsmParser::MatchAndEmitInstruction(SMLoc IDLoc, unsigned &Opcode,
         "immediate must be a multiple of 2 bytes in the range");
   case Match_InvalidUImm9Lsb0:
     return generateImmOutOfRangeError(
-        Operands, ErrorInfo, -(1 << 9), (1 << 9) - 2,
+        Operands, ErrorInfo, 0, (1 << 9) - 2,
         "immediate must be a multiple of 2 bytes in the range");
   case Match_InvalidSImm16:
     return generateImmOutOfRangeError(Operands, ErrorInfo, -(1 << 15),
