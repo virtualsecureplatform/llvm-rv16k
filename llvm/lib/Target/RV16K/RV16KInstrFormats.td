@@ -15,6 +15,12 @@
 // 16-bit instruction format.
 class RV16KInst<dag outs, dag ins, string opcodestr, string argstr, list<dag> pattern = []>
 : Instruction {
+  // SoftFail is a field the disassembler can use to provide a way for
+  // instructions to not match without killing the whole decode process. It is
+  // mainly used for ARM, but Tablegen expects this field to exist or it fails
+  // to build the decode table.
+  bits<32> SoftFail = 0;
+
   let Namespace = "RV16K";
 
   let Size = 2;
@@ -32,6 +38,12 @@ class RV16KInst<dag outs, dag ins, string opcodestr, string argstr, list<dag> pa
 // 32-bit instruction format for NIAI (decode Next Instruction As Immediate operand)
 class RV16KInstNIAI<dag outs, dag ins, string opcodestr, string argstr, list<dag> pattern = []>
 : Instruction {
+  // SoftFail is a field the disassembler can use to provide a way for
+  // instructions to not match without killing the whole decode process. It is
+  // mainly used for ARM, but Tablegen expects this field to exist or it fails
+  // to build the decode table.
+  bits<32> SoftFail = 0;
+
   let Namespace = "RV16K";
 
   let Size = 4;

@@ -1,5 +1,7 @@
 # RUN: llvm-mc %s -triple=rv16k -show-encoding \
 # RUN:     | FileCheck -check-prefixes=CHECK,CHECK-INST %s
+# RUN: llvm-mc -filetype=obj -triple=rv16k < %s \
+# RUN:     | llvm-objdump -d - | FileCheck -check-prefix=CHECK-INST %s
 
 # CHECK-INST: mov t1, a0
 # CHECK: encoding: [0x8f,0xc0]
