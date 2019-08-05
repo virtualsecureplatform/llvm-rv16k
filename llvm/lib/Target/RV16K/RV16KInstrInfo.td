@@ -88,7 +88,7 @@ def XOR : RV16KInstRR16<0b11100110, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
                        "xor", "$rd, $rs"> {
   let Constraints = "$rd = $rd_w";
 }
-def LSL : RV16KInstRR16<0b11101010, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
+def LSL : RV16KInstRR16<0b11101001, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
                        "lsl", "$rd, $rs"> {
   let Constraints = "$rd = $rd_w";
 }

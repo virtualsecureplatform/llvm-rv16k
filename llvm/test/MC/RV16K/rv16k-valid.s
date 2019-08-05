@@ -1,0 +1,54 @@
+# RUN: llvm-mc %s -triple=rv16k -show-encoding \
+# RUN:     | FileCheck -check-prefixes=CHECK,CHECK-INST %s
+
+# CHECK-INST: mov t1, a0
+# CHECK: encoding: [0x8f,0xc0]
+mov t1, a0
+# CHECK-INST: add t1, a0
+# CHECK: encoding: [0x8f,0xe2]
+add t1, a0
+# CHECK-INST: sub t1, a0
+# CHECK: encoding: [0x8f,0xe3]
+sub t1, a0
+# CHECK-INST: and t1, a0
+# CHECK: encoding: [0x8f,0xe4]
+and t1, a0
+# CHECK-INST: or t1, a0
+# CHECK: encoding: [0x8f,0xe5]
+or  t1, a0
+# CHECK-INST: xor t1, a0
+# CHECK: encoding: [0x8f,0xe6]
+xor t1, a0
+# CHECK-INST: lsl t1, a0
+# CHECK: encoding: [0x8f,0xe9]
+lsl t1, a0
+# CHECK-INST: lsr t1, a0
+# CHECK: encoding: [0x8f,0xea]
+lsr t1, a0
+# CHECK-INST: asr t1, a0
+# CHECK: encoding: [0x8f,0xed]
+asr t1, a0
+# CHECK-INST: cmp t1, a0
+# CHECK: encoding: [0x8f,0xc3]
+cmp t1, a0
+# CHECK-INST: li a0, 32767
+# CHECK: encoding: [0x08,0x78,0xff,0x7f]
+li a0, 0x7fff
+# CHECK-INST: li a0, -32768
+# CHECK: encoding: [0x08,0x78,0x00,0x80]
+li a0, -0x8000
+# CHECK-INST: addi a0, 7
+# CHECK: encoding: [0x78,0xf2]
+addi a0, 7
+# CHECK-INST: addi a0, -8
+# CHECK: encoding: [0x88,0xf2]
+addi a0, -8
+# CHECK-INST: cmpi a0, 7
+# CHECK: encoding: [0x78,0xd3]
+cmpi a0, 7
+# CHECK-INST: cmpi a0, -8
+# CHECK: encoding: [0x88,0xd3]
+cmpi a0, -8
+# CHECK-INST: nop
+# CHECK: encoding: [0x00,0x00]
+nop
