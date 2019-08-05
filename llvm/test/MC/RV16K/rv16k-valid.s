@@ -107,38 +107,38 @@ jalr t0
 # CHECK: encoding: [0x00,0x40]
 jr ra
 # CHECK-INST: jl 126
-# CHECK: encoding: [0x3f,0x54]
+# CHECK: encoding: [0x3f,0x44]
 jl 126
 # CHECK-INST: jl -128
-# CHECK: encoding: [0x40,0x54]
+# CHECK: encoding: [0x40,0x44]
 jl -128
 # CHECK-INST: jle 126
-# CHECK: encoding: [0xbf,0x54]
+# CHECK: encoding: [0xbf,0x44]
 jle 126
 # CHECK-INST: jle -128
-# CHECK: encoding: [0xc0,0x54]
+# CHECK: encoding: [0xc0,0x44]
 jle -128
 # CHECK-INST: je 126
-# CHECK: encoding: [0x3f,0x55]
+# CHECK: encoding: [0x3f,0x45]
 je 126
 # CHECK-INST: je -128
-# CHECK: encoding: [0x40,0x55]
+# CHECK: encoding: [0x40,0x45]
 je -128
 # CHECK-INST: jne 126
-# CHECK: encoding: [0xbf,0x55]
+# CHECK: encoding: [0xbf,0x45]
 jne 126
 # CHECK-INST: jne -128
-# CHECK: encoding: [0xc0,0x55]
+# CHECK: encoding: [0xc0,0x45]
 jne -128
 # CHECK-INST: jb 126
-# CHECK: encoding: [0x3f,0x56]
+# CHECK: encoding: [0x3f,0x46]
 jb 126
 # CHECK-INST: jb -128
-# CHECK: encoding: [0x40,0x56]
+# CHECK: encoding: [0x40,0x46]
 jb -128
 # CHECK-INST: jbe 126
-# CHECK: encoding: [0xbf,0x56]
+# CHECK: encoding: [0xbf,0x46]
 jbe 126
 # CHECK-INST: jbe -128
-# CHECK: encoding: [0xc0,0x56]
+# CHECK: encoding: [0xc0,0x46]
 jbe -128

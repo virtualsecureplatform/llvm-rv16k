@@ -144,17 +144,17 @@ let hasSideEffects = 0, mayLoad = 0, mayStore = 0 in {
   }
 
   let isBranch = 1, isTerminator = 1, Uses = [FLAGS] in {
-    def JL  : RV16KInstB<0b01010100, 0, (outs), (ins simm8_lsb0:$imm),
+    def JL  : RV16KInstB<0b01000100, 0, (outs), (ins simm8_lsb0:$imm),
                         "jl", "$imm">;
-    def JLE : RV16KInstB<0b01010100, 1, (outs), (ins simm8_lsb0:$imm),
+    def JLE : RV16KInstB<0b01000100, 1, (outs), (ins simm8_lsb0:$imm),
                         "jle", "$imm">;
-    def JE  : RV16KInstB<0b01010101, 0, (outs), (ins simm8_lsb0:$imm),
+    def JE  : RV16KInstB<0b01000101, 0, (outs), (ins simm8_lsb0:$imm),
                         "je", "$imm">;
-    def JNE : RV16KInstB<0b01010101, 1, (outs), (ins simm8_lsb0:$imm),
+    def JNE : RV16KInstB<0b01000101, 1, (outs), (ins simm8_lsb0:$imm),
                         "jne", "$imm">;
-    def JB  : RV16KInstB<0b01010110, 0, (outs), (ins simm8_lsb0:$imm),
+    def JB  : RV16KInstB<0b01000110, 0, (outs), (ins simm8_lsb0:$imm),
                         "jb", "$imm">;
-    def JBE : RV16KInstB<0b01010110, 1, (outs), (ins simm8_lsb0:$imm),
+    def JBE : RV16KInstB<0b01000110, 1, (outs), (ins simm8_lsb0:$imm),
                         "jbe", "$imm">;
   }
 }
