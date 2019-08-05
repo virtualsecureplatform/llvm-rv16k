@@ -52,3 +52,33 @@ cmpi a0, -8
 # CHECK-INST: nop
 # CHECK: encoding: [0x00,0x00]
 nop
+# CHECK-INST: lw t0, 32766(a3)
+# CHECK: encoding: [0xbe,0xb2,0xfe,0x7f]
+lw t0, 32766(a3)
+# CHECK-INST: lw t0, -32768(a3)
+# CHECK: encoding: [0xbe,0xb2,0x00,0x80]
+lw t0, -32768(a3)
+# CHECK-INST: lbu t0, 32767(a3)
+# CHECK: encoding: [0xbe,0xba,0xff,0x7f]
+lbu t0, 32767(a3)
+# CHECK-INST: lbu t0, -32768(a3)
+# CHECK: encoding: [0xbe,0xba,0x00,0x80]
+lbu t0, -32768(a3)
+# CHECK-INST: lb t0, 32767(a3)
+# CHECK: encoding: [0xbe,0xbe,0xff,0x7f]
+lb t0, 32767(a3)
+# CHECK-INST: lb t0, -32768(a3)
+# CHECK: encoding: [0xbe,0xbe,0x00,0x80]
+lb t0, -32768(a3)
+# CHECK-INST: sw t0, 32766(a3)
+# CHECK: encoding: [0xeb,0x92,0xfe,0x7f]
+sw t0, 32766(a3)
+# CHECK-INST: sw t0, -32768(a3)
+# CHECK: encoding: [0xeb,0x92,0x00,0x80]
+sw t0, -32768(a3)
+# CHECK-INST: sb t0, 32767(a3)
+# CHECK: encoding: [0xeb,0x9a,0xff,0x7f]
+sb t0, 32767(a3)
+# CHECK-INST: sb t0, -32768(a3)
+# CHECK: encoding: [0xeb,0x9a,0x00,0x80]
+sb t0, -32768(a3)

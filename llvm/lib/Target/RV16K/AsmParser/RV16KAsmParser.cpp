@@ -56,6 +56,7 @@ class RV16KAsmParser : public MCTargetAsmParser {
 
   OperandMatchResultTy parseImmediate(OperandVector &Operands);
   OperandMatchResultTy parseRegister(OperandVector &Operands);
+  OperandMatchResultTy parseMemOpBaseReg(OperandVector &Operands);
 
   bool parseOperand(OperandVector &Operands);
 
@@ -147,6 +148,10 @@ public:
 
   bool isSImm16() const {
     return (isConstantImm() && isInt<16>(getConstantImm()));
+  }
+
+  bool isSImm16Lsb0() const {
+    return (isConstantImm() && isShiftedInt<15, 1>(getConstantImm()));
   }
 
   /// getStartLoc - Gets location of the first token of this operand
@@ -249,7 +254,9 @@ bool RV16KAsmParser::MatchAndEmitInstruction(SMLoc IDLoc, unsigned &Opcode,
                                              bool MatchingInlineAsm) {
   MCInst Inst;
 
-  switch (MatchInstructionImpl(Operands, Inst, ErrorInfo, MatchingInlineAsm)) {
+  unsigned Res =
+      MatchInstructionImpl(Operands, Inst, ErrorInfo, MatchingInlineAsm);
+  switch (Res) {
   default:
     break;
   case Match_Success:
@@ -272,6 +279,13 @@ bool RV16KAsmParser::MatchAndEmitInstruction(SMLoc IDLoc, unsigned &Opcode,
     }
     return Error(ErrorLoc, "invalid operand for instruction");
   }
+  }
+
+  RV16KOperand &Operand = (RV16KOperand &)*Operands[ErrorInfo];
+  if (!Operand.isImm())
+    return Error(Operand.getStartLoc(), "invalid operand for instruction");
+
+  switch (Res) {
   case Match_InvalidSImm4:
     return generateImmOutOfRangeError(Operands, ErrorInfo, -(1 << 3),
                                       (1 << 3) - 1);
@@ -286,6 +300,10 @@ bool RV16KAsmParser::MatchAndEmitInstruction(SMLoc IDLoc, unsigned &Opcode,
   case Match_InvalidSImm16:
     return generateImmOutOfRangeError(Operands, ErrorInfo, -(1 << 15),
                                       (1 << 15) - 1);
+  case Match_InvalidSImm16Lsb0:
+    return generateImmOutOfRangeError(
+        Operands, ErrorInfo, -(1 << 15), (1 << 15) - 2,
+        "immediate must be a multiple of 2 bytes in the range");
   }
 
   llvm_unreachable("Unknown match type detected!");
@@ -350,6 +368,32 @@ OperandMatchResultTy RV16KAsmParser::parseImmediate(OperandVector &Operands) {
   return MatchOperand_Success;
 }
 
+OperandMatchResultTy
+RV16KAsmParser::parseMemOpBaseReg(OperandVector &Operands) {
+  if (getLexer().isNot(AsmToken::LParen)) {
+    Error(getLoc(), "expected '('");
+    return MatchOperand_ParseFail;
+  }
+
+  getParser().Lex(); // Eat '('
+  Operands.push_back(RV16KOperand::createToken("(", getLoc()));
+
+  if (parseRegister(Operands) != MatchOperand_Success) {
+    Error(getLoc(), "expected register");
+    return MatchOperand_ParseFail;
+  }
+
+  if (getLexer().isNot(AsmToken::RParen)) {
+    Error(getLoc(), "expected ')'");
+    return MatchOperand_ParseFail;
+  }
+
+  getParser().Lex(); // Eat ')'
+  Operands.push_back(RV16KOperand::createToken(")", getLoc()));
+
+  return MatchOperand_Success;
+}
+
 /// Looks at a token type and creates the relevant operand
 /// from this information, adding to Operands.
 /// If operand was parsed, returns false, else true.
@@ -359,8 +403,12 @@ bool RV16KAsmParser::parseOperand(OperandVector &Operands) {
     return false;
 
   // Attempt to parse token as an immediate
-  if (parseImmediate(Operands) == MatchOperand_Success)
+  if (parseImmediate(Operands) == MatchOperand_Success) {
+    // Parse memory base register if present
+    if (getLexer().is(AsmToken::LParen))
+      return parseMemOpBaseReg(Operands) != MatchOperand_Success;
     return false;
+  }
 
   // Finally we have exhausted all options and must declare defeat.
   Error(getLoc(), "unknown operand");

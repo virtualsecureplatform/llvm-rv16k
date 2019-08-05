@@ -44,26 +44,33 @@ def simm16 : Operand<i16> {
   let ParserMatchClass = SImmAsmOperand<16>;
 }
 
-/*
+def simm16_lsb0 : Operand<i16> {
+  let ParserMatchClass = SImmAsmOperand<16, "Lsb0">;
+}
+
 // M: Instructions for memory
 
-def LW : RV16KInstRR32<0b10110010, (outs GPR:$rd), (ins GPR:$rs, simm16:$imm),
+def LW : RV16KInstRR32<0b10110010, (outs GPR:$rd), (ins GPR:$rs, simm16_lsb0:$imm),
                       "lw", "$rd, ${imm}(${rs})">;
+/*
 def LWSP : RV16KInstS<0b1010, (outs GPR:$rd), (ins SP:$rs, uimm9_lsb0:$imm),
                      "lwsp", "$rd, ${imm}(${rs})">;
+*/
 def LBU : RV16KInstRR32<0b10111010, (outs GPR:$rd), (ins GPR:$rs, simm16:$imm),
                        "lbu", "$rd, ${imm}(${rs})">;
 def LB : RV16KInstRR32<0b10111110, (outs GPR:$rd), (ins GPR:$rs, simm16:$imm),
                       "lb", "$rd, ${imm}(${rs})">;
-def SW : RV16KInstRR32<0b10010010, (outs), (ins GPR:$rs, GPR:$rd, simm16:$imm),
+def SW : RV16KInstRR32<0b10010010, (outs), (ins GPR:$rs, GPR:$rd, simm16_lsb0:$imm),
                       "sw", "$rs, ${imm}(${rd})">;
+/*
 def SWSP : RV16KInstS<0b1000, (outs), (ins GPR:$rs, SP:$rd, uimm9_lsb0:$imm),
                      "swsp", "$rs, ${imm}(${rd})">;
+*/
 def SB : RV16KInstRR32<0b10011010, (outs), (ins GPR:$rs, GPR:$rd, simm16:$imm),
                       "sb", "$rs, ${imm}(${rd})">;
-*/
 
 // R: Instructions for arithmetic
+
 def MOV : RV16KInstRR16<0b11000000, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
                        "mov", "$rd, $rs"> {
   let Constraints = "$rd = $rd_w";
