@@ -55,6 +55,8 @@ class Pseudo<dag outs, dag ins, list<dag> pattern>
   let isCodeGenOnly = 1;
 }
 
+// RR16 instruction format
+// Used by mov, add, sub, and, or, xor, lsl, lsr, asr, cmp, jalr, jr, nop
 class RV16KInstRR16<bits<8> opcode, dag outs, dag ins, string opcodestr, string argstr>
 : RV16KInst<outs, ins, opcodestr, argstr> {
   bits<4> rs;
@@ -65,6 +67,8 @@ class RV16KInstRR16<bits<8> opcode, dag outs, dag ins, string opcodestr, string 
   let Inst{3-0} = rd;
 }
 
+// RR32 instruction format
+// Used by lw, lbu, lb, sw, sb, li, j, jal
 class RV16KInstRR32<bits<8> opcode, dag outs, dag ins, string opcodestr, string argstr>
 : RV16KInstNIAI<outs, ins, opcodestr, argstr> {
   bits<4> rs;
@@ -75,6 +79,8 @@ class RV16KInstRR32<bits<8> opcode, dag outs, dag ins, string opcodestr, string 
   let Inst{3-0} = rd;
 }
 
+// RI instruction format
+// Used by addi, cmpi
 class RV16KInstRI<bits<8> opcode, dag outs, dag ins, string opcodestr, string argstr>
 : RV16KInst<outs, ins, opcodestr, argstr> {
   bits<4> rd;
@@ -85,6 +91,8 @@ class RV16KInstRI<bits<8> opcode, dag outs, dag ins, string opcodestr, string ar
   let Inst{3-0} = rd;
 }
 
+// B instruction format
+// Used by jl, jle, je, jne, jb, jbe
 class RV16KInstB<bits<8> opcode, bits<1> funct, dag outs, dag ins, string opcodestr, string argstr>
 : RV16KInst<outs, ins, opcodestr, argstr> {
   bits<8> imm;
@@ -94,6 +102,8 @@ class RV16KInstB<bits<8> opcode, bits<1> funct, dag outs, dag ins, string opcode
   let Inst{6-0} = imm{7-1};
 }
 
+// SL instruction format
+// Used by lwsp
 class RV16KInstSL<bits<4> opcode, dag outs, dag ins, string opcodestr, string argstr>
 : RV16KInst<outs, ins, opcodestr, argstr> {
   bits<4> rd;
@@ -104,6 +114,8 @@ class RV16KInstSL<bits<4> opcode, dag outs, dag ins, string opcodestr, string ar
   let Inst{3-0} = rd;
 }
 
+// SS instruction format
+// Used by swsp
 class RV16KInstSS<bits<4> opcode, dag outs, dag ins, string opcodestr, string argstr>
 : RV16KInst<outs, ins, opcodestr, argstr> {
   bits<4> rs;
