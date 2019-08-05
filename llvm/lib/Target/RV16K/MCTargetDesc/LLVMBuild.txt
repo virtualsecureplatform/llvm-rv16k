@@ -12,18 +12,9 @@
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
 
-[common]
-subdirectories = AsmParser TargetInfo MCTargetDesc
-
 [component_0]
-type = TargetGroup
-name = RV16K
-parent = Target
-has_asmparser = 1
-
-[component_1]
 type = Library
-name = RV16KCodeGen
+name = RV16KDesc
 parent = RV16K
-required_libraries = Core CodeGen RV16KInfo Support Target
+required_libraries = MC RV16KInfo Support
 add_to_library_groups = RV16K

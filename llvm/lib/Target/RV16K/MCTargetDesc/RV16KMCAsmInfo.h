@@ -12,17 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "llvm/Support/TargetRegistry.h"
-using namespace llvm;
+#ifndef LLVM_LIB_TARGET_RV16K_MCTARGETDESC_RV16KMCASMINFO_H
+#define LLVM_LIB_TARGET_RV16K_MCTARGETDESC_RV16KMCASMINFO_H
+
+#include "llvm/MC/MCAsmInfoELF.h"
 
 namespace llvm {
-Target &getTheRV16KTarget() {
-  static Target TheRV16KTarget;
-  return TheRV16KTarget;
-}
+class Triple;
+
+class RV16KMCAsmInfo : public MCAsmInfoELF {
+  // This function MUST BE placed here to reduce the size of object files.
+  // See also:
+  // https://stackoverflow.com/questions/16801222/out-of-line-virtual-method
+  void anchor() override;
+
+public:
+  explicit RV16KMCAsmInfo(const Triple &TargetTriple);
+};
+
 } // namespace llvm
 
-extern "C" void LLVMInitializeRV16KTargetInfo() {
-  RegisterTarget<Triple::rv16k> X(getTheRV16KTarget(), "rv16k", "RV16K",
-                                  "RV16K");
-}
+#endif

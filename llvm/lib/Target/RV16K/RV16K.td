@@ -1,0 +1,44 @@
+// Copyright 2019 Ryotaro Banno, Kotaro Matsuoka, Naoki Matsumoto
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+include "llvm/Target/Target.td"
+
+//===----------------------------------------------------------------------===//
+// Register file, instruction descriptions.
+//===----------------------------------------------------------------------===//
+
+include "RV16KRegisterInfo.td"
+include "RV16KInstrInfo.td"
+
+//===----------------------------------------------------------------------===//
+// RV16K processors supported.
+//===----------------------------------------------------------------------===//
+
+def : ProcessorModel<"generic-rv16k", NoSchedModel, []>;
+
+//===----------------------------------------------------------------------===//
+// Define the RV16K target.
+//===----------------------------------------------------------------------===//
+
+def RV16KInstrInfo : InstrInfo;
+
+def RV16KAsmParser : AsmParser {
+  // Use alternative names of registers when emitting.
+  let ShouldEmitMatchRegisterAltName = 1;
+}
+
+def RV16K : Target {
+  let InstructionSet = RV16KInstrInfo;
+  let AssemblyParsers = [RV16KAsmParser];
+}

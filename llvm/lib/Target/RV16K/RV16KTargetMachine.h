@@ -15,6 +15,7 @@
 #ifndef LLVM_LIB_TARGET_RV16K_RV16KTARGETMACHINE_H
 #define LLVM_LIB_TARGET_RV16K_RV16KTARGETMACHINE_H
 
+#include "MCTargetDesc/RV16KMCTargetDesc.h"
 #include "llvm/CodeGen/SelectionDAGTargetInfo.h"
 #include "llvm/IR/DataLayout.h"
 #include "llvm/Target/TargetMachine.h"
@@ -35,7 +36,6 @@ public:
     return TLOF.get();
   }
 };
-Target &getTheRV16KTarget();
 } // namespace llvm
 
 #endif

@@ -12,17 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "llvm/Support/TargetRegistry.h"
+#include "RV16KMCAsmInfo.h"
+#include "llvm/ADT/Triple.h"
 using namespace llvm;
 
-namespace llvm {
-Target &getTheRV16KTarget() {
-  static Target TheRV16KTarget;
-  return TheRV16KTarget;
-}
-} // namespace llvm
+void RV16KMCAsmInfo::anchor() {}
 
-extern "C" void LLVMInitializeRV16KTargetInfo() {
-  RegisterTarget<Triple::rv16k> X(getTheRV16KTarget(), "rv16k", "RV16K",
-                                  "RV16K");
+RV16KMCAsmInfo::RV16KMCAsmInfo(const Triple &TT) {
+  CodePointerSize = 2;
+  CalleeSaveStackSlotSize = 2;
+  CommentString = "#";
+  SupportsDebugInformation = true;
 }
