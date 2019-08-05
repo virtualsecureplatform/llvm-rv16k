@@ -88,3 +88,57 @@ lwsp t0, 510(sp)
 # CHECK-INST: swsp t0, 510(sp)
 # CHECK: encoding: [0xef,0x8f]
 swsp t0, 510(sp)
+# CHECK-INST: j 32766
+# CHECK: encoding: [0x00,0x52,0xfe,0x7f]
+j 32766
+# CHECK-INST: j -32768
+# CHECK: encoding: [0x00,0x52,0x00,0x80]
+j -32768
+# CHECK-INST: jal 32766
+# CHECK: encoding: [0x00,0x73,0xfe,0x7f]
+jal 32766
+# CHECK-INST: jal -32768
+# CHECK: encoding: [0x00,0x73,0x00,0x80]
+jal -32768
+# CHECK-INST: jalr t0
+# CHECK: encoding: [0xe0,0x61]
+jalr t0
+# CHECK-INST: jr ra
+# CHECK: encoding: [0x00,0x40]
+jr ra
+# CHECK-INST: jl 126
+# CHECK: encoding: [0x3f,0x54]
+jl 126
+# CHECK-INST: jl -128
+# CHECK: encoding: [0x40,0x54]
+jl -128
+# CHECK-INST: jle 126
+# CHECK: encoding: [0xbf,0x54]
+jle 126
+# CHECK-INST: jle -128
+# CHECK: encoding: [0xc0,0x54]
+jle -128
+# CHECK-INST: je 126
+# CHECK: encoding: [0x3f,0x55]
+je 126
+# CHECK-INST: je -128
+# CHECK: encoding: [0x40,0x55]
+je -128
+# CHECK-INST: jne 126
+# CHECK: encoding: [0xbf,0x55]
+jne 126
+# CHECK-INST: jne -128
+# CHECK: encoding: [0xc0,0x55]
+jne -128
+# CHECK-INST: jb 126
+# CHECK: encoding: [0x3f,0x56]
+jb 126
+# CHECK-INST: jb -128
+# CHECK: encoding: [0x40,0x56]
+jb -128
+# CHECK-INST: jbe 126
+# CHECK: encoding: [0xbf,0x56]
+jbe 126
+# CHECK-INST: jbe -128
+# CHECK: encoding: [0xc0,0x56]
+jbe -128

@@ -123,15 +123,14 @@ def CMPI : RV16KInstRI<0b11010011, (outs GPR:$rd_w), (ins GPR:$rd, simm4:$imm),
   let Constraints = "$rd = $rd_w";
 }
 
-/*
 // J: Instructions for branches/jumps
 
-def J : RV16KInstRR32<0b01010010, (outs), (ins simm16:$imm),
+def J : RV16KInstRR32<0b01010010, (outs), (ins simm16_lsb0:$imm),
                      "j", "$imm"> {
   let rs = 0;
   let rd = 0;
 }
-def JAL : RV16KInstRR32<0b01110011, (outs), (ins simm16:$imm),
+def JAL : RV16KInstRR32<0b01110011, (outs), (ins simm16_lsb0:$imm),
                        "jal", "$imm"> {
   let rs = 0;
   let rd = 0;
@@ -156,7 +155,6 @@ def JB  : RV16KInstB<0b01010110, 0, (outs), (ins simm8_lsb0:$imm),
                     "jb", "$imm">;
 def JBE : RV16KInstB<0b01010110, 1, (outs), (ins simm8_lsb0:$imm),
                     "jbe", "$imm">;
-*/
 
 // misc
 

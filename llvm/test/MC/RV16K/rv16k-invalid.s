@@ -13,6 +13,8 @@ lwsp t0, -2(sp) # CHECK: :[[@LINE]]:10: error: immediate must be a multiple of 2
 lwsp t0, 1(sp) # CHECK: :[[@LINE]]:10: error: immediate must be a multiple of 2 bytes in the range [0, 510]
 swsp t0, -2(sp) # CHECK: :[[@LINE]]:10: error: immediate must be a multiple of 2 bytes in the range [0, 510]
 swsp t0, 1(sp) # CHECK: :[[@LINE]]:10: error: immediate must be a multiple of 2 bytes in the range [0, 510]
+j 37267 # CHECK: :[[@LINE]]:3: error: immediate must be a multiple of 2 bytes in the range [-32768, 32766]
+jl 128 # CHECK: :[[@LINE]]:4: error: immediate must be a multiple of 2 bytes in the range [-128, 126]
 
 # Invalid mnemonics
 subs x1, x2 # CHECK: :[[@LINE]]:1: error: unrecognized instruction mnemonic
