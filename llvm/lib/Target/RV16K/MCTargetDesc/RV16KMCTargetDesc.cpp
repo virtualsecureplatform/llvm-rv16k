@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "RV16KMCTargetDesc.h"
+#include "InstPrinter/RV16KInstPrinter.h"
 #include "RV16KMCAsmInfo.h"
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/MC/MCAsmInfo.h"
@@ -34,6 +35,11 @@
 
 using namespace llvm;
 
+static MCAsmInfo *createRV16KMCAsmInfo(const MCRegisterInfo &MRI,
+                                       const Triple &TT) {
+  return new RV16KMCAsmInfo(TT);
+}
+
 static MCInstrInfo *createRV16KMCInstrInfo() {
   MCInstrInfo *X = new MCInstrInfo();
   InitRV16KMCInstrInfo(X);
@@ -49,11 +55,6 @@ static MCRegisterInfo *createRV16KMCRegisterInfo(const Triple &TT) {
   return X;
 }
 
-static MCAsmInfo *createRV16KMCAsmInfo(const MCRegisterInfo &MRI,
-                                       const Triple &TT) {
-  return new RV16KMCAsmInfo(TT);
-}
-
 static MCSubtargetInfo *
 createRV16KMCSubtargetInfo(const Triple &TT, StringRef CPU, StringRef FS) {
   std::string CPUName = CPU;
@@ -62,12 +63,23 @@ createRV16KMCSubtargetInfo(const Triple &TT, StringRef CPU, StringRef FS) {
   return createRV16KMCSubtargetInfoImpl(TT, CPUName, FS);
 }
 
+static MCInstPrinter *createRV16KMCInstPrinter(const Triple &T,
+                                               unsigned SyntaxVariant,
+                                               const MCAsmInfo &MAI,
+                                               const MCInstrInfo &MII,
+                                               const MCRegisterInfo &MRI) {
+  return new RV16KInstPrinter(MAI, MII, MRI);
+}
+
 extern "C" void LLVMInitializeRV16KTargetMC() {
   Target &T = getTheRV16KTarget();
+
   TargetRegistry::RegisterMCAsmInfo(T, createRV16KMCAsmInfo);
   TargetRegistry::RegisterMCInstrInfo(T, createRV16KMCInstrInfo);
   TargetRegistry::RegisterMCRegInfo(T, createRV16KMCRegisterInfo);
-  TargetRegistry::RegisterMCAsmBackend(T, createRV16KAsmBackend);
   TargetRegistry::RegisterMCSubtargetInfo(T, createRV16KMCSubtargetInfo);
+  TargetRegistry::RegisterMCInstPrinter(T, createRV16KMCInstPrinter);
+
+  TargetRegistry::RegisterMCAsmBackend(T, createRV16KAsmBackend);
   TargetRegistry::RegisterMCCodeEmitter(T, createRV16KMCCodeEmitter);
 }

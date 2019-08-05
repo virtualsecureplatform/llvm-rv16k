@@ -16,5 +16,5 @@
 type = Library
 name = RV16KDesc
 parent = RV16K
-required_libraries = MC RV16KInfo Support
+required_libraries = MC RV16KAsmPrinter RV16KInfo Support
 add_to_library_groups = RV16K

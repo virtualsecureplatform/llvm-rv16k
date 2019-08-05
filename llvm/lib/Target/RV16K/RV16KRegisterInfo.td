@@ -40,8 +40,8 @@ def X13 : RV16KReg<13,"x13", ["a5"]>, DwarfRegNum<[13]>;
 def X14 : RV16KReg<14,"x14", ["t0"]>, DwarfRegNum<[14]>;
 def X15 : RV16KReg<15,"x15", ["t1"]>, DwarfRegNum<[15]>;
 
-// Flag registers
-def FLAGS : RV16KReg<0, "flags">;
+// Flag registers. AltName is dummy.
+def FLAGS : RV16KReg<0, "flags", ["flags"]>;
 
 // General Purpose Registers.
 // The order of registers represents the preferred allocation sequence.
@@ -54,7 +54,7 @@ def GPR : RegisterClass<"RV16K", [i16], 16, (add
 def SP : RegisterClass<"RV16K", [i16], 16, (add X1)>;
 
 // Status flag registers
-def FLAGS_REG : RegisterClass<"RV16K", [i16], 16, (add FLAGS)> {
+def FLAGS_REG_CLASS : RegisterClass<"RV16K", [i16], 16, (add FLAGS)> {
   let CopyCost = -1;  // Don't allow copying of status registers.
   let isAllocatable = 0;
 }
