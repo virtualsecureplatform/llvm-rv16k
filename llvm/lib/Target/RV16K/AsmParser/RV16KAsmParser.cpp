@@ -139,7 +139,11 @@ public:
   }
 
   bool isSImm8Lsb0() const {
-    return (isConstantImm() && isShiftedInt<7, 1>(getConstantImm()));
+    if (!isImm())
+      return false;
+    if (isConstantImm())
+      return isShiftedInt<7, 1>(getConstantImm());
+    return isa<MCSymbolRefExpr>(getImm());
   }
 
   bool isUImm9Lsb0() const {
@@ -147,11 +151,19 @@ public:
   }
 
   bool isSImm16() const {
-    return (isConstantImm() && isInt<16>(getConstantImm()));
+    if (!isImm())
+      return false;
+    if (isConstantImm())
+      return isInt<16>(getConstantImm());
+    return isa<MCSymbolRefExpr>(getImm());
   }
 
   bool isSImm16Lsb0() const {
-    return (isConstantImm() && isShiftedInt<15, 1>(getConstantImm()));
+    if (!isImm())
+      return false;
+    if (isConstantImm())
+      return isShiftedInt<15, 1>(getConstantImm());
+    return isa<MCSymbolRefExpr>(getImm());
   }
 
   /// getStartLoc - Gets location of the first token of this operand
@@ -347,24 +359,34 @@ OperandMatchResultTy RV16KAsmParser::parseRegister(OperandVector &Operands) {
 }
 
 OperandMatchResultTy RV16KAsmParser::parseImmediate(OperandVector &Operands) {
+  SMLoc S = getLoc();
+  SMLoc E = SMLoc::getFromPointer(S.getPointer() - 1);
+  const MCExpr *Res;
+
   switch (getLexer().getKind()) {
   default:
     return MatchOperand_NoMatch;
+
   case AsmToken::LParen:
   case AsmToken::Minus:
   case AsmToken::Plus:
   case AsmToken::Integer:
   case AsmToken::String:
+    if (getParser().parseExpression(Res))
+      return MatchOperand_ParseFail;
+    break;
+
+  case AsmToken::Identifier: {
+    StringRef Identifier;
+    if (getParser().parseIdentifier(Identifier))
+      return MatchOperand_ParseFail;
+    MCSymbol *Sym = getContext().getOrCreateSymbol(Identifier);
+    Res = MCSymbolRefExpr::create(Sym, MCSymbolRefExpr::VK_None, getContext());
     break;
   }
+  }
 
-  const MCExpr *IdVal;
-  SMLoc S = getLoc();
-  if (getParser().parseExpression(IdVal))
-    return MatchOperand_ParseFail;
-
-  SMLoc E = SMLoc::getFromPointer(S.getPointer() - 1);
-  Operands.push_back(RV16KOperand::createImm(IdVal, S, E));
+  Operands.push_back(RV16KOperand::createImm(Res, S, E));
   return MatchOperand_Success;
 }
 

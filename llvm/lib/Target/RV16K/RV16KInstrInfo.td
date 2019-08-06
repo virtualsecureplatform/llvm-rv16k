@@ -31,26 +31,31 @@ class UImmAsmOperand<int width, string suffix = "">
 def simm4 : Operand<i16> {
   let ParserMatchClass = SImmAsmOperand<4>;
   let DecoderMethod = "decodeSImmOperand<4>";
+  let EncoderMethod = "getImmOpValue";
 }
 
 def simm8_lsb0 : Operand<i16> {
   let ParserMatchClass = SImmAsmOperand<8, "Lsb0">;
   let DecoderMethod = "decodeSImmOperand<8>";
+  let EncoderMethod = "getImmOpValue";
 }
 
 def uimm9_lsb0 : Operand<i16> {
   let ParserMatchClass = UImmAsmOperand<9, "Lsb0">;
   let DecoderMethod = "decodeUImmOperand<9>";
+  let EncoderMethod = "getImmOpValue";
 }
 
 def simm16 : Operand<i16> {
   let ParserMatchClass = SImmAsmOperand<16>;
   let DecoderMethod = "decodeSImmOperand<16>";
+  let EncoderMethod = "getImmOpValue";
 }
 
 def simm16_lsb0 : Operand<i16> {
   let ParserMatchClass = SImmAsmOperand<16, "Lsb0">;
   let DecoderMethod = "decodeSImmOperand<16>";
+  let EncoderMethod = "getImmOpValue";
 }
 
 // M: Instructions for memory

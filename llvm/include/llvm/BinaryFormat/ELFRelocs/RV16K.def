@@ -3,3 +3,6 @@
 #endif
 
 ELF_RELOC(R_RV16K_NONE,               0)
+ELF_RELOC(R_RV16K_16,                 1)
+ELF_RELOC(R_RV16K_PC8,                2)
+ELF_RELOC(R_RV16K_PC16,               3)

@@ -12,11 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "MCTargetDesc/RV16KFixupKinds.h"
 #include "MCTargetDesc/RV16KMCTargetDesc.h"
 #include "llvm/MC/MCELFObjectWriter.h"
 #include "llvm/MC/MCFixup.h"
 #include "llvm/MC/MCObjectWriter.h"
+#include "llvm/Support/Debug.h"
 #include "llvm/Support/ErrorHandling.h"
+
+#define DEBUG_TYPE "elfobjectwriter"
 
 using namespace llvm;
 
@@ -43,7 +47,17 @@ unsigned RV16KELFObjectWriter::getRelocType(MCContext &Ctx,
                                             const MCValue &Target,
                                             const MCFixup &Fixup,
                                             bool IsPCRel) const {
-  report_fatal_error("invalid fixup kind!");
+  // Determine the type of the relocation
+  switch ((unsigned)Fixup.getKind()) {
+  default:
+    llvm_unreachable("invalid fixup kind!");
+  case FK_Data_2:
+    return ELF::R_RV16K_16;
+  case RV16K::fixup_rv16k_pcrel_8bit:
+    return ELF::R_RV16K_PC8;
+  case RV16K::fixup_rv16k_pcrel_16bit:
+    return ELF::R_RV16K_PC16;
+  }
 }
 
 std::unique_ptr<MCObjectTargetWriter>

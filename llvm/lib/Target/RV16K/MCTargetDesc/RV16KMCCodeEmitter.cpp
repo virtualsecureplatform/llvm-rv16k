@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "MCTargetDesc/RV16KFixupKinds.h"
 #include "MCTargetDesc/RV16KMCTargetDesc.h"
 #include "llvm/ADT/Statistic.h"
 #include "llvm/MC/MCAsmInfo.h"
@@ -23,6 +24,7 @@
 #include "llvm/MC/MCInstrInfo.h"
 #include "llvm/MC/MCRegisterInfo.h"
 #include "llvm/MC/MCSymbol.h"
+#include "llvm/Support/Casting.h"
 #include "llvm/Support/EndianStream.h"
 #include "llvm/Support/raw_ostream.h"
 
@@ -31,6 +33,7 @@ using namespace llvm;
 #define DEBUG_TYPE "mccodeemitter"
 
 STATISTIC(MCNumEmitted, "Number of MC instructions emitted");
+STATISTIC(MCNumFixups, "Number of MC fixups created");
 
 namespace {
 class RV16KMCCodeEmitter : public MCCodeEmitter {
@@ -60,6 +63,10 @@ public:
   unsigned getMachineOpValue(const MCInst &MI, const MCOperand &MO,
                              SmallVectorImpl<MCFixup> &Fixups,
                              const MCSubtargetInfo &STI) const;
+
+  unsigned getImmOpValue(const MCInst &MI, unsigned OpNo,
+                         SmallVectorImpl<MCFixup> &Fixups,
+                         const MCSubtargetInfo &STI) const;
 };
 } // end anonymous namespace
 
@@ -106,6 +113,56 @@ RV16KMCCodeEmitter::getMachineOpValue(const MCInst &MI, const MCOperand &MO,
     return static_cast<unsigned>(MO.getImm());
 
   llvm_unreachable("Unhandled expression!");
+  return 0;
+}
+
+unsigned RV16KMCCodeEmitter::getImmOpValue(const MCInst &MI, unsigned OpNo,
+                                           SmallVectorImpl<MCFixup> &Fixups,
+                                           const MCSubtargetInfo &STI) const {
+  const MCOperand &MO = MI.getOperand(OpNo);
+
+  if (MO.isImm())
+    return MO.getImm();
+
+  assert(MO.isExpr() && "getImmOpValue expects only expressions or immediates");
+
+  const MCExpr *Expr = MO.getExpr();
+  MCExpr::ExprKind Kind = Expr->getKind();
+  MCFixupKind FixupKind = static_cast<MCFixupKind>(RV16K::fixup_rv16k_invalid);
+  unsigned Offset = 0;
+
+  if (Kind == MCExpr::SymbolRef &&
+      cast<MCSymbolRefExpr>(Expr)->getKind() == MCSymbolRefExpr::VK_None) {
+    switch (MI.getOpcode()) {
+    case RV16K::J:
+    case RV16K::JAL:
+      FixupKind = static_cast<MCFixupKind>(RV16K::fixup_rv16k_pcrel_16bit);
+      Offset = 2; // for NIAI
+      break;
+
+    case RV16K::JL:
+    case RV16K::JLE:
+    case RV16K::JE:
+    case RV16K::JNE:
+    case RV16K::JB:
+    case RV16K::JBE:
+      FixupKind = static_cast<MCFixupKind>(RV16K::fixup_rv16k_pcrel_8bit);
+      Offset = 0;
+      break;
+
+    case RV16K::LI:
+      FixupKind = FK_Data_2;
+      Offset = 2;
+      break;
+    }
+  }
+
+  assert(FixupKind != static_cast<MCFixupKind>(RV16K::fixup_rv16k_invalid) &&
+         "Unhandled expression!");
+
+  Fixups.push_back(MCFixup::create(Offset, Expr, FixupKind, MI.getLoc()));
+  ++MCNumFixups;
+
   return 0;
 }
 
