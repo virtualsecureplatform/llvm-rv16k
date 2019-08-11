@@ -27,5 +27,6 @@ has_disassembler = 1
 type = Library
 name = RV16KCodeGen
 parent = RV16K
-required_libraries = AsmPrinter Core CodeGen MC RV16KAsmPrinter RV16KDesc RV16KInfo Support Target
+required_libraries = AsmPrinter Core CodeGen MC RV16KAsmPrinter RV16KDesc
+  RV16KInfo SelectionDAG Support Target
 add_to_library_groups = RV16K

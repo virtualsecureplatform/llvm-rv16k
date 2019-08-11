@@ -15,10 +15,11 @@
 include "llvm/Target/Target.td"
 
 //===----------------------------------------------------------------------===//
-// Register file, instruction descriptions.
+// Registers, calling conventions, instruction descriptions.
 //===----------------------------------------------------------------------===//
 
 include "RV16KRegisterInfo.td"
+include "RV16KCallingConv.td"
 include "RV16KInstrInfo.td"
 
 //===----------------------------------------------------------------------===//
@@ -31,7 +32,9 @@ def : ProcessorModel<"generic-rv16k", NoSchedModel, []>;
 // Define the RV16K target.
 //===----------------------------------------------------------------------===//
 
-def RV16KInstrInfo : InstrInfo;
+def RV16KInstrInfo : InstrInfo {
+  let guessInstructionProperties = 0;
+}
 
 def RV16KAsmParser : AsmParser {
   // Use alternative names of registers when emitting.

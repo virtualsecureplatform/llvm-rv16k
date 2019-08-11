@@ -52,10 +52,31 @@ RV16KTargetMachine::RV16KTargetMachine(const Target &T, const Triple &TT,
     : LLVMTargetMachine(T, computeDataLayout(TT), TT, CPU, FS, Options,
                         getEffectiveRelocModel(TT, RM),
                         getEffectiveCodeModel(CM, CodeModel::Small), OL),
-      TLOF(make_unique<TargetLoweringObjectFileELF>()) {
+      TLOF(make_unique<TargetLoweringObjectFileELF>()),
+      Subtarget(TT, CPU, FS, *this) {
   initAsmInfo();
 }
 
+namespace {
+class RV16KPassConfig : public TargetPassConfig {
+public:
+  RV16KPassConfig(RV16KTargetMachine &TM, PassManagerBase &PM)
+      : TargetPassConfig(TM, PM) {}
+
+  RV16KTargetMachine &getRV16KTargetMachine() const {
+    return getTM<RV16KTargetMachine>();
+  }
+
+  bool addInstSelector() override;
+};
+} // namespace
+
 TargetPassConfig *RV16KTargetMachine::createPassConfig(PassManagerBase &PM) {
-  return new TargetPassConfig(*this, PM);
+  return new RV16KPassConfig(*this, PM);
+}
+
+bool RV16KPassConfig::addInstSelector() {
+  addPass(createRV16KISelDag(getRV16KTargetMachine()));
+
+  return false;
 }

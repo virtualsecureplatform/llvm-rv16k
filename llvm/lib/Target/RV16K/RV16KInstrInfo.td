@@ -14,6 +14,9 @@
 
 include "RV16KInstrFormats.td"
 
+def RetFlag : SDNode<"RV16KISD::RET_FLAG", SDTNone,
+                     [SDNPHasChain, SDNPOptInGlue, SDNPVariadic]>;
+
 class ImmAsmOperand<string prefix, int width, string suffix> : AsmOperandClass {
   let Name = prefix # "Imm" # width # suffix;
   let RenderMethod = "addImmOperands";
@@ -28,7 +31,7 @@ class UImmAsmOperand<int width, string suffix = "">
     : ImmAsmOperand<"U", width, suffix> {
 }
 
-def simm4 : Operand<i16> {
+def simm4 : Operand<i16>, ImmLeaf<i16, [{return isInt<4>(Imm);}]> {
   let ParserMatchClass = SImmAsmOperand<4>;
   let DecoderMethod = "decodeSImmOperand<4>";
   let EncoderMethod = "getImmOpValue";
@@ -171,7 +174,25 @@ let hasSideEffects = 0, mayLoad = 0, mayStore = 0 in {
 
 // misc
 
+let hasSideEffects = 0, mayLoad = 0, mayStore = 0 in
 def NOP : RV16KInstRR16<0b00000000, (outs), (ins), "nop", ""> {
   let rs = 0;
   let rd = 0;
 }
+
+// Pseudo-instructions and codegen patterns
+
+def : Pat<(add GPR:$rs1, GPR:$rs2), (ADD GPR:$rs1, GPR:$rs2)>;
+def : Pat<(sub GPR:$rs1, GPR:$rs2), (SUB GPR:$rs1, GPR:$rs2)>;
+def : Pat<(and GPR:$rs1, GPR:$rs2), (AND GPR:$rs1, GPR:$rs2)>;
+def : Pat<(or  GPR:$rs1, GPR:$rs2), (OR  GPR:$rs1, GPR:$rs2)>;
+def : Pat<(xor GPR:$rs1, GPR:$rs2), (XOR GPR:$rs1, GPR:$rs2)>;
+def : Pat<(shl GPR:$rs1, GPR:$rs2), (LSL GPR:$rs1, GPR:$rs2)>;
+def : Pat<(srl GPR:$rs1, GPR:$rs2), (LSR GPR:$rs1, GPR:$rs2)>;
+def : Pat<(sra GPR:$rs1, GPR:$rs2), (ASR GPR:$rs1, GPR:$rs2)>;
+
+def : Pat<(add GPR:$rs1, simm4:$imm4), (ADDI GPR:$rs1, simm4:$imm4)>;
+
+let isBarrier = 1, isReturn = 1, isTerminator = 1 in
+def PseudoRET : Pseudo<(outs), (ins), [(RetFlag)]>,
+                PseudoInstExpansion<(JR X0)>;
