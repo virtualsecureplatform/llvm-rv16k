@@ -11,10 +11,18 @@
 .2byte foo
 # RELOC: R_RV16K_16 foo
 
+.2byte bar
+# RELOC: R_RV16K_16 bar
+
 li t1, foo
-# RELOC: R_RV16K_16
+# RELOC: R_RV16K_16 foo 0x0
 # INSTR: li t1, foo
 # FIXUP: fixup A - offset: 2, value: foo, kind: FK_Data_2
+
+li t1, foo+4
+# RELOC: R_RV16K_16 foo 0x4
+# INSTR: li t1, foo+4
+# FIXUP: fixup A - offset: 2, value: foo+4, kind: FK_Data_2
 
 j foo
 # RELOC: R_RV16K_PC16

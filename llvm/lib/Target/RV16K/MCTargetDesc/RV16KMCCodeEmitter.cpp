@@ -131,8 +131,12 @@ unsigned RV16KMCCodeEmitter::getImmOpValue(const MCInst &MI, unsigned OpNo,
   MCFixupKind FixupKind = static_cast<MCFixupKind>(RV16K::fixup_rv16k_invalid);
   unsigned Offset = 0;
 
-  if (Kind == MCExpr::SymbolRef &&
-      cast<MCSymbolRefExpr>(Expr)->getKind() == MCSymbolRefExpr::VK_None) {
+  if (MI.getOpcode() == RV16K::LI) {
+    FixupKind = FK_Data_2;
+    Offset = 2; // for NIAI
+  } else if (Kind == MCExpr::SymbolRef &&
+             cast<MCSymbolRefExpr>(Expr)->getKind() ==
+                 MCSymbolRefExpr::VK_None) {
     switch (MI.getOpcode()) {
     case RV16K::J:
     case RV16K::JAL:
@@ -148,11 +152,6 @@ unsigned RV16KMCCodeEmitter::getImmOpValue(const MCInst &MI, unsigned OpNo,
     case RV16K::JBE:
       FixupKind = static_cast<MCFixupKind>(RV16K::fixup_rv16k_pcrel_8bit);
       Offset = 0;
-      break;
-
-    case RV16K::LI:
-      FixupKind = FK_Data_2;
-      Offset = 2;
       break;
     }
   }

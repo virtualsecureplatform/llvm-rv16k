@@ -24,6 +24,7 @@
 #include "llvm/MC/MCRegisterInfo.h"
 #include "llvm/MC/MCStreamer.h"
 #include "llvm/MC/MCSubtargetInfo.h"
+#include "llvm/MC/MCValue.h"
 #include "llvm/Support/Casting.h"
 #include "llvm/Support/TargetRegistry.h"
 
@@ -67,6 +68,8 @@ public:
 #include "RV16KGenAsmMatcher.inc"
 #undef GET_OPERAND_DIAGNOSTIC_TYPES
   };
+
+  static bool isValidExprAsImm(const MCExpr *Expr);
 
   RV16KAsmParser(const MCSubtargetInfo &STI, MCAsmParser &Parser,
                  const MCInstrInfo &MII, const MCTargetOptions &Options)
@@ -155,7 +158,7 @@ public:
       return false;
     if (isConstantImm())
       return isInt<16>(getConstantImm());
-    return isa<MCSymbolRefExpr>(getImm());
+    return RV16KAsmParser::isValidExprAsImm(getImm());
   }
 
   bool isSImm16Lsb0() const {
@@ -372,18 +375,10 @@ OperandMatchResultTy RV16KAsmParser::parseImmediate(OperandVector &Operands) {
   case AsmToken::Plus:
   case AsmToken::Integer:
   case AsmToken::String:
+  case AsmToken::Identifier:
     if (getParser().parseExpression(Res))
       return MatchOperand_ParseFail;
     break;
-
-  case AsmToken::Identifier: {
-    StringRef Identifier;
-    if (getParser().parseIdentifier(Identifier))
-      return MatchOperand_ParseFail;
-    MCSymbol *Sym = getContext().getOrCreateSymbol(Identifier);
-    Res = MCSymbolRefExpr::create(Sym, MCSymbolRefExpr::VK_None, getContext());
-    break;
-  }
   }
 
   Operands.push_back(RV16KOperand::createImm(Res, S, E));
@@ -469,6 +464,43 @@ bool RV16KAsmParser::ParseInstruction(ParseInstructionInfo &Info,
 
   getParser().Lex(); // Consume the EndOfStatement.
   return false;
+}
+
+bool RV16KAsmParser::isValidExprAsImm(const MCExpr *Expr) {
+  // Check if the Expr is a constant expression.
+  int64_t ConstantValue;
+  if (!Expr->evaluateAsAbsolute(ConstantValue))
+    return true;
+
+  // Check if the Expr is a constant value or a symbol reference.
+  if (isa<MCConstantExpr>(Expr) || isa<MCSymbolRefExpr>(Expr))
+    return true;
+
+  // Then, the Expr must be a binary expression.
+  const MCBinaryExpr *BE = dyn_cast<MCBinaryExpr>(Expr);
+  if (!BE)
+    return false;
+
+  if (!isa<MCSymbolRefExpr>(BE->getLHS()))
+    return false;
+
+  if (BE->getOpcode() != MCBinaryExpr::Add &&
+      BE->getOpcode() != MCBinaryExpr::Sub)
+    return false;
+
+  // We are able to support the subtraction of two symbol references
+  if (BE->getOpcode() == MCBinaryExpr::Sub &&
+      isa<MCSymbolRefExpr>(BE->getRHS()))
+    return true;
+
+  // See if the addend is a constant, otherwise there's more going
+  // on here than we can deal with.
+  const MCConstantExpr *AddendExpr = dyn_cast<MCConstantExpr>(BE->getRHS());
+  if (!AddendExpr)
+    return false;
+
+  // It's some symbol reference + a constant addend.
+  return true;
 }
 
 bool RV16KAsmParser::ParseDirective(AsmToken DirectiveID) { return true; }
