@@ -49,7 +49,7 @@ def uimm9_lsb0 : Operand<i16> {
   let EncoderMethod = "getImmOpValue";
 }
 
-def simm16 : Operand<i16> {
+def simm16 : Operand<i16>, ImmLeaf<i16, [{return isInt<16>(Imm);}]> {
   let ParserMatchClass = SImmAsmOperand<16>;
   let DecoderMethod = "decodeSImmOperand<16>";
   let EncoderMethod = "getImmOpValue";
@@ -181,6 +181,8 @@ def NOP : RV16KInstRR16<0b00000000, (outs), (ins), "nop", ""> {
 }
 
 // Pseudo-instructions and codegen patterns
+
+def : Pat<(simm16:$imm16), (LI simm16:$imm16)>;
 
 def : Pat<(add GPR:$rs1, GPR:$rs2), (ADD GPR:$rs1, GPR:$rs2)>;
 def : Pat<(sub GPR:$rs1, GPR:$rs2), (SUB GPR:$rs1, GPR:$rs2)>;
