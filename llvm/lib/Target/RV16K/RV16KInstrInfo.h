@@ -27,6 +27,10 @@ class RV16KInstrInfo : public RV16KGenInstrInfo {
 
 public:
   RV16KInstrInfo();
+
+  void copyPhysReg(MachineBasicBlock &MBB, MachineBasicBlock::iterator MBBI,
+                   const DebugLoc &DL, unsigned DstReg, unsigned SrcReg,
+                   bool KillSrc) const override;
 };
 } // namespace llvm
 

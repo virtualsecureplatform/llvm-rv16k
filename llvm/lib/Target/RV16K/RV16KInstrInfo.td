@@ -55,7 +55,7 @@ def simm16 : Operand<i16>, ImmLeaf<i16, [{return isInt<16>(Imm);}]> {
   let EncoderMethod = "getImmOpValue";
 }
 
-def simm16_lsb0 : Operand<i16> {
+def simm16_lsb0 : Operand<i16>, ImmLeaf<i16, [{return isShiftedInt<15, 1>(Imm);}]> {
   let ParserMatchClass = SImmAsmOperand<16, "Lsb0">;
   let DecoderMethod = "decodeSImmOperand<16>";
   let EncoderMethod = "getImmOpValue";
@@ -182,7 +182,21 @@ def NOP : RV16KInstRR16<0b00000000, (outs), (ins), "nop", ""> {
 
 // Pseudo-instructions and codegen patterns
 
-def : Pat<(simm16:$imm16), (LI simm16:$imm16)>;
+def : Pat<(load GPR:$rs1), (LW GPR:$rs1, 0)>;
+def : Pat<(load (add GPR:$rs1, simm16_lsb0:$imm16)), (LW GPR:$rs1, simm16_lsb0:$imm16)>;
+def : Pat<(extloadi8 GPR:$rs1), (LB GPR:$rs1, 0)>;
+def : Pat<(extloadi8 (add GPR:$rs1, simm16:$imm16)), (LB GPR:$rs1, simm16:$imm16)>;
+def : Pat<(sextloadi8 GPR:$rs1), (LB GPR:$rs1, 0)>;
+def : Pat<(sextloadi8 (add GPR:$rs1, simm16:$imm16)), (LB GPR:$rs1, simm16:$imm16)>;
+def : Pat<(zextloadi8 GPR:$rs1), (LBU GPR:$rs1, 0)>;
+def : Pat<(zextloadi8 (add GPR:$rs1, simm16:$imm16)), (LBU GPR:$rs1, simm16:$imm16)>;
+
+def : Pat<(store GPR:$rs2, GPR:$rs1), (SW GPR:$rs2, GPR:$rs1, 0)>;
+def : Pat<(store GPR:$rs2, (add GPR:$rs1, simm16_lsb0:$imm16)),
+          (SW GPR:$rs2, GPR:$rs1, simm16_lsb0:$imm16)>;
+def : Pat<(truncstorei8 GPR:$rs2, GPR:$rs1), (SB GPR:$rs2, GPR:$rs1, 0)>;
+def : Pat<(truncstorei8 GPR:$rs2, (add GPR:$rs1, simm16:$imm16)),
+          (SB GPR:$rs2, GPR:$rs1, simm16:$imm16)>;
 
 def : Pat<(add GPR:$rs1, GPR:$rs2), (ADD GPR:$rs1, GPR:$rs2)>;
 def : Pat<(sub GPR:$rs1, GPR:$rs2), (SUB GPR:$rs1, GPR:$rs2)>;
@@ -193,6 +207,7 @@ def : Pat<(shl GPR:$rs1, GPR:$rs2), (LSL GPR:$rs1, GPR:$rs2)>;
 def : Pat<(srl GPR:$rs1, GPR:$rs2), (LSR GPR:$rs1, GPR:$rs2)>;
 def : Pat<(sra GPR:$rs1, GPR:$rs2), (ASR GPR:$rs1, GPR:$rs2)>;
 
+def : Pat<(simm16:$imm16), (LI simm16:$imm16)>;
 def : Pat<(add GPR:$rs1, simm4:$imm4), (ADDI GPR:$rs1, simm4:$imm4)>;
 
 let isBarrier = 1, isReturn = 1, isTerminator = 1 in

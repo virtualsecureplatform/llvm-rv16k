@@ -30,3 +30,14 @@
 using namespace llvm;
 
 RV16KInstrInfo::RV16KInstrInfo() : RV16KGenInstrInfo() {}
+
+void RV16KInstrInfo::copyPhysReg(MachineBasicBlock &MBB,
+                                 MachineBasicBlock::iterator MBBI,
+                                 const DebugLoc &DL, unsigned DstReg,
+                                 unsigned SrcReg, bool KillSrc) const {
+  assert(RV16K::GPRRegClass.contains(DstReg, SrcReg) &&
+         "Impossible reg-to-reg copy");
+
+  BuildMI(MBB, MBBI, DL, get(RV16K::MOV), DstReg)
+      .addReg(SrcReg, getKillRegState(KillSrc));
+}

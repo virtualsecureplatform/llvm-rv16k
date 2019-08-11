@@ -47,6 +47,9 @@ RV16KTargetLowering::RV16KTargetLowering(const TargetMachine &TM,
 
   setStackPointerRegisterToSaveRestore(RV16K::X1);
 
+  for (auto N : {ISD::EXTLOAD, ISD::SEXTLOAD, ISD::ZEXTLOAD})
+    setLoadExtAction(N, MVT::i16, MVT::i1, Promote);
+
   // TODO: add all necessary setOperationAction calls.
 
   setBooleanContents(ZeroOrOneBooleanContent);
