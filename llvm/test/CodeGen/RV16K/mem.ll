@@ -93,3 +93,26 @@ define i16 @load_sext_zext_anyext_i1(i1 *%a) nounwind {
   %8 = load volatile i1, i1* %a
   ret i16 %7
 }
+
+; Check load and store to a global
+@G = global i16 0
+
+define i16 @lw_sw_global(i16 %a) nounwind {
+; RV16K-LABEL: lw_sw_global:
+; RV16K:       # %bb.0:
+; RV16K-NEXT:    li	a2, G
+; RV16K-NEXT:    lw	a1, 0(a2)
+; RV16K-NEXT:    sw	a0, 0(a2)
+; RV16K-NEXT:    li	a2, G+18
+; RV16K-NEXT:    lw	a3, 0(a2)
+; RV16K-NEXT:    sw	a0, 0(a2)
+; RV16K-NEXT:    mov a0, a1
+; RV16K-NEXT:    jr	ra
+
+  %1 = load volatile i16, i16* @G
+  store i16 %a, i16* @G
+  %2 = getelementptr i16, i16* @G, i16 9
+  %3 = load volatile i16, i16* %2
+  store i16 %a, i16* %2
+  ret i16 %1
+}

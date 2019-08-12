@@ -51,6 +51,7 @@ private:
                                          Type *Ty) const override {
     return true;
   }
+  SDValue lowerGlobalAddress(SDValue Op, SelectionDAG &DAG) const;
 };
 } // namespace llvm
 

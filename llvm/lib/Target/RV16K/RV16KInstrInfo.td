@@ -85,10 +85,12 @@ let hasSideEffects = 0, mayLoad = 0, mayStore = 1, Defs = [FLAGS] in {
 
 // R: Instructions for arithmetic
 
+let hasSideEffects = 0, mayLoad = 0, mayStore = 0, Defs = [FLAGS] in
+def MOV : RV16KInstRR16<0b11000000, (outs GPR:$rd), (ins GPR:$rs),
+                       "mov", "$rd, $rs">;
+
 let hasSideEffects = 0, mayLoad = 0, mayStore = 0,
     Defs = [FLAGS], Constraints = "$rd = $rd_w" in {
-  def MOV : RV16KInstRR16<0b11000000, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
-                       "mov", "$rd, $rs">;
   def ADD : RV16KInstRR16<0b11100010, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
                          "add", "$rd, $rs">;
   def SUB : RV16KInstRR16<0b11100011, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
@@ -210,6 +212,7 @@ def : Pat<(sra GPR:$rs1, GPR:$rs2), (ASR GPR:$rs1, GPR:$rs2)>;
 def : Pat<(simm16:$imm16), (LI simm16:$imm16)>;
 def : Pat<(add GPR:$rs1, simm4:$imm4), (ADDI GPR:$rs1, simm4:$imm4)>;
 
-let isBarrier = 1, isReturn = 1, isTerminator = 1 in
+let hasSideEffects = 0, mayStore = 0, mayLoad = 0,
+    isBarrier = 1, isReturn = 1, isTerminator = 1 in
 def PseudoRET : Pseudo<(outs), (ins), [(RetFlag)]>,
                 PseudoInstExpansion<(JR X0)>;

@@ -44,6 +44,11 @@ public:
   // TableGen'erated function.
   bool emitPseudoExpansionLowering(MCStreamer &OutStreamer,
                                    const MachineInstr *MI);
+
+  // Wrapper needed for tblgenned pseudo lowering.
+  bool lowerOperand(const MachineOperand &MO, MCOperand &MCOp) const {
+    return LowerRV16KMachineOperandToMCOperand(MO, MCOp, *this);
+  }
 };
 } // namespace
 
@@ -57,7 +62,7 @@ void RV16KAsmPrinter::EmitInstruction(const MachineInstr *MI) {
     return;
 
   MCInst TmpInst;
-  LowerRV16KMachineInstrToMCInst(MI, TmpInst);
+  LowerRV16KMachineInstrToMCInst(MI, TmpInst, *this);
   EmitToStreamer(*OutStreamer, TmpInst);
 }
 

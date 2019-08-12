@@ -20,10 +20,17 @@
 
 namespace llvm {
 class RV16KTargetMachine;
+class AsmPrinter;
+class FunctionPass;
 class MCInst;
+class MCOperand;
 class MachineInstr;
+class MachineOperand;
 
-void LowerRV16KMachineInstrToMCInst(const MachineInstr *MI, MCInst &OutMI);
+void LowerRV16KMachineInstrToMCInst(const MachineInstr *MI, MCInst &OutMI,
+                                    const AsmPrinter &AP);
+bool LowerRV16KMachineOperandToMCOperand(const MachineOperand &MO,
+                                         MCOperand &MCOp, const AsmPrinter &AP);
 
 FunctionPass *createRV16KISelDag(RV16KTargetMachine &TM);
 } // namespace llvm
