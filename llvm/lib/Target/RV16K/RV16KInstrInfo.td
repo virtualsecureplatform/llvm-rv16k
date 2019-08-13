@@ -14,6 +14,20 @@
 
 include "RV16KInstrFormats.td"
 
+def RV16K_COND_L   : PatLeaf<(i16 0)>;
+def RV16K_COND_LE  : PatLeaf<(i16 1)>;
+def RV16K_COND_E   : PatLeaf<(i16 2)>;
+def RV16K_COND_NE  : PatLeaf<(i16 3)>;
+def RV16K_COND_B   : PatLeaf<(i16 4)>;
+def RV16K_COND_BE  : PatLeaf<(i16 5)>;
+
+def SDT_RV16KCmp      : SDTypeProfile<0,  2, [SDTCisSameAs<0, 1>]>;
+def SDT_RV16KBrCC     : SDTypeProfile<0,  2, [SDTCisVT<0, OtherVT>,
+                                                  SDTCisVT<1, i16>]>;
+
+def RV16KCmp : SDNode<"RV16KISD::CMP", SDT_RV16KCmp, [SDNPOutGlue]>;
+def RV16KBrCC : SDNode<"RV16KISD::BR_CC", SDT_RV16KBrCC, [SDNPHasChain, SDNPInGlue]>;
+
 def RetFlag : SDNode<"RV16KISD::RET_FLAG", SDTNone,
                      [SDNPHasChain, SDNPOptInGlue, SDNPVariadic]>;
 
@@ -37,7 +51,7 @@ def simm4 : Operand<i16>, ImmLeaf<i16, [{return isInt<4>(Imm);}]> {
   let EncoderMethod = "getImmOpValue";
 }
 
-def simm8_lsb0 : Operand<i16> {
+def simm8_lsb0 : Operand<OtherVT> {
   let ParserMatchClass = SImmAsmOperand<8, "Lsb0">;
   let DecoderMethod = "decodeSImmOperand<8>";
   let EncoderMethod = "getImmOpValue";
@@ -56,6 +70,12 @@ def simm16 : Operand<i16>, ImmLeaf<i16, [{return isInt<16>(Imm);}]> {
 }
 
 def simm16_lsb0 : Operand<i16>, ImmLeaf<i16, [{return isShiftedInt<15, 1>(Imm);}]> {
+  let ParserMatchClass = SImmAsmOperand<16, "Lsb0">;
+  let DecoderMethod = "decodeSImmOperand<16>";
+  let EncoderMethod = "getImmOpValue";
+}
+
+def simm16_lsb0_j : Operand<OtherVT>, ImmLeaf<OtherVT, [{return isShiftedInt<15, 1>(Imm);}]> {
   let ParserMatchClass = SImmAsmOperand<16, "Lsb0">;
   let DecoderMethod = "decodeSImmOperand<16>";
   let EncoderMethod = "getImmOpValue";
@@ -85,9 +105,14 @@ let hasSideEffects = 0, mayLoad = 0, mayStore = 1, Defs = [FLAGS] in {
 
 // R: Instructions for arithmetic
 
-let hasSideEffects = 0, mayLoad = 0, mayStore = 0, Defs = [FLAGS] in
-def MOV : RV16KInstRR16<0b11000000, (outs GPR:$rd), (ins GPR:$rs),
-                       "mov", "$rd, $rs">;
+let hasSideEffects = 0, mayLoad = 0, mayStore = 0, Defs = [FLAGS] in {
+  def MOV : RV16KInstRR16<0b11000000, (outs GPR:$rd), (ins GPR:$rs),
+                         "mov", "$rd, $rs">;
+
+  let isCompare = 1 in
+  def CMP : RV16KInstRR16<0b11000011, (outs), (ins GPR:$rd, GPR:$rs),
+                         "cmp", "$rd, $rs">;
+}
 
 let hasSideEffects = 0, mayLoad = 0, mayStore = 0,
     Defs = [FLAGS], Constraints = "$rd = $rd_w" in {
@@ -107,11 +132,8 @@ let hasSideEffects = 0, mayLoad = 0, mayStore = 0,
                          "lsr", "$rd, $rs">;
   def ASR : RV16KInstRR16<0b11101101, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
                          "asr", "$rd, $rs">;
-
-  let isCompare = 1 in
-  def CMP : RV16KInstRR16<0b11000011, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
-                         "cmp", "$rd, $rs">;
 }
+
 
 // I: Instructions for immediates
 
@@ -121,26 +143,27 @@ let hasSideEffects = 0, mayLoad = 0, mayStore = 0, Defs = [FLAGS] in {
     let rs = 0;
   }
 
-  let Constraints = "$rd = $rd_w" in {
-    def ADDI : RV16KInstRI<0b11110010, (outs GPR:$rd_w), (ins GPR:$rd, simm4:$imm),
-        "addi", "$rd, $imm">;
-    def CMPI : RV16KInstRI<0b11010011, (outs GPR:$rd_w), (ins GPR:$rd, simm4:$imm),
-        "cmpi", "$rd, $imm">;
-  }
+  let Constraints = "$rd = $rd_w" in
+  def ADDI : RV16KInstRI<0b11110010, (outs GPR:$rd_w), (ins GPR:$rd, simm4:$imm),
+                        "addi", "$rd, $imm">;
+
+  let isCompare = 1 in
+  def CMPI : RV16KInstRI<0b11010011, (outs), (ins GPR:$rd, simm4:$imm),
+                        "cmpi", "$rd, $imm">;
 }
 
 // J: Instructions for branches/jumps
 
 let hasSideEffects = 0, mayLoad = 0, mayStore = 0 in {
   let isBranch = 1, isTerminator = 1, isBarrier = 1 in
-  def J : RV16KInstRR32<0b01010010, (outs), (ins simm16_lsb0:$imm),
+  def J : RV16KInstRR32<0b01010010, (outs), (ins simm16_lsb0_j:$imm),
                        "j", "$imm"> {
     let rs = 0;
     let rd = 0;
   }
 
   let isCall = 1, Defs = [X0] in
-  def JAL : RV16KInstRR32<0b01110011, (outs), (ins simm16_lsb0:$imm),
+  def JAL : RV16KInstRR32<0b01110011, (outs), (ins simm16_lsb0_j:$imm),
                          "jal", "$imm"> {
     let rs = 0;
     let rd = 0;
@@ -212,7 +235,21 @@ def : Pat<(sra GPR:$rs1, GPR:$rs2), (ASR GPR:$rs1, GPR:$rs2)>;
 def : Pat<(simm16:$imm16), (LI simm16:$imm16)>;
 def : Pat<(add GPR:$rs1, simm4:$imm4), (ADDI GPR:$rs1, simm4:$imm4)>;
 
+// TODO: cmpi
+def : Pat<(RV16KCmp GPR:$rs1, GPR:$rs2), (CMP GPR:$rs1, GPR:$rs2)>;
+def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_L),  (JL  simm8_lsb0:$imm7)>;
+def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_LE), (JLE simm8_lsb0:$imm7)>;
+def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_E),  (JE  simm8_lsb0:$imm7)>;
+def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_NE), (JNE simm8_lsb0:$imm7)>;
+def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_B),  (JB  simm8_lsb0:$imm7)>;
+def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_BE), (JBE simm8_lsb0:$imm7)>;
+
 let hasSideEffects = 0, mayStore = 0, mayLoad = 0,
     isBarrier = 1, isReturn = 1, isTerminator = 1 in
 def PseudoRET : Pseudo<(outs), (ins), [(RetFlag)]>,
                 PseudoInstExpansion<(JR X0)>;
+
+let hasSideEffects = 0, mayStore = 0, mayLoad = 0,
+    isBarrier = 1, isBranch = 1, isTerminator = 1 in
+def PseudoBR : Pseudo<(outs), (ins simm16_lsb0_j:$imm15), [(br bb:$imm15)]>,
+               PseudoInstExpansion<(J simm16_lsb0_j:$imm15)>;

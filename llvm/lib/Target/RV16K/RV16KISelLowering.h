@@ -22,7 +22,13 @@
 namespace llvm {
 class RV16KSubtarget;
 namespace RV16KISD {
-enum NodeType : unsigned { FIRST_NUMBER = ISD::BUILTIN_OP_END, RET_FLAG };
+enum NodeType : unsigned {
+  FIRST_NUMBER = ISD::BUILTIN_OP_END,
+  RET_FLAG,
+
+  CMP,
+  BR_CC,
+};
 }
 
 class RV16KTargetLowering : public TargetLowering {
@@ -51,7 +57,9 @@ private:
                                          Type *Ty) const override {
     return true;
   }
-  SDValue lowerGlobalAddress(SDValue Op, SelectionDAG &DAG) const;
+
+  SDValue LowerGlobalAddress(SDValue Op, SelectionDAG &DAG) const;
+  SDValue LowerBR_CC(SDValue Op, SelectionDAG &DAG) const;
 };
 } // namespace llvm
 

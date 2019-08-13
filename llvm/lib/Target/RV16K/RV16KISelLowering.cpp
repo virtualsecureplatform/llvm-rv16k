@@ -52,6 +52,8 @@ RV16KTargetLowering::RV16KTargetLowering(const TargetMachine &TM,
 
   // TODO: add all necessary setOperationAction calls.
   setOperationAction(ISD::GlobalAddress, MVT::i16, Custom);
+  setOperationAction(ISD::BRCOND, MVT::Other, Expand);
+  setOperationAction(ISD::BR_CC, MVT::i16, Custom);
 
   setBooleanContents(ZeroOrOneBooleanContent);
 
@@ -67,11 +69,14 @@ SDValue RV16KTargetLowering::LowerOperation(SDValue Op,
     report_fatal_error("unimplemented operand");
 
   case ISD::GlobalAddress:
-    return lowerGlobalAddress(Op, DAG);
+    return LowerGlobalAddress(Op, DAG);
+
+  case ISD::BR_CC:
+    return LowerBR_CC(Op, DAG);
   }
 }
 
-SDValue RV16KTargetLowering::lowerGlobalAddress(SDValue Op,
+SDValue RV16KTargetLowering::LowerGlobalAddress(SDValue Op,
                                                 SelectionDAG &DAG) const {
   SDLoc DL(Op);
   EVT Ty = Op.getValueType();
@@ -83,8 +88,69 @@ SDValue RV16KTargetLowering::lowerGlobalAddress(SDValue Op,
     SDValue GA = DAG.getTargetGlobalAddress(GV, DL, Ty, Offset);
     return SDValue(DAG.getMachineNode(RV16K::LI, DL, Ty, GA), 0);
   } else {
-    report_fatal_error("Unable to lowerGlobalAddress");
+    report_fatal_error("Unable to LowerGlobalAddress");
   }
+}
+
+SDValue RV16KTargetLowering::LowerBR_CC(SDValue Op, SelectionDAG &DAG) const {
+  SDValue Chain = Op.getOperand(0);
+  SDValue Cond = Op.getOperand(1);
+  SDValue LHS = Op.getOperand(2);
+  SDValue RHS = Op.getOperand(3);
+  SDValue Dest = Op.getOperand(4);
+  SDLoc DL(Op);
+
+  // Convert ISD::CondCode into RV16K::CondCode
+  bool Inverted = false;
+  ISD::CondCode SetCCOpcode = cast<CondCodeSDNode>(Cond)->get();
+  RV16K::CondCode CC = RV16K::COND_INVALID;
+  switch (SetCCOpcode) {
+  default:
+    llvm_unreachable("Unsupported comparison");
+
+  case ISD::SETGT:
+    Inverted = true;
+    LLVM_FALLTHROUGH;
+  case ISD::SETLT:
+    CC = RV16K::COND_L;
+    break;
+  case ISD::SETGE:
+    Inverted = true;
+    LLVM_FALLTHROUGH;
+  case ISD::SETLE:
+    CC = RV16K::COND_LE;
+    break;
+
+  case ISD::SETEQ:
+    CC = RV16K::COND_E;
+    break;
+  case ISD::SETNE:
+    CC = RV16K::COND_NE;
+    break;
+
+  case ISD::SETUGT:
+    Inverted = true;
+    LLVM_FALLTHROUGH;
+  case ISD::SETULT:
+    CC = RV16K::COND_B;
+    break;
+
+  case ISD::SETUGE:
+    Inverted = true;
+    LLVM_FALLTHROUGH;
+  case ISD::SETULE:
+    CC = RV16K::COND_BE;
+    break;
+  }
+  assert(CC != RV16K::COND_INVALID);
+
+  // Create new SelectionDAG nodes
+  SDValue TargetCC = DAG.getConstant(CC, DL, MVT::i16);
+  SDValue Cmp =
+      Inverted ? DAG.getNode(RV16KISD::CMP, DL, MVT::Glue, RHS, LHS, TargetCC)
+               : DAG.getNode(RV16KISD::CMP, DL, MVT::Glue, LHS, RHS, TargetCC);
+  return DAG.getNode(RV16KISD::BR_CC, DL, Op.getValueType(), Chain, Dest,
+                     TargetCC, Cmp);
 }
 
 // Calling Convention Implementation.
@@ -184,6 +250,10 @@ const char *RV16KTargetLowering::getTargetNodeName(unsigned Opcode) const {
     break;
   case RV16KISD::RET_FLAG:
     return "RV16KISD::RET_FLAG";
+  case RV16KISD::CMP:
+    return "RV16KISD::CMP";
+  case RV16KISD::BR_CC:
+    return "RV16KISD::BR_CC";
   }
   return nullptr;
 }

@@ -32,6 +32,24 @@ public:
                    const DebugLoc &DL, unsigned DstReg, unsigned SrcReg,
                    bool KillSrc) const override;
 };
+
+namespace RV16K {
+
+enum CondCode {
+  COND_L = 0,
+  COND_LE = 1,
+  COND_E = 2,
+  COND_NE = 3,
+  COND_B = 4,
+  COND_BE = 5,
+
+  LAST_VALID_COND = COND_BE,
+
+  COND_INVALID
+};
+
+} // namespace RV16K
+
 } // namespace llvm
 
 #endif
