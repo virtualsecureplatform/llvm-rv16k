@@ -4,7 +4,7 @@
 # RUN:     | llvm-objdump -d - | FileCheck -check-prefix=CHECK-INST %s
 
 # CHECK-INST: mov t1, a0
-# CHECK: encoding: [0x8f,0xc0]
+# CHECK: encoding: [0x8f,0xe0]
 mov t1, a0
 # CHECK-INST: add t1, a0
 # CHECK: encoding: [0x8f,0xe2]

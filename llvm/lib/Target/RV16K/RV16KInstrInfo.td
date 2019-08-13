@@ -106,7 +106,7 @@ let hasSideEffects = 0, mayLoad = 0, mayStore = 1, Defs = [FLAGS] in {
 // R: Instructions for arithmetic
 
 let hasSideEffects = 0, mayLoad = 0, mayStore = 0, Defs = [FLAGS] in {
-  def MOV : RV16KInstRR16<0b11000000, (outs GPR:$rd), (ins GPR:$rs),
+  def MOV : RV16KInstRR16<0b11100000, (outs GPR:$rd), (ins GPR:$rs),
                          "mov", "$rd, $rs">;
 
   let isCompare = 1 in
