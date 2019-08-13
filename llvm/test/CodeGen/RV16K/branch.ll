@@ -5,67 +5,66 @@
 define void @foo(i16 %a, i16 *%b, i1 %c) {
 ; RV16K-LABEL: foo:
 ; RV16K:       # %bb.0:
-; RV16K:	lw	a3, 0(a1)
-; RV16K:	cmp	a3, a0
-; RV16K:	je	.LBB0_12
-; RV16K:	j	.LBB0_1
-; RV16K:.LBB0_1:                                # %test2
-; RV16K:	lw	a3, 0(a1)
-; RV16K:	cmp	a3, a0
-; RV16K:	jne	.LBB0_12
-; RV16K:	j	.LBB0_2
-; RV16K:.LBB0_2:                                # %test3
-; RV16K:	lw	a3, 0(a1)
-; RV16K:	cmp	a3, a0
-; RV16K:	jl	.LBB0_12
-; RV16K:	j	.LBB0_3
-; RV16K:.LBB0_3:                                # %test4
-; RV16K:	lw	a3, 0(a1)
-; RV16K:	cmp	a0, a3
-; RV16K:	jle	.LBB0_12
-; RV16K:	j	.LBB0_4
-; RV16K:.LBB0_4:                                # %test5
-; RV16K:	lw	a3, 0(a1)
-; RV16K:	cmp	a3, a0
-; RV16K:	jb	.LBB0_12
-; RV16K:	j	.LBB0_5
-; RV16K:.LBB0_5:                                # %test6
-; RV16K:	lw	a3, 0(a1)
-; RV16K:	cmp	a0, a3
-; RV16K:	jbe	.LBB0_12
-; RV16K:	j	.LBB0_6
-; RV16K:.LBB0_6:                                # %test7
-; RV16K:	lw	a3, 0(a1)
-; RV16K:	cmp	a0, a3
-; RV16K:	jl	.LBB0_12
-; RV16K:	j	.LBB0_7
-; RV16K:.LBB0_7:                                # %test8
-; RV16K:	lw	a3, 0(a1)
-; RV16K:	cmp	a3, a0
-; RV16K:	jle	.LBB0_12
-; RV16K:	j	.LBB0_8
-; RV16K:.LBB0_8:                                # %test9
-; RV16K:	lw	a3, 0(a1)
-; RV16K:	cmp	a0, a3
-; RV16K:	jb	.LBB0_12
-; RV16K:	j	.LBB0_9
-; RV16K:.LBB0_9:                                # %test10
-; RV16K:	lw	a3, 0(a1)
-; RV16K:	cmp	a3, a0
-; RV16K:	jbe	.LBB0_12
-; RV16K:	j	.LBB0_10
-; RV16K:.LBB0_10:                               # %test11
-; RV16K:	lw	a0, 0(a1)
-; RV16K:	li	a0, 1
-; RV16K:	and	a2, a0
-; RV16K:	li	a0, 0
-; RV16K:	cmp	a2, a0
-; RV16K:	jne	.LBB0_12
-; RV16K:	j	.LBB0_11
-; RV16K:.LBB0_11:                               # %test12
-; RV16K:	lw	a0, 0(a1)
-; RV16K:.LBB0_12:                               # %end
-; RV16K:	jr	ra
+; RV16K-NEXT:	lw	a3, 0(a1)
+; RV16K-NEXT:	cmp	a3, a0
+; RV16K-NEXT:	je	.LBB0_12
+; RV16K-NEXT:	j	.LBB0_1
+; RV16K-NEXT:.LBB0_1:                                # %test2
+; RV16K-NEXT:	lw	a3, 0(a1)
+; RV16K-NEXT:	cmp	a3, a0
+; RV16K-NEXT:	jne	.LBB0_12
+; RV16K-NEXT:	j	.LBB0_2
+; RV16K-NEXT:.LBB0_2:                                # %test3
+; RV16K-NEXT:	lw	a3, 0(a1)
+; RV16K-NEXT:	cmp	a3, a0
+; RV16K-NEXT:	jl	.LBB0_12
+; RV16K-NEXT:	j	.LBB0_3
+; RV16K-NEXT:.LBB0_3:                                # %test4
+; RV16K-NEXT:	lw	a3, 0(a1)
+; RV16K-NEXT:	cmp	a0, a3
+; RV16K-NEXT:	jle	.LBB0_12
+; RV16K-NEXT:	j	.LBB0_4
+; RV16K-NEXT:.LBB0_4:                                # %test5
+; RV16K-NEXT:	lw	a3, 0(a1)
+; RV16K-NEXT:	cmp	a3, a0
+; RV16K-NEXT:	jb	.LBB0_12
+; RV16K-NEXT:	j	.LBB0_5
+; RV16K-NEXT:.LBB0_5:                                # %test6
+; RV16K-NEXT:	lw	a3, 0(a1)
+; RV16K-NEXT:	cmp	a0, a3
+; RV16K-NEXT:	jbe	.LBB0_12
+; RV16K-NEXT:	j	.LBB0_6
+; RV16K-NEXT:.LBB0_6:                                # %test7
+; RV16K-NEXT:	lw	a3, 0(a1)
+; RV16K-NEXT:	cmp	a0, a3
+; RV16K-NEXT:	jl	.LBB0_12
+; RV16K-NEXT:	j	.LBB0_7
+; RV16K-NEXT:.LBB0_7:                                # %test8
+; RV16K-NEXT:	lw	a3, 0(a1)
+; RV16K-NEXT:	cmp	a3, a0
+; RV16K-NEXT:	jle	.LBB0_12
+; RV16K-NEXT:	j	.LBB0_8
+; RV16K-NEXT:.LBB0_8:                                # %test9
+; RV16K-NEXT:	lw	a3, 0(a1)
+; RV16K-NEXT:	cmp	a0, a3
+; RV16K-NEXT:	jb	.LBB0_12
+; RV16K-NEXT:	j	.LBB0_9
+; RV16K-NEXT:.LBB0_9:                                # %test10
+; RV16K-NEXT:	lw	a3, 0(a1)
+; RV16K-NEXT:	cmp	a3, a0
+; RV16K-NEXT:	jbe	.LBB0_12
+; RV16K-NEXT:	j	.LBB0_10
+; RV16K-NEXT:.LBB0_10:                               # %test11
+; RV16K-NEXT:	lw	a0, 0(a1)
+; RV16K-NEXT:	li	a0, 1
+; RV16K-NEXT:	and	a2, a0
+; RV16K-NEXT:	cmpi	a2, 0
+; RV16K-NEXT:	jne	.LBB0_12
+; RV16K-NEXT:	j	.LBB0_11
+; RV16K-NEXT:.LBB0_11:                               # %test12
+; RV16K-NEXT:	lw	a0, 0(a1)
+; RV16K-NEXT:.LBB0_12:                               # %end
+; RV16K-NEXT:	jr	ra
 
   %val1 = load volatile i16, i16* %b
   %tst1 = icmp eq i16 %val1, %a

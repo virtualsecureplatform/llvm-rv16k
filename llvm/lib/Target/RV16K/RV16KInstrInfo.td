@@ -235,7 +235,7 @@ def : Pat<(sra GPR:$rs1, GPR:$rs2), (ASR GPR:$rs1, GPR:$rs2)>;
 def : Pat<(simm16:$imm16), (LI simm16:$imm16)>;
 def : Pat<(add GPR:$rs1, simm4:$imm4), (ADDI GPR:$rs1, simm4:$imm4)>;
 
-// TODO: cmpi
+def : Pat<(RV16KCmp GPR:$rs1, simm4:$imm4), (CMPI GPR:$rs1, simm4:$imm4)>;
 def : Pat<(RV16KCmp GPR:$rs1, GPR:$rs2), (CMP GPR:$rs1, GPR:$rs2)>;
 def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_L),  (JL  simm8_lsb0:$imm7)>;
 def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_LE), (JLE simm8_lsb0:$imm7)>;
