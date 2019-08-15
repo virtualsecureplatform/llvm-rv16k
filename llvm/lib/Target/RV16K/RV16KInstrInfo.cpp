@@ -29,7 +29,8 @@
 
 using namespace llvm;
 
-RV16KInstrInfo::RV16KInstrInfo() : RV16KGenInstrInfo() {}
+RV16KInstrInfo::RV16KInstrInfo()
+    : RV16KGenInstrInfo(RV16K::ADJCALLSTACKDOWN, RV16K::ADJCALLSTACKUP) {}
 
 void RV16KInstrInfo::copyPhysReg(MachineBasicBlock &MBB,
                                  MachineBasicBlock::iterator MBBI,
@@ -40,4 +41,37 @@ void RV16KInstrInfo::copyPhysReg(MachineBasicBlock &MBB,
 
   BuildMI(MBB, MBBI, DL, get(RV16K::MOV), DstReg)
       .addReg(SrcReg, getKillRegState(KillSrc));
+}
+
+void RV16KInstrInfo::storeRegToStackSlot(MachineBasicBlock &MBB,
+                                         MachineBasicBlock::iterator I,
+                                         unsigned SrcReg, bool IsKill, int FI,
+                                         const TargetRegisterClass *RC,
+                                         const TargetRegisterInfo *TRI) const {
+  DebugLoc DL;
+  if (I != MBB.end())
+    DL = I->getDebugLoc();
+
+  if (!RV16K::GPRRegClass.hasSubClassEq(RC))
+    llvm_unreachable("Can't store this register to stack slot");
+
+  BuildMI(MBB, I, DL, get(RV16K::SW))
+      .addReg(SrcReg, getKillRegState(IsKill))
+      .addFrameIndex(FI)
+      .addImm(0);
+}
+
+void RV16KInstrInfo::loadRegFromStackSlot(MachineBasicBlock &MBB,
+                                          MachineBasicBlock::iterator I,
+                                          unsigned DstReg, int FI,
+                                          const TargetRegisterClass *RC,
+                                          const TargetRegisterInfo *TRI) const {
+  DebugLoc DL;
+  if (I != MBB.end())
+    DL = I->getDebugLoc();
+
+  if (!RV16K::GPRRegClass.hasSubClassEq(RC))
+    llvm_unreachable("Can't load this register from stack slot");
+
+  BuildMI(MBB, I, DL, get(RV16K::LW), DstReg).addFrameIndex(FI).addImm(0);
 }

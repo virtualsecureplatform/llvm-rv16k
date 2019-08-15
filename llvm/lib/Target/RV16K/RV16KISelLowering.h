@@ -25,6 +25,7 @@ namespace RV16KISD {
 enum NodeType : unsigned {
   FIRST_NUMBER = ISD::BUILTIN_OP_END,
   RET_FLAG,
+  CALL,
 
   CMP,
   BR_CC,
@@ -32,6 +33,9 @@ enum NodeType : unsigned {
 }
 
 class RV16KTargetLowering : public TargetLowering {
+private:
+  const RV16KSubtarget &Subtarget;
+
 public:
   explicit RV16KTargetLowering(const TargetMachine &TM,
                                const RV16KSubtarget &STI);
@@ -53,6 +57,9 @@ private:
                       const SmallVectorImpl<ISD::OutputArg> &Outs,
                       const SmallVectorImpl<SDValue> &OutVals, const SDLoc &DL,
                       SelectionDAG &DAG) const override;
+  SDValue LowerCall(TargetLowering::CallLoweringInfo &CLI,
+                    SmallVectorImpl<SDValue> &InVals) const override;
+
   bool shouldConvertConstantLoadToIntImm(const APInt &Imm,
                                          Type *Ty) const override {
     return true;

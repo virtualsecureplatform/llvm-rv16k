@@ -26,6 +26,8 @@
 #define GET_REGINFO_TARGET_DESC
 #include "RV16KGenRegisterInfo.inc"
 
+#define DEBUG_TYPE "rv16k-registerinfo"
+
 using namespace llvm;
 
 RV16KRegisterInfo::RV16KRegisterInfo(unsigned HwMode)
@@ -52,9 +54,39 @@ BitVector RV16KRegisterInfo::getReservedRegs(const MachineFunction &MF) const {
 void RV16KRegisterInfo::eliminateFrameIndex(MachineBasicBlock::iterator II,
                                             int SPAdj, unsigned FIOperandNum,
                                             RegScavenger *RS) const {
-  report_fatal_error("Subroutines not supported yet");
+  // TODO: this implementation is a temporary placeholder which does just
+  // enough to allow other aspects of code generation to be tested
+
+  assert(SPAdj == 0 && "Unexpected non-zero SPAdj value");
+
+  MachineInstr &MI = *II;
+  MachineFunction &MF = *MI.getParent()->getParent();
+  const TargetFrameLowering *TFI = MF.getSubtarget().getFrameLowering();
+  DebugLoc DL = MI.getDebugLoc();
+
+  unsigned FrameReg = getFrameRegister(MF);
+  int FrameIndex = MI.getOperand(FIOperandNum).getIndex();
+  int Offset = TFI->getFrameIndexReference(MF, FrameIndex, FrameReg);
+  Offset += MI.getOperand(FIOperandNum + 1).getImm();
+
+  assert(TFI->hasFP(MF) && "eliminateFrameIndex currently requires hasFP");
+
+  // Offsets must be directly encoded in a 12-bit immediate field
+  if (!isInt<16>(Offset)) {
+    report_fatal_error(
+        "Frame offsets outside of the signed 12-bit range not supported");
+  }
+
+  MI.getOperand(FIOperandNum).ChangeToRegister(FrameReg, false);
+  MI.getOperand(FIOperandNum + 1).ChangeToImmediate(Offset);
 }
 
 unsigned RV16KRegisterInfo::getFrameRegister(const MachineFunction &MF) const {
   return RV16K::X2;
+}
+
+const uint32_t *
+RV16KRegisterInfo::getCallPreservedMask(const MachineFunction & /*MF*/,
+                                        CallingConv::ID /*CC*/) const {
+  return CSR_RegMask;
 }

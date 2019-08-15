@@ -25,8 +25,21 @@ def SDT_RV16KCmp      : SDTypeProfile<0,  2, [SDTCisSameAs<0, 1>]>;
 def SDT_RV16KBrCC     : SDTypeProfile<0,  2, [SDTCisVT<0, OtherVT>,
                                                   SDTCisVT<1, i16>]>;
 
+def SDT_RV16KCall         : SDTypeProfile<0, -1, [SDTCisVT<0, i16>]>;
+def SDT_RV16KCallSeqStart : SDCallSeqStart<[SDTCisVT<0, i16>, SDTCisVT<1, i16>]>;
+def SDT_RV16KCallSeqEnd   : SDCallSeqEnd<[SDTCisVT<0, i16>, SDTCisVT<1, i16>]>;
+
+
 def RV16KCmp : SDNode<"RV16KISD::CMP", SDT_RV16KCmp, [SDNPOutGlue]>;
 def RV16KBrCC : SDNode<"RV16KISD::BR_CC", SDT_RV16KBrCC, [SDNPHasChain, SDNPInGlue]>;
+
+def Call         : SDNode<"RV16KISD::CALL", SDT_RV16KCall,
+                          [SDNPHasChain, SDNPOptInGlue, SDNPOutGlue,
+                           SDNPVariadic]>;
+def CallSeqStart : SDNode<"ISD::CALLSEQ_START", SDT_RV16KCallSeqStart,
+                          [SDNPHasChain, SDNPOutGlue]>;
+def CallSeqEnd   : SDNode<"ISD::CALLSEQ_END", SDT_RV16KCallSeqEnd,
+                          [SDNPHasChain, SDNPOptInGlue, SDNPOutGlue]>;
 
 def RetFlag : SDNode<"RV16KISD::RET_FLAG", SDTNone,
                      [SDNPHasChain, SDNPOptInGlue, SDNPVariadic]>;
@@ -253,3 +266,15 @@ let hasSideEffects = 0, mayStore = 0, mayLoad = 0,
     isBarrier = 1, isBranch = 1, isTerminator = 1 in
 def PseudoBR : Pseudo<(outs), (ins simm16_lsb0_j:$imm15), [(br bb:$imm15)]>,
                PseudoInstExpansion<(J simm16_lsb0_j:$imm15)>;
+
+let isCall = 1, Defs=[X0] in
+def PseudoCALL : Pseudo<(outs), (ins GPR:$rs), [(Call GPR:$rs)]>,
+                 PseudoInstExpansion<(JALR GPR:$rs)>;
+
+// Pessimistically assume the stack pointer will be clobbered
+let Defs = [X1], Uses = [X1] in {
+def ADJCALLSTACKDOWN : Pseudo<(outs), (ins i16imm:$amt1, i16imm:$amt2),
+                              [(CallSeqStart timm:$amt1, timm:$amt2)]>;
+def ADJCALLSTACKUP   : Pseudo<(outs), (ins i16imm:$amt1, i16imm:$amt2),
+                              [(CallSeqEnd timm:$amt1, timm:$amt2)]>;
+} // Defs = [X1], Uses = [X1]
