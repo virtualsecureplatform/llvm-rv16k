@@ -61,15 +61,15 @@ void RV16KRegisterInfo::eliminateFrameIndex(MachineBasicBlock::iterator II,
 
   MachineInstr &MI = *II;
   MachineFunction &MF = *MI.getParent()->getParent();
-  const TargetFrameLowering *TFI = MF.getSubtarget().getFrameLowering();
   DebugLoc DL = MI.getDebugLoc();
 
-  unsigned FrameReg = getFrameRegister(MF);
   int FrameIndex = MI.getOperand(FIOperandNum).getIndex();
-  int Offset = TFI->getFrameIndexReference(MF, FrameIndex, FrameReg);
-  Offset += MI.getOperand(FIOperandNum + 1).getImm();
-
-  assert(TFI->hasFP(MF) && "eliminateFrameIndex currently requires hasFP");
+  unsigned FrameReg;
+  int Offset =
+      getFrameLowering(MF)->getFrameIndexReference(MF, FrameIndex, FrameReg) +
+      MI.getOperand(FIOperandNum + 1).getImm();
+  assert(MF.getSubtarget().getFrameLowering()->hasFP(MF) &&
+         "eliminateFrameIndex currently requires hasFP");
 
   // Offsets must be directly encoded in a 12-bit immediate field
   if (!isInt<16>(Offset)) {
