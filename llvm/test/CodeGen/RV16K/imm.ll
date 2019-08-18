@@ -7,23 +7,43 @@
 define i16 @zero() nounwind {
 ; RV16K-LABEL: zero:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:    li a0, 0
-; RV16K-NEXT:    jr ra
+; RV16K-NEXT:   addi sp, -2
+; RV16K-NEXT:	sw	fp, 0(sp)
+; RV16K-NEXT:	mov	fp, sp
+; RV16K-NEXT:	addi	fp, 2
+; RV16K-NEXT:	li	a0, 0
+; RV16K-NEXT:	lw	fp, 0(sp)
+; RV16K-NEXT:	addi	sp, 2
+; RV16K-NEXT:	jr	ra
+
   ret i16 0
 }
 
 define i16 @pos_i16() nounwind {
 ; RV16K-LABEL: pos_i16:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:    li a0, 32767
-; RV16K-NEXT:    jr ra
+; RV16K-NEXT:	addi	sp, -2
+; RV16K-NEXT:	sw	fp, 0(sp)
+; RV16K-NEXT:	mov	fp, sp
+; RV16K-NEXT:	addi	fp, 2
+; RV16K-NEXT:	li	a0, 32767
+; RV16K-NEXT:	lw	fp, 0(sp)
+; RV16K-NEXT:	addi	sp, 2
+; RV16K-NEXT:	jr	ra
+
   ret i16 32767
 }
 
 define i16 @neg_i16() nounwind {
 ; RV16K-LABEL: neg_i16:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:    li a0, -32768
-; RV16K-NEXT:    jr ra
+; RV16K-NEXT:	addi	sp, -2
+; RV16K-NEXT:	sw	fp, 0(sp)
+; RV16K-NEXT:	mov	fp, sp
+; RV16K-NEXT:	addi	fp, 2
+; RV16K-NEXT:	li	a0, -32768
+; RV16K-NEXT:	lw	fp, 0(sp)
+; RV16K-NEXT:	addi	sp, 2
+; RV16K-NEXT:	jr	ra
   ret i16 -32768
 }
