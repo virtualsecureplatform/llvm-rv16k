@@ -29,6 +29,7 @@ enum NodeType : unsigned {
 
   CMP,
   BR_CC,
+  SELECT_CC,
 };
 }
 
@@ -45,6 +46,10 @@ public:
 
   // This method returns the name of a target specific DAG node.
   const char *getTargetNodeName(unsigned Opcode) const override;
+
+  MachineBasicBlock *
+  EmitInstrWithCustomInserter(MachineInstr &MI,
+                              MachineBasicBlock *BB) const override;
 
 private:
   // Lower incoming arguments, copy physregs into vregs
@@ -67,6 +72,7 @@ private:
 
   SDValue LowerGlobalAddress(SDValue Op, SelectionDAG &DAG) const;
   SDValue LowerBR_CC(SDValue Op, SelectionDAG &DAG) const;
+  SDValue LowerSELECT(SDValue Op, SelectionDAG &DAG) const;
 };
 } // namespace llvm
 

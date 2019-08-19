@@ -29,6 +29,10 @@ def SDT_RV16KCall         : SDTypeProfile<0, -1, [SDTCisVT<0, i16>]>;
 def SDT_RV16KCallSeqStart : SDCallSeqStart<[SDTCisVT<0, i16>, SDTCisVT<1, i16>]>;
 def SDT_RV16KCallSeqEnd   : SDCallSeqEnd<[SDTCisVT<0, i16>, SDTCisVT<1, i16>]>;
 
+// resv = SELECT_CC lhs rhs condcode truev falsev
+def SDT_RV16KSelectCC     : SDTypeProfile<1, 5, [SDTCisSameAs<1, 2>,
+                                                 SDTCisSameAs<0, 4>,
+                                                 SDTCisSameAs<4, 5>]>;
 
 def RV16KCmp : SDNode<"RV16KISD::CMP", SDT_RV16KCmp, [SDNPOutGlue]>;
 def RV16KBrCC : SDNode<"RV16KISD::BR_CC", SDT_RV16KBrCC, [SDNPHasChain, SDNPInGlue]>;
@@ -40,6 +44,9 @@ def CallSeqStart : SDNode<"ISD::CALLSEQ_START", SDT_RV16KCallSeqStart,
                           [SDNPHasChain, SDNPOutGlue]>;
 def CallSeqEnd   : SDNode<"ISD::CALLSEQ_END", SDT_RV16KCallSeqEnd,
                           [SDNPHasChain, SDNPOptInGlue, SDNPOutGlue]>;
+
+def SelectCC     : SDNode<"RV16KISD::SELECT_CC", SDT_RV16KSelectCC,
+                          [SDNPInGlue]>;
 
 def RetFlag : SDNode<"RV16KISD::RET_FLAG", SDTNone,
                      [SDNPHasChain, SDNPOptInGlue, SDNPVariadic]>;
@@ -277,4 +284,18 @@ def ADJCALLSTACKDOWN : Pseudo<(outs), (ins i16imm:$amt1, i16imm:$amt2),
                               [(CallSeqStart timm:$amt1, timm:$amt2)]>;
 def ADJCALLSTACKUP   : Pseudo<(outs), (ins i16imm:$amt1, i16imm:$amt2),
                               [(CallSeqEnd timm:$amt1, timm:$amt2)]>;
-} // Defs = [X1], Uses = [X1]
+}
+
+let usesCustomInserter = 1 in
+def SelectCCrr
+    : Pseudo<(outs GPR:$dst),
+             (ins GPR:$lhs, GPR:$rhs, i16imm:$imm, GPR:$src, GPR:$src2),
+             [(set i16:$dst, (SelectCC GPR:$lhs, GPR:$rhs,
+              (i16 imm:$imm), GPR:$src, GPR:$src2))]>;
+
+let usesCustomInserter = 1 in
+def SelectCCri
+    : Pseudo<(outs GPR:$dst),
+             (ins GPR:$lhs, simm4:$rhs, i16imm:$imm, GPR:$src, GPR:$src2),
+             [(set i16:$dst, (SelectCC GPR:$lhs, simm4:$rhs,
+              (i16 imm:$imm), GPR:$src, GPR:$src2))]>;

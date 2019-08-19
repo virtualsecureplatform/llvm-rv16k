@@ -35,6 +35,63 @@ using namespace llvm;
 
 #define DEBUG_TYPE "rv16k-lower"
 
+// Changes the condition code and swaps operands if necessary, so the SetCC
+// operation matches one of the comparisons supported directly in the RV16K
+// ISA.
+static void normalizeSetCC(SDValue &LHS, SDValue &RHS, ISD::CondCode &CC) {
+  using std::swap;
+
+  switch (CC) {
+  default:
+    break;
+  case ISD::SETGT:
+  case ISD::SETGE:
+  case ISD::SETUGT:
+  case ISD::SETUGE:
+    CC = ISD::getSetCCSwappedOperands(CC);
+    swap(LHS, RHS);
+    break;
+  }
+}
+
+static RV16K::CondCode getRV16KCondCode(ISD::CondCode CC) {
+  switch (CC) {
+  default:
+    llvm_unreachable("Unsupported CondCode");
+  case ISD::SETLT:
+    return RV16K::COND_L;
+  case ISD::SETLE:
+    return RV16K::COND_LE;
+  case ISD::SETEQ:
+    return RV16K::COND_E;
+  case ISD::SETNE:
+    return RV16K::COND_NE;
+  case ISD::SETULT:
+    return RV16K::COND_B;
+  case ISD::SETULE:
+    return RV16K::COND_BE;
+  }
+}
+
+static unsigned getJumpOpcodeForCondCode(RV16K::CondCode CC) {
+  switch (CC) {
+  default:
+    llvm_unreachable("Unsupported CondCode");
+  case RV16K::COND_L:
+    return RV16K::JL;
+  case RV16K::COND_LE:
+    return RV16K::JLE;
+  case RV16K::COND_E:
+    return RV16K::JE;
+  case RV16K::COND_NE:
+    return RV16K::JNE;
+  case RV16K::COND_B:
+    return RV16K::JB;
+  case RV16K::COND_BE:
+    return RV16K::JBE;
+  }
+}
+
 RV16KTargetLowering::RV16KTargetLowering(const TargetMachine &TM,
                                          const RV16KSubtarget &STI)
     : TargetLowering(TM), Subtarget(STI) {
@@ -55,6 +112,9 @@ RV16KTargetLowering::RV16KTargetLowering(const TargetMachine &TM,
   setOperationAction(ISD::BRCOND, MVT::Other, Expand);
   setOperationAction(ISD::BR_CC, MVT::i16, Custom);
 
+  setOperationAction(ISD::SELECT, MVT::i16, Custom);
+  setOperationAction(ISD::SELECT_CC, MVT::i16, Expand);
+
   setBooleanContents(ZeroOrOneBooleanContent);
 
   // Function alignments (log2).
@@ -73,6 +133,9 @@ SDValue RV16KTargetLowering::LowerOperation(SDValue Op,
 
   case ISD::BR_CC:
     return LowerBR_CC(Op, DAG);
+
+  case ISD::SELECT:
+    return LowerSELECT(Op, DAG);
   }
 }
 
@@ -100,57 +163,120 @@ SDValue RV16KTargetLowering::LowerBR_CC(SDValue Op, SelectionDAG &DAG) const {
   SDValue Dest = Op.getOperand(4);
   SDLoc DL(Op);
 
-  // Convert ISD::CondCode into RV16K::CondCode
-  bool Inverted = false;
   ISD::CondCode SetCCOpcode = cast<CondCodeSDNode>(Cond)->get();
-  RV16K::CondCode CC = RV16K::COND_INVALID;
-  switch (SetCCOpcode) {
-  default:
-    llvm_unreachable("Unsupported comparison");
-
-  case ISD::SETGT:
-    Inverted = true;
-    LLVM_FALLTHROUGH;
-  case ISD::SETLT:
-    CC = RV16K::COND_L;
-    break;
-  case ISD::SETGE:
-    Inverted = true;
-    LLVM_FALLTHROUGH;
-  case ISD::SETLE:
-    CC = RV16K::COND_LE;
-    break;
-
-  case ISD::SETEQ:
-    CC = RV16K::COND_E;
-    break;
-  case ISD::SETNE:
-    CC = RV16K::COND_NE;
-    break;
-
-  case ISD::SETUGT:
-    Inverted = true;
-    LLVM_FALLTHROUGH;
-  case ISD::SETULT:
-    CC = RV16K::COND_B;
-    break;
-
-  case ISD::SETUGE:
-    Inverted = true;
-    LLVM_FALLTHROUGH;
-  case ISD::SETULE:
-    CC = RV16K::COND_BE;
-    break;
-  }
-  assert(CC != RV16K::COND_INVALID);
+  normalizeSetCC(LHS, RHS, SetCCOpcode);
+  RV16K::CondCode CC = getRV16KCondCode(SetCCOpcode);
 
   // Create new SelectionDAG nodes
   SDValue TargetCC = DAG.getConstant(CC, DL, MVT::i16);
-  SDValue Cmp =
-      Inverted ? DAG.getNode(RV16KISD::CMP, DL, MVT::Glue, RHS, LHS, TargetCC)
-               : DAG.getNode(RV16KISD::CMP, DL, MVT::Glue, LHS, RHS, TargetCC);
+  SDValue Cmp = DAG.getNode(RV16KISD::CMP, DL, MVT::Glue, LHS, RHS, TargetCC);
   return DAG.getNode(RV16KISD::BR_CC, DL, Op.getValueType(), Chain, Dest,
                      TargetCC, Cmp);
+}
+
+SDValue RV16KTargetLowering::LowerSELECT(SDValue Op, SelectionDAG &DAG) const {
+  SDValue CondV = Op.getOperand(0);
+  SDValue TrueV = Op.getOperand(1);
+  SDValue FalseV = Op.getOperand(2);
+  SDLoc DL(Op);
+
+  // (select (setcc lhs, rhs, cc), truev, falsev)
+  // -> (rv16k::select_cc lhs, rhs, cc, truev, falsev)
+  if (Op.getSimpleValueType() == MVT::i16 && CondV.getOpcode() == ISD::SETCC &&
+      CondV.getOperand(0).getSimpleValueType() == MVT::i16) {
+    SDValue LHS = CondV.getOperand(0);
+    SDValue RHS = CondV.getOperand(1);
+
+    ISD::CondCode SetCCOpcode =
+        cast<CondCodeSDNode>(CondV.getOperand(2))->get();
+    normalizeSetCC(LHS, RHS, SetCCOpcode);
+    RV16K::CondCode CC = getRV16KCondCode(SetCCOpcode);
+
+    SDValue TargetCC = DAG.getConstant(CC, DL, MVT::i16);
+    SDVTList VTs = DAG.getVTList(Op.getValueType(), MVT::Glue);
+    SDValue Ops[] = {LHS, RHS, TargetCC, TrueV, FalseV};
+    return DAG.getNode(RV16KISD::SELECT_CC, DL, VTs, Ops);
+  }
+
+  // Otherwise:
+  // (select condv, truev, falsev)
+  // -> (rv16kisd::select_cc condv, zero, setne, truev, falsev)
+  SDValue Zero = DAG.getConstant(0, DL, MVT::i16);
+  SDValue CondNE = DAG.getConstant(RV16K::COND_NE, DL, MVT::i16);
+
+  SDVTList VTs = DAG.getVTList(Op.getValueType(), MVT::Glue);
+  SDValue Ops[] = {CondV, Zero, CondNE, TrueV, FalseV};
+
+  return DAG.getNode(RV16KISD::SELECT_CC, DL, VTs, Ops);
+}
+
+MachineBasicBlock *
+RV16KTargetLowering::EmitInstrWithCustomInserter(MachineInstr &MI,
+                                                 MachineBasicBlock *BB) const {
+  const TargetInstrInfo &TII = *BB->getParent()->getSubtarget().getInstrInfo();
+  DebugLoc DL = MI.getDebugLoc();
+  unsigned MIOpcode = MI.getOpcode();
+
+  assert((MIOpcode == RV16K::SelectCCrr || MIOpcode == RV16K::SelectCCri) &&
+         "Unexpected instr type to insert");
+
+  // To "insert" a SELECT instruction, we actually have to insert the triangle
+  // control-flow pattern.  The incoming instruction knows the destination vreg
+  // to set, the condition code register to branch on, the true/false values to
+  // select between, and the condcode to use to select the appropriate branch.
+  //
+  // We produce the following control flow:
+  //     HeadMBB
+  //     |  \
+  //     |  IfFalseMBB
+  //     | /
+  //    TailMBB
+  const BasicBlock *LLVM_BB = BB->getBasicBlock();
+  MachineFunction::iterator I = ++BB->getIterator();
+
+  MachineBasicBlock *HeadMBB = BB;
+  MachineFunction *F = BB->getParent();
+  MachineBasicBlock *TailMBB = F->CreateMachineBasicBlock(LLVM_BB);
+  MachineBasicBlock *IfFalseMBB = F->CreateMachineBasicBlock(LLVM_BB);
+
+  F->insert(I, IfFalseMBB);
+  F->insert(I, TailMBB);
+  // Move all remaining instructions to TailMBB.
+  TailMBB->splice(TailMBB->begin(), HeadMBB,
+                  std::next(MachineBasicBlock::iterator(MI)), HeadMBB->end());
+  // Update machine-CFG edges by transferring all successors of the current
+  // block to the new block which will contain the Phi node for the select.
+  TailMBB->transferSuccessorsAndUpdatePHIs(HeadMBB);
+  // Set the successors for HeadMBB.
+  HeadMBB->addSuccessor(IfFalseMBB);
+  HeadMBB->addSuccessor(TailMBB);
+
+  // Insert appropriate compare and jump.
+  if (MIOpcode == RV16K::SelectCCrr) {
+    unsigned LHS = MI.getOperand(1).getReg();
+    unsigned RHS = MI.getOperand(2).getReg();
+    BuildMI(HeadMBB, DL, TII.get(RV16K::CMP)).addReg(LHS).addReg(RHS);
+  } else { // MIOpcode == RV16K::SelectCCri
+    unsigned LHS = MI.getOperand(1).getReg();
+    unsigned RHS = MI.getOperand(2).getImm();
+    BuildMI(HeadMBB, DL, TII.get(RV16K::CMPI)).addReg(LHS).addImm(RHS);
+  }
+  RV16K::CondCode CC = static_cast<RV16K::CondCode>(MI.getOperand(3).getImm());
+  BuildMI(HeadMBB, DL, TII.get(getJumpOpcodeForCondCode(CC))).addMBB(TailMBB);
+
+  // IfFalseMBB just falls through to TailMBB.
+  IfFalseMBB->addSuccessor(TailMBB);
+
+  // %Result = phi [ %TrueValue, HeadMBB ], [ %FalseValue, IfFalseMBB ]
+  BuildMI(*TailMBB, TailMBB->begin(), DL, TII.get(RV16K::PHI),
+          MI.getOperand(0).getReg())
+      .addReg(MI.getOperand(4).getReg())
+      .addMBB(HeadMBB)
+      .addReg(MI.getOperand(5).getReg())
+      .addMBB(IfFalseMBB);
+
+  MI.eraseFromParent(); // The pseudo instruction is gone now.
+  return TailMBB;
 }
 
 // Calling Convention Implementation.
@@ -382,6 +508,8 @@ const char *RV16KTargetLowering::getTargetNodeName(unsigned Opcode) const {
     return "RV16KISD::CMP";
   case RV16KISD::BR_CC:
     return "RV16KISD::BR_CC";
+  case RV16KISD::SELECT_CC:
+    return "RV16KISD::SELECT_CC";
   }
   return nullptr;
 }
