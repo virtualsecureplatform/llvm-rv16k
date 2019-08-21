@@ -115,6 +115,8 @@ RV16KTargetLowering::RV16KTargetLowering(const TargetMachine &TM,
   setOperationAction(ISD::SELECT, MVT::i16, Custom);
   setOperationAction(ISD::SELECT_CC, MVT::i16, Expand);
 
+  setOperationAction(ISD::SETCC, MVT::i16, Expand);
+
   setBooleanContents(ZeroOrOneBooleanContent);
 
   // Function alignments (log2).
