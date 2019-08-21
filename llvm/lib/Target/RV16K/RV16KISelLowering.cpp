@@ -122,6 +122,14 @@ RV16KTargetLowering::RV16KTargetLowering(const TargetMachine &TM,
   setOperationAction(ISD::UMUL_LOHI, MVT::i16, Expand);
   setOperationAction(ISD::MULHS, MVT::i16, Expand);
   setOperationAction(ISD::MULHU, MVT::i16, Expand);
+
+  setOperationAction(ISD::ROTL, MVT::i16, Expand);
+  setOperationAction(ISD::ROTR, MVT::i16, Expand);
+  setOperationAction(ISD::BSWAP, MVT::i16, Expand);
+  setOperationAction(ISD::CTTZ, MVT::i16, Expand);
+  setOperationAction(ISD::CTLZ, MVT::i16, Expand);
+  setOperationAction(ISD::CTPOP, MVT::i16, Expand);
+
   setBooleanContents(ZeroOrOneBooleanContent);
 
   // Function alignments (log2).
