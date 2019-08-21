@@ -23,7 +23,17 @@
 
 using namespace llvm;
 
-bool RV16KFrameLowering::hasFP(const MachineFunction &MF) const { return true; }
+// hasFP - Return true if the specified function should have a dedicated frame
+// pointer register.  This is true if the function has variable sized allocas or
+// if frame pointer elimination is disabled.
+bool RV16KFrameLowering::hasFP(const MachineFunction &MF) const {
+  const TargetRegisterInfo *RegInfo = MF.getSubtarget().getRegisterInfo();
+  const MachineFrameInfo &MFI = MF.getFrameInfo();
+
+  return MF.getTarget().Options.DisableFramePointerElim(MF) ||
+         RegInfo->needsStackRealignment(MF) || MFI.hasVarSizedObjects() ||
+         MFI.isFrameAddressTaken();
+}
 
 // Determines the size of the frame and maximum call frame size.
 void RV16KFrameLowering::determineFrameLayout(MachineFunction &MF) const {
@@ -95,11 +105,6 @@ void RV16KFrameLowering::emitPrologue(MachineFunction &MF,
                                       MachineBasicBlock &MBB) const {
   assert(&MF.front() == &MBB && "Shrink-wrapping not yet supported");
 
-  if (!hasFP(MF)) {
-    report_fatal_error(
-        "emitPrologue doesn't support framepointer-less functions");
-  }
-
   MachineFrameInfo &MFI = MF.getFrameInfo();
   MachineBasicBlock::iterator MBBI = MBB.begin();
 
@@ -135,16 +140,12 @@ void RV16KFrameLowering::emitPrologue(MachineFunction &MF,
   std::advance(MBBI, CSI.size());
 
   // Generate new FP.
-  adjustReg(MBB, MBBI, DL, FPReg, SPReg, StackSize, MachineInstr::FrameSetup);
+  if (hasFP(MF))
+    adjustReg(MBB, MBBI, DL, FPReg, SPReg, StackSize, MachineInstr::FrameSetup);
 }
 
 void RV16KFrameLowering::emitEpilogue(MachineFunction &MF,
                                       MachineBasicBlock &MBB) const {
-  if (!hasFP(MF)) {
-    report_fatal_error(
-        "emitEpilogue doesn't support framepointer-less functions");
-  }
-
   MachineBasicBlock::iterator MBBI = MBB.getLastNonDebugInstr();
   const RV16KRegisterInfo *RI = STI.getRegisterInfo();
   MachineFrameInfo &MFI = MF.getFrameInfo();
@@ -164,6 +165,7 @@ void RV16KFrameLowering::emitEpilogue(MachineFunction &MF,
   // necessary if the stack pointer was modified, meaning the stack size is
   // unknown.
   if (RI->needsStackRealignment(MF) || MFI.hasVarSizedObjects()) {
+    assert(hasFP(MF) && "frame pointer should not have been eliminated");
     adjustReg(MBB, LastFrameDestroy, DL, SPReg, FPReg, -StackSize,
               MachineInstr::FrameDestroy);
   }
@@ -194,10 +196,15 @@ int RV16KFrameLowering::getFrameIndexReference(const MachineFunction &MF,
   }
 
   FrameReg = RI->getFrameRegister(MF);
-  if (FI >= MinCSFI && FI <= MaxCSFI) {         // callee-saved register?
-    FrameReg = RV16K::X1;                       // sp
-    Offset += MF.getFrameInfo().getStackSize(); // turn the Offset positive
+
+  // If the frame index points to a callee-saved register or no frame pointer is
+  // used in the MachineFunction, then make the Offset relative to the stack
+  // pointer.
+  if ((FI >= MinCSFI && FI <= MaxCSFI) || !hasFP(MF)) {
+    FrameReg = RV16K::X1; // X1 is SP.
+    Offset += MF.getFrameInfo().getStackSize();
   }
+
   return Offset;
 }
 
@@ -205,8 +212,8 @@ void RV16KFrameLowering::determineCalleeSaves(MachineFunction &MF,
                                               BitVector &SavedRegs,
                                               RegScavenger *RS) const {
   TargetFrameLowering::determineCalleeSaves(MF, SavedRegs, RS);
-  // TODO: Once frame pointer elimination is implemented, don't
-  // unconditionally spill the frame pointer and return address.
-  // SavedRegs.set(RV16K::X0);
-  SavedRegs.set(RV16K::X2);
+  // Unconditionally spill FP only if the function uses a frame
+  // pointer.
+  if (hasFP(MF))
+    SavedRegs.set(RV16K::X2);
 }

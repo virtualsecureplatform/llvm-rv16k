@@ -8,10 +8,6 @@
 define i16 @icmp_eq(i16 %a, i16 %b) nounwind {
 ; RV16K-LABEL: icmp_eq:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	mov	a2, a0
 ; RV16K-NEXT:	li	a0, 1
 ; RV16K-NEXT:	cmp	a2, a1
@@ -19,8 +15,6 @@ define i16 @icmp_eq(i16 %a, i16 %b) nounwind {
 ; RV16K-NEXT:# %bb.1:
 ; RV16K-NEXT:	li	a0, 0
 ; RV16K-NEXT:.LBB0_2:
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = icmp eq i16 %a, %b
@@ -31,10 +25,6 @@ define i16 @icmp_eq(i16 %a, i16 %b) nounwind {
 define i16 @icmp_ne(i16 %a, i16 %b) nounwind {
 ; RV16K-LABEL: icmp_ne:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	mov	a2, a0
 ; RV16K-NEXT:	li	a0, 1
 ; RV16K-NEXT:	cmp	a2, a1
@@ -42,8 +32,6 @@ define i16 @icmp_ne(i16 %a, i16 %b) nounwind {
 ; RV16K-NEXT:# %bb.1:
 ; RV16K-NEXT:	li	a0, 0
 ; RV16K-NEXT:.LBB1_2:
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = icmp ne i16 %a, %b
@@ -54,10 +42,6 @@ define i16 @icmp_ne(i16 %a, i16 %b) nounwind {
 define i16 @icmp_ugt(i16 %a, i16 %b) nounwind {
 ; RV16K-LABEL: icmp_ugt:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	mov	a2, a0
 ; RV16K-NEXT:	li	a0, 1
 ; RV16K-NEXT:	cmp	a1, a2
@@ -65,8 +49,6 @@ define i16 @icmp_ugt(i16 %a, i16 %b) nounwind {
 ; RV16K-NEXT:# %bb.1:
 ; RV16K-NEXT:	li	a0, 0
 ; RV16K-NEXT:.LBB2_2:
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = icmp ugt i16 %a, %b
@@ -77,10 +59,6 @@ define i16 @icmp_ugt(i16 %a, i16 %b) nounwind {
 define i16 @icmp_uge(i16 %a, i16 %b) nounwind {
 ; RV16K-LABEL: icmp_uge:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	mov	a2, a0
 ; RV16K-NEXT:	li	a0, 1
 ; RV16K-NEXT:	cmp	a1, a2
@@ -88,8 +66,6 @@ define i16 @icmp_uge(i16 %a, i16 %b) nounwind {
 ; RV16K-NEXT:# %bb.1:
 ; RV16K-NEXT:	li	a0, 0
 ; RV16K-NEXT:.LBB3_2:
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = icmp uge i16 %a, %b
@@ -100,10 +76,6 @@ define i16 @icmp_uge(i16 %a, i16 %b) nounwind {
 define i16 @icmp_ult(i16 %a, i16 %b) nounwind {
 ; RV16K-LABEL: icmp_ult:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	mov	a2, a0
 ; RV16K-NEXT:	li	a0, 1
 ; RV16K-NEXT:	cmp	a2, a1
@@ -111,8 +83,6 @@ define i16 @icmp_ult(i16 %a, i16 %b) nounwind {
 ; RV16K-NEXT:# %bb.1:
 ; RV16K-NEXT:	li	a0, 0
 ; RV16K-NEXT:.LBB4_2:
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = icmp ult i16 %a, %b
@@ -123,10 +93,6 @@ define i16 @icmp_ult(i16 %a, i16 %b) nounwind {
 define i16 @icmp_ule(i16 %a, i16 %b) nounwind {
 ; RV16K-LABEL: icmp_ule:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	mov	a2, a0
 ; RV16K-NEXT:	li	a0, 1
 ; RV16K-NEXT:	cmp	a2, a1
@@ -134,8 +100,6 @@ define i16 @icmp_ule(i16 %a, i16 %b) nounwind {
 ; RV16K-NEXT:# %bb.1:
 ; RV16K-NEXT:	li	a0, 0
 ; RV16K-NEXT:.LBB5_2:
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = icmp ule i16 %a, %b
@@ -146,10 +110,6 @@ define i16 @icmp_ule(i16 %a, i16 %b) nounwind {
 define i16 @icmp_sgt(i16 %a, i16 %b) nounwind {
 ; RV16K-LABEL: icmp_sgt:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	mov	a2, a0
 ; RV16K-NEXT:	li	a0, 1
 ; RV16K-NEXT:	cmp	a1, a2
@@ -157,8 +117,6 @@ define i16 @icmp_sgt(i16 %a, i16 %b) nounwind {
 ; RV16K-NEXT:# %bb.1:
 ; RV16K-NEXT:	li	a0, 0
 ; RV16K-NEXT:.LBB6_2:
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = icmp sgt i16 %a, %b
@@ -169,10 +127,6 @@ define i16 @icmp_sgt(i16 %a, i16 %b) nounwind {
 define i16 @icmp_sge(i16 %a, i16 %b) nounwind {
 ; RV16K-LABEL: icmp_sge:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	mov	a2, a0
 ; RV16K-NEXT:	li	a0, 1
 ; RV16K-NEXT:	cmp	a1, a2
@@ -180,8 +134,6 @@ define i16 @icmp_sge(i16 %a, i16 %b) nounwind {
 ; RV16K-NEXT:# %bb.1:
 ; RV16K-NEXT:	li	a0, 0
 ; RV16K-NEXT:.LBB7_2:
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = icmp sge i16 %a, %b
@@ -192,10 +144,6 @@ define i16 @icmp_sge(i16 %a, i16 %b) nounwind {
 define i16 @icmp_slt(i16 %a, i16 %b) nounwind {
 ; RV16K-LABEL: icmp_slt:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	mov	a2, a0
 ; RV16K-NEXT:	li	a0, 1
 ; RV16K-NEXT:	cmp	a2, a1
@@ -203,8 +151,6 @@ define i16 @icmp_slt(i16 %a, i16 %b) nounwind {
 ; RV16K-NEXT:# %bb.1:
 ; RV16K-NEXT:	li	a0, 0
 ; RV16K-NEXT:.LBB8_2:
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = icmp slt i16 %a, %b
@@ -215,10 +161,6 @@ define i16 @icmp_slt(i16 %a, i16 %b) nounwind {
 define i16 @icmp_sle(i16 %a, i16 %b) nounwind {
 ; RV16K-LABEL: icmp_sle:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	mov	a2, a0
 ; RV16K-NEXT:	li	a0, 1
 ; RV16K-NEXT:	cmp	a2, a1
@@ -226,8 +168,6 @@ define i16 @icmp_sle(i16 %a, i16 %b) nounwind {
 ; RV16K-NEXT:# %bb.1:
 ; RV16K-NEXT:	li	a0, 0
 ; RV16K-NEXT:.LBB9_2:
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = icmp sle i16 %a, %b

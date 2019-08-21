@@ -7,14 +7,8 @@
 define i16 @lb(i8 *%a) nounwind {
 ; RV16K-LABEL: lb:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	lb	a1, 0(a0)
 ; RV16K-NEXT:	lb	a0, 1(a0)
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = getelementptr i8, i8* %a, i16 1
@@ -28,15 +22,9 @@ define i16 @lb(i8 *%a) nounwind {
 define i16 @lbu(i8 *%a) nounwind {
 ; RV16K-LABEL: lbu:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	lbu	a1, 0(a0)
 ; RV16K-NEXT:	lbu	a0, 4(a0)
 ; RV16K-NEXT:	add	a0, a1
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = getelementptr i8, i8* %a, i16 4
@@ -51,14 +39,8 @@ define i16 @lbu(i8 *%a) nounwind {
 define i16 @lw(i16 *%a) nounwind {
 ; RV16K-LABEL: lw:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	lw	a1, 0(a0)
 ; RV16K-NEXT:	lw	a0, 6(a0)
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = getelementptr i16, i16* %a, i16 3
@@ -72,14 +54,8 @@ define i16 @lw(i16 *%a) nounwind {
 define void @sb(i8 *%a, i8 %b) nounwind {
 ; RV16K-LABEL: sb:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	sb	a1, 6(a0)
 ; RV16K-NEXT:	sb	a1, 0(a0)
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   store i8 %b, i8* %a
@@ -91,14 +67,8 @@ define void @sb(i8 *%a, i8 %b) nounwind {
 define void @sw(i16 *%a, i16 %b) nounwind {
 ; RV16K-LABEL: sw:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	sw	a1, 16(a0)
 ; RV16K-NEXT:	sw	a1, 0(a0)
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   store i16 %b, i16* %a
@@ -110,16 +80,10 @@ define void @sw(i16 *%a, i16 %b) nounwind {
 define i16 @load_sext_zext_anyext_i1(i1 *%a) nounwind {
 ; RV16K-LABEL: load_sext_zext_anyext_i1:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	lb	a1, 0(a0)
 ; RV16K-NEXT:	lbu	a1, 1(a0)
 ; RV16K-NEXT:	lbu	a0, 2(a0)
 ; RV16K-NEXT:	sub	a0, a1
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   ; sextload i1
@@ -142,10 +106,6 @@ define i16 @load_sext_zext_anyext_i1(i1 *%a) nounwind {
 define i16 @lw_sw_global(i16 %a) nounwind {
 ; RV16K-LABEL: lw_sw_global:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a2, G
 ; RV16K-NEXT:	lw	a1, 0(a2)
 ; RV16K-NEXT:	sw	a0, 0(a2)
@@ -153,8 +113,6 @@ define i16 @lw_sw_global(i16 %a) nounwind {
 ; RV16K-NEXT:	lw	a3, 0(a2)
 ; RV16K-NEXT:	sw	a0, 0(a2)
 ; RV16K-NEXT:	mov	a0, a1
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = load volatile i16, i16* @G

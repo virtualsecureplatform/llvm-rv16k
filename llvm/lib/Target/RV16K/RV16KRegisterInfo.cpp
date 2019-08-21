@@ -68,8 +68,6 @@ void RV16KRegisterInfo::eliminateFrameIndex(MachineBasicBlock::iterator II,
   int Offset =
       getFrameLowering(MF)->getFrameIndexReference(MF, FrameIndex, FrameReg) +
       MI.getOperand(FIOperandNum + 1).getImm();
-  assert(MF.getSubtarget().getFrameLowering()->hasFP(MF) &&
-         "eliminateFrameIndex currently requires hasFP");
 
   // Offsets must be directly encoded in a 16-bit immediate field
   if (!isInt<16>(Offset)) {
@@ -82,7 +80,9 @@ void RV16KRegisterInfo::eliminateFrameIndex(MachineBasicBlock::iterator II,
 }
 
 unsigned RV16KRegisterInfo::getFrameRegister(const MachineFunction &MF) const {
-  return RV16K::X2;
+  const TargetFrameLowering *TFI = getFrameLowering(MF);
+  // Return FP if any, SP otherwise.
+  return TFI->hasFP(MF) ? RV16K::X2 : RV16K::X1;
 }
 
 const uint32_t *

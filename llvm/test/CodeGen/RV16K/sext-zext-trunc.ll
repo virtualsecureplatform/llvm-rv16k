@@ -9,16 +9,10 @@ define i8 @sext_i1_to_i8(i1 %a) {
 ; TODO: the addi that stores 0 in t1 is unnecessary
 ; RV16K-LABEL: sext_i1_to_i8:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a1, 1
 ; RV16K-NEXT:	and	a1, a0
 ; RV16K-NEXT:	li	a0, 0
 ; RV16K-NEXT:	sub	a0, a1
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = sext i1 %a to i8
@@ -29,16 +23,10 @@ define i16 @sext_i1_to_i16(i1 %a) {
 ; TODO: the addi that stores 0 in t1 is unnecessary
 ; RV16K-LABEL: sext_i1_to_i16:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a1, 1
 ; RV16K-NEXT:	and	a1, a0
 ; RV16K-NEXT:	li	a0, 0
 ; RV16K-NEXT:	sub	a0, a1
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = sext i1 %a to i16
@@ -49,17 +37,11 @@ define i32 @sext_i1_to_i32(i1 %a) {
 ; TODO: the addi that stores 0 in t1 is unnecessary
 ; RV16K-LABEL: sext_i1_to_i32:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a1, 1
 ; RV16K-NEXT:	and	a1, a0
 ; RV16K-NEXT:	li	a0, 0
 ; RV16K-NEXT:	sub	a0, a1
 ; RV16K-NEXT:	mov	a1, a0
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = sext i1 %a to i32
@@ -69,15 +51,9 @@ define i32 @sext_i1_to_i32(i1 %a) {
 define i16 @sext_i8_to_i16(i8 %a) {
 ; RV16K-LABEL: sext_i8_to_i16:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a1, 8
 ; RV16K-NEXT:	lsl	a0, a1
 ; RV16K-NEXT:	asr	a0, a1
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = sext i8 %a to i16
@@ -87,10 +63,6 @@ define i16 @sext_i8_to_i16(i8 %a) {
 define i32 @sext_i8_to_i32(i8 %a) {
 ; RV16K-LABEL: sext_i8_to_i32:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	mov	a1, a0
 ; RV16K-NEXT:	li	a2, 8
 ; RV16K-NEXT:	lsl	a1, a2
@@ -98,8 +70,6 @@ define i32 @sext_i8_to_i32(i8 %a) {
 ; RV16K-NEXT:	asr	a0, a2
 ; RV16K-NEXT:	li	a2, 15
 ; RV16K-NEXT:	asr	a1, a2
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = sext i8 %a to i32
@@ -109,15 +79,9 @@ define i32 @sext_i8_to_i32(i8 %a) {
 define i32 @sext_i16_to_i32(i16 %a) {
 ; RV16K-LABEL: sext_i16_to_i32:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a2, 15
 ; RV16K-NEXT:	mov	a1, a0
 ; RV16K-NEXT:	asr	a1, a2
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = sext i16 %a to i32
@@ -127,14 +91,8 @@ define i32 @sext_i16_to_i32(i16 %a) {
 define i8 @zext_i1_to_i8(i1 %a) {
 ; RV16K-LABEL: zext_i1_to_i8:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a1, 1
 ; RV16K-NEXT:	and	a0, a1
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = zext i1 %a to i8
@@ -144,14 +102,8 @@ define i8 @zext_i1_to_i8(i1 %a) {
 define i16 @zext_i1_to_i16(i1 %a) {
 ; RV16K-LABEL: zext_i1_to_i16:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a1, 1
 ; RV16K-NEXT:	and	a0, a1
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = zext i1 %a to i16
@@ -161,15 +113,9 @@ define i16 @zext_i1_to_i16(i1 %a) {
 define i32 @zext_i1_to_i32(i1 %a) {
 ; RV16K-LABEL: zext_i1_to_i32:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a1, 1
 ; RV16K-NEXT:	and	a0, a1
 ; RV16K-NEXT:	li	a1, 0
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = zext i1 %a to i32
@@ -179,14 +125,8 @@ define i32 @zext_i1_to_i32(i1 %a) {
 define i16 @zext_i8_to_i16(i8 %a) {
 ; RV16K-LABEL: zext_i8_to_i16:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a1, 255
 ; RV16K-NEXT:	and	a0, a1
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = zext i8 %a to i16
@@ -196,15 +136,9 @@ define i16 @zext_i8_to_i16(i8 %a) {
 define i32 @zext_i8_to_i32(i8 %a) {
 ; RV16K-LABEL: zext_i8_to_i32:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a1, 255
 ; RV16K-NEXT:	and	a0, a1
 ; RV16K-NEXT:	li	a1, 0
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = zext i8 %a to i32
@@ -214,13 +148,7 @@ define i32 @zext_i8_to_i32(i8 %a) {
 define i32 @zext_i16_to_i32(i16 %a) {
 ; RV16K-LABEL: zext_i16_to_i32:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a1, 0
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = zext i16 %a to i32
@@ -233,12 +161,6 @@ define i32 @zext_i16_to_i32(i16 %a) {
 define i1 @trunc_i8_to_i1(i8 %a) {
 ; RV16K-LABEL: trunc_i8_to_i1:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = trunc i8 %a to i1
@@ -248,12 +170,6 @@ define i1 @trunc_i8_to_i1(i8 %a) {
 define i1 @trunc_i16_to_i1(i16 %a) {
 ; RV16K-LABEL: trunc_i16_to_i1:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = trunc i16 %a to i1
@@ -263,12 +179,6 @@ define i1 @trunc_i16_to_i1(i16 %a) {
 define i1 @trunc_i32_to_i1(i32 %a) {
 ; RV16K-LABEL: trunc_i32_to_i1:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = trunc i32 %a to i1
@@ -278,12 +188,6 @@ define i1 @trunc_i32_to_i1(i32 %a) {
 define i8 @trunc_i16_to_i8(i16 %a) {
 ; RV16K-LABEL: trunc_i16_to_i8:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = trunc i16 %a to i8
@@ -293,12 +197,6 @@ define i8 @trunc_i16_to_i8(i16 %a) {
 define i8 @trunc_i32_to_i8(i32 %a) {
 ; RV16K-LABEL: trunc_i32_to_i8:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = trunc i32 %a to i8
@@ -308,12 +206,6 @@ define i8 @trunc_i32_to_i8(i32 %a) {
 define i16 @trunc_i32_to_i16(i32 %a) {
 ; RV16K-LABEL: trunc_i32_to_i16:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = trunc i32 %a to i16

@@ -5,16 +5,12 @@
 define i16 @udiv(i16 %a, i16 %b) nounwind {
 ; RV16K-LABEL: udiv:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -4
-; RV16K-NEXT:	sw	ra, 2(sp)
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 4
+; RV16K-NEXT:	addi	sp, -2
+; RV16K-NEXT:	sw	ra, 0(sp)
 ; RV16K-NEXT:	li	a2, __udivhi3
 ; RV16K-NEXT:	jalr	a2
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	lw	ra, 2(sp)
-; RV16K-NEXT:	addi	sp, 4
+; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = udiv i16 %a, %b
@@ -24,17 +20,13 @@ define i16 @udiv(i16 %a, i16 %b) nounwind {
 define i16 @udiv_constant(i16 %a) nounwind {
 ; RV16K-LABEL: udiv_constant:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -4
-; RV16K-NEXT:	sw	ra, 2(sp)
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 4
+; RV16K-NEXT:	addi	sp, -2
+; RV16K-NEXT:	sw	ra, 0(sp)
 ; RV16K-NEXT:	li	a1, 5
 ; RV16K-NEXT:	li	a2, __udivhi3
 ; RV16K-NEXT:	jalr	a2
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	lw	ra, 2(sp)
-; RV16K-NEXT:	addi	sp, 4
+; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = udiv i16 %a, 5
@@ -44,14 +36,8 @@ define i16 @udiv_constant(i16 %a) nounwind {
 define i16 @udiv_pow2(i16 %a) nounwind {
 ; RV16K-LABEL: udiv_pow2:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a1, 3
 ; RV16K-NEXT:	lsr	a0, a1
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = udiv i16 %a, 8
@@ -61,16 +47,12 @@ define i16 @udiv_pow2(i16 %a) nounwind {
 define i32 @udiv32(i32 %a, i32 %b) nounwind {
 ; RV16K-LABEL: udiv32:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -4
-; RV16K-NEXT:	sw	ra, 2(sp)
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 4
+; RV16K-NEXT:	addi	sp, -2
+; RV16K-NEXT:	sw	ra, 0(sp)
 ; RV16K-NEXT:	li	a4, __udivsi3
 ; RV16K-NEXT:	jalr	a4
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	lw	ra, 2(sp)
-; RV16K-NEXT:	addi	sp, 4
+; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = udiv i32 %a, %b
@@ -80,18 +62,14 @@ define i32 @udiv32(i32 %a, i32 %b) nounwind {
 define i32 @udiv32_constant(i32 %a) nounwind {
 ; RV16K-LABEL: udiv32_constant:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -4
-; RV16K-NEXT:	sw	ra, 2(sp)
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 4
+; RV16K-NEXT:	addi	sp, -2
+; RV16K-NEXT:	sw	ra, 0(sp)
 ; RV16K-NEXT:	li	a2, 5
 ; RV16K-NEXT:	li	a3, 0
 ; RV16K-NEXT:	li	a4, __udivsi3
 ; RV16K-NEXT:	jalr	a4
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	lw	ra, 2(sp)
-; RV16K-NEXT:	addi	sp, 4
+; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = udiv i32 %a, 5
@@ -101,16 +79,12 @@ define i32 @udiv32_constant(i32 %a) nounwind {
 define i16 @sdiv(i16 %a, i16 %b) nounwind {
 ; RV16K-LABEL: sdiv:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -4
-; RV16K-NEXT:	sw	ra, 2(sp)
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 4
+; RV16K-NEXT:	addi	sp, -2
+; RV16K-NEXT:	sw	ra, 0(sp)
 ; RV16K-NEXT:	li	a2, __divhi3
 ; RV16K-NEXT:	jalr	a2
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	lw	ra, 2(sp)
-; RV16K-NEXT:	addi	sp, 4
+; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = sdiv i16 %a, %b
@@ -120,17 +94,13 @@ define i16 @sdiv(i16 %a, i16 %b) nounwind {
 define i16 @sdiv_constant(i16 %a) nounwind {
 ; RV16K-LABEL: sdiv_constant:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -4
-; RV16K-NEXT:	sw	ra, 2(sp)
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 4
+; RV16K-NEXT:	addi	sp, -2
+; RV16K-NEXT:	sw	ra, 0(sp)
 ; RV16K-NEXT:	li	a1, 5
 ; RV16K-NEXT:	li	a2, __divhi3
 ; RV16K-NEXT:	jalr	a2
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	lw	ra, 2(sp)
-; RV16K-NEXT:	addi	sp, 4
+; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = sdiv i16 %a, 5
@@ -140,10 +110,6 @@ define i16 @sdiv_constant(i16 %a) nounwind {
 define i16 @sdiv_pow2(i16 %a) nounwind {
 ; RV16K-LABEL: sdiv_pow2:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a2, 15
 ; RV16K-NEXT:	mov	a1, a0
 ; RV16K-NEXT:	asr	a1, a2
@@ -153,8 +119,6 @@ define i16 @sdiv_pow2(i16 %a) nounwind {
 ; RV16K-NEXT:	li	a0, 3
 ; RV16K-NEXT:	asr	a1, a0
 ; RV16K-NEXT:	mov	a0, a1
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = sdiv i16 %a, 8
@@ -164,16 +128,12 @@ define i16 @sdiv_pow2(i16 %a) nounwind {
 define i32 @sdiv32(i32 %a, i32 %b) nounwind {
 ; RV16K-LABEL: sdiv32:
 ; RV16K:       # %bb.0:
-; RV16K:	addi	sp, -4
-; RV16K:	sw	ra, 2(sp)
-; RV16K:	sw	fp, 0(sp)
-; RV16K:	mov	fp, sp
-; RV16K:	addi	fp, 4
+; RV16K:	addi	sp, -2
+; RV16K:	sw	ra, 0(sp)
 ; RV16K:	li	a4, __divsi3
 ; RV16K:	jalr	a4
-; RV16K:	lw	fp, 0(sp)
-; RV16K:	lw	ra, 2(sp)
-; RV16K:	addi	sp, 4
+; RV16K:	lw	ra, 0(sp)
+; RV16K:	addi	sp, 2
 ; RV16K:	jr	ra
 
   %1 = sdiv i32 %a, %b
@@ -183,18 +143,14 @@ define i32 @sdiv32(i32 %a, i32 %b) nounwind {
 define i32 @sdiv32_constant(i32 %a) nounwind {
 ; RV16K-LABEL: sdiv32_constant:
 ; RV16K:       # %bb.0:
-; RV16K:	addi	sp, -4
-; RV16K:	sw	ra, 2(sp)
-; RV16K:	sw	fp, 0(sp)
-; RV16K:	mov	fp, sp
-; RV16K:	addi	fp, 4
+; RV16K:	addi	sp, -2
+; RV16K:	sw	ra, 0(sp)
 ; RV16K:	li	a2, 5
 ; RV16K:	li	a3, 0
 ; RV16K:	li	a4, __divsi3
 ; RV16K:	jalr	a4
-; RV16K:	lw	fp, 0(sp)
-; RV16K:	lw	ra, 2(sp)
-; RV16K:	addi	sp, 4
+; RV16K:	lw	ra, 0(sp)
+; RV16K:	addi	sp, 2
 ; RV16K:	jr	ra
 
   %1 = sdiv i32 %a, 5

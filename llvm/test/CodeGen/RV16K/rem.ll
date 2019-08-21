@@ -5,16 +5,12 @@
 define i16 @urem(i16 %a, i16 %b) nounwind {
 ; RV16K-LABEL: urem:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -4
-; RV16K-NEXT:	sw	ra, 2(sp)
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 4
+; RV16K-NEXT:	addi	sp, -2
+; RV16K-NEXT:	sw	ra, 0(sp)
 ; RV16K-NEXT:	li	a2, __umodhi3
 ; RV16K-NEXT:	jalr	a2
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	lw	ra, 2(sp)
-; RV16K-NEXT:	addi	sp, 4
+; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = urem i16 %a, %b
@@ -24,16 +20,12 @@ define i16 @urem(i16 %a, i16 %b) nounwind {
 define i16 @srem(i16 %a, i16 %b) nounwind {
 ; RV16K-LABEL: srem:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -4
-; RV16K-NEXT:	sw	ra, 2(sp)
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 4
+; RV16K-NEXT:	addi	sp, -2
+; RV16K-NEXT:	sw	ra, 0(sp)
 ; RV16K-NEXT:	li	a2, __modhi3
 ; RV16K-NEXT:	jalr	a2
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	lw	ra, 2(sp)
-; RV16K-NEXT:	addi	sp, 4
+; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = srem i16 %a, %b

@@ -5,10 +5,6 @@
 define i16 @bare_select(i1 %a, i16 %b, i16 %c) {
 ; RV16K-LABEL: bare_select:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a3, 1
 ; RV16K-NEXT:	and	a3, a0
 ; RV16K-NEXT:	cmpi	a3, 0
@@ -17,8 +13,6 @@ define i16 @bare_select(i1 %a, i16 %b, i16 %c) {
 ; RV16K-NEXT:	mov	a1, a2
 ; RV16K-NEXT:.LBB0_2:
 ; RV16K-NEXT:	mov	a0, a1
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = select i1 %a, i16 %b, i16 %c

@@ -8,16 +8,12 @@
 define i32 @lshr32(i32 %a, i32 %b) nounwind {
 ; RV16K-LABEL: lshr32:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -4
-; RV16K-NEXT:	sw	ra, 2(sp)
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 4
+; RV16K-NEXT:	addi	sp, -2
+; RV16K-NEXT:	sw	ra, 0(sp)
 ; RV16K-NEXT:	li	a3, __lshrsi3
 ; RV16K-NEXT:	jalr	a3
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	lw	ra, 2(sp)
-; RV16K-NEXT:	addi	sp, 4
+; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = lshr i32 %a, %b
@@ -27,16 +23,12 @@ define i32 @lshr32(i32 %a, i32 %b) nounwind {
 define i32 @ashr32(i32 %a, i32 %b) nounwind {
 ; RV16K-LABEL: ashr32:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -4
-; RV16K-NEXT:	sw	ra, 2(sp)
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 4
+; RV16K-NEXT:	addi	sp, -2
+; RV16K-NEXT:	sw	ra, 0(sp)
 ; RV16K-NEXT:	li	a3, __ashrsi3
 ; RV16K-NEXT:	jalr	a3
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	lw	ra, 2(sp)
-; RV16K-NEXT:	addi	sp, 4
+; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = ashr i32 %a, %b
@@ -46,16 +38,12 @@ define i32 @ashr32(i32 %a, i32 %b) nounwind {
 define i32 @shl32(i32 %a, i32 %b) nounwind {
 ; RV16K-LABEL: shl32:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -4
-; RV16K-NEXT:	sw	ra, 2(sp)
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 4
+; RV16K-NEXT:	addi	sp, -2
+; RV16K-NEXT:	sw	ra, 0(sp)
 ; RV16K-NEXT:	li	a3, __ashlsi3
 ; RV16K-NEXT:	jalr	a3
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	lw	ra, 2(sp)
-; RV16K-NEXT:	addi	sp, 4
+; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %1 = shl i32 %a, %b

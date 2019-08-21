@@ -7,11 +7,8 @@
 define void @test_blockaddress() nounwind {
 ; RV16K-LABEL: test_blockaddress:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -4
-; RV16K-NEXT:	sw	ra, 2(sp)
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 4
+; RV16K-NEXT:	addi	sp, -2
+; RV16K-NEXT:	sw	ra, 0(sp)
 ; RV16K-NEXT:	li	a0, addr
 ; RV16K-NEXT:	li	a1, .Ltmp0
 ; RV16K-NEXT:	sw	a1, 0(a0)
@@ -19,9 +16,8 @@ define void @test_blockaddress() nounwind {
 ; RV16K-NEXT:	jalr	a0
 ; RV16K-NEXT:.Ltmp0:                                 # Block address taken
 ; RV16K-NEXT:# %bb.1:                                # %block
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	lw	ra, 2(sp)
-; RV16K-NEXT:	addi	sp, 4
+; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   store volatile i8* blockaddress(@test_blockaddress, %block), i8** @addr

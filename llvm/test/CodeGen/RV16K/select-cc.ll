@@ -5,10 +5,6 @@
 define i16 @foo(i16 %a, i16 *%b) {
 ; RV16K-LABEL: foo:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	lw	a2, 0(a1)
 ; RV16K-NEXT:	cmp	a0, a2
 ; RV16K-NEXT:	je	.LBB0_2
@@ -69,8 +65,6 @@ define i16 @foo(i16 %a, i16 *%b) {
 ; RV16K-NEXT:# %bb.19:
 ; RV16K-NEXT:	mov	a0, a1
 ; RV16K-NEXT:.LBB0_20:
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %val1 = load volatile i16, i16* %b

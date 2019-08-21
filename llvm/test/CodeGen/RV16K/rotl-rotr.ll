@@ -8,18 +8,12 @@
 define i16 @rotl(i16 %x, i16 %y) {
 ; RV16K-LABEL: rotl:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a2, 16
 ; RV16K-NEXT:	sub	a2, a1
 ; RV16K-NEXT:	mov	a3, a0
 ; RV16K-NEXT:	lsl	a3, a1
 ; RV16K-NEXT:	lsr	a0, a2
 ; RV16K-NEXT:	or	a0, a3
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %z = sub i16 16, %y
@@ -32,18 +26,12 @@ define i16 @rotl(i16 %x, i16 %y) {
 define i16 @rotr(i16 %x, i16 %y) {
 ; RV16K-LABEL: rotr:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	fp, 0(sp)
-; RV16K-NEXT:	mov	fp, sp
-; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a2, 16
 ; RV16K-NEXT:	sub	a2, a1
 ; RV16K-NEXT:	mov	a3, a0
 ; RV16K-NEXT:	lsr	a3, a1
 ; RV16K-NEXT:	lsl	a0, a2
 ; RV16K-NEXT:	or	a0, a3
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
   %z = sub i16 16, %y
   %b = lshr i16 %x, %y
