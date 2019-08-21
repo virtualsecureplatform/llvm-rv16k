@@ -14,7 +14,7 @@
 
 // RV16K 16-bit C return-value convention.
 def RetCC_RV16K : CallingConv<[
-  CCIfType<[i16], CCAssignToReg<[X8]>>
+  CCIfType<[i16], CCAssignToReg<[X8, X9]>>
 ]>;
 
 // RV16K 16-bit C Calling convention.
