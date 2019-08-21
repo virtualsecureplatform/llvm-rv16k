@@ -64,6 +64,11 @@ bool llvm::LowerRV16KMachineOperandToMCOperand(const MachineOperand &MO,
     MCOp = MCOperand::createExpr(
         MCSymbolRefExpr::create(MO.getMBB()->getSymbol(), AP.OutContext));
     break;
+
+  case MachineOperand::MO_ExternalSymbol:
+    MCOp = LowerSymbolOperand(
+        MO, AP.GetExternalSymbolSymbol(MO.getSymbolName()), AP);
+    break;
   }
 
   return true;

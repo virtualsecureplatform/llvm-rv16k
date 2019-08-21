@@ -149,12 +149,25 @@ SDValue RV16KTargetLowering::LowerGlobalAddress(SDValue Op,
   const GlobalValue *GV = N->getGlobal();
   int64_t Offset = N->getOffset();
 
-  if (!isPositionIndependent()) { // static
-    SDValue GA = DAG.getTargetGlobalAddress(GV, DL, Ty, Offset);
-    return SDValue(DAG.getMachineNode(RV16K::LI, DL, Ty, GA), 0);
-  } else {
+  if (isPositionIndependent())
     report_fatal_error("Unable to LowerGlobalAddress");
-  }
+
+  SDValue GA = DAG.getTargetGlobalAddress(GV, DL, Ty, Offset);
+  return SDValue(DAG.getMachineNode(RV16K::LI, DL, Ty, GA), 0);
+}
+
+SDValue RV16KTargetLowering::LowerExternalSymbol(SDValue Op,
+                                                 SelectionDAG &DAG) const {
+  SDLoc DL(Op);
+  EVT Ty = Op.getValueType();
+  ExternalSymbolSDNode *N = cast<ExternalSymbolSDNode>(Op);
+  const char *Sym = N->getSymbol();
+
+  if (isPositionIndependent())
+    report_fatal_error("Unable to LowerExternalSymbol");
+
+  SDValue ES = DAG.getTargetExternalSymbol(Sym, Ty);
+  return SDValue(DAG.getMachineNode(RV16K::LI, DL, Ty, ES), 0);
 }
 
 SDValue RV16KTargetLowering::LowerBR_CC(SDValue Op, SelectionDAG &DAG) const {
@@ -401,8 +414,7 @@ SDValue RV16KTargetLowering::LowerCall(CallLoweringInfo &CLI,
   if (isa<GlobalAddressSDNode>(Callee)) {
     Callee = LowerGlobalAddress(Callee, DAG);
   } else if (isa<ExternalSymbolSDNode>(Callee)) {
-    report_fatal_error(
-        "lowerExternalSymbol, needed for lowerCall, not yet handled");
+    Callee = LowerExternalSymbol(Callee, DAG);
   }
 
   // The first call operand is the chain and the second is the target address.
