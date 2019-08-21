@@ -21,8 +21,7 @@ define void @simple_alloca(i32 %n) nounwind {
 ; RV16K-NEXT:	mov	a0, sp
 ; RV16K-NEXT:	sub	a0, a1
 ; RV16K-NEXT:	mov	sp, a0
-; RV16K-NEXT:	li	a1, notdead
-; RV16K-NEXT:	jalr	a1
+; RV16K-NEXT:	jal notdead
 ; RV16K-NEXT:	mov	sp, fp
 ; RV16K-NEXT:	addi	sp, -4
 ; RV16K-NEXT:	lw	fp, 0(sp)
@@ -54,8 +53,7 @@ define void @scoped_alloca(i32 %n) nounwind {
 ; RV16K-NEXT:	mov	a0, sp
 ; RV16K-NEXT:	sub	a0, a1
 ; RV16K-NEXT:	mov	sp, a0
-; RV16K-NEXT:	li	a1, notdead
-; RV16K-NEXT:	jalr	a1
+; RV16K-NEXT:	jal	notdead
 ; RV16K-NEXT:	mov	sp, s0
 ; RV16K-NEXT:	mov	sp, fp
 ; RV16K-NEXT:	addi	sp, -6

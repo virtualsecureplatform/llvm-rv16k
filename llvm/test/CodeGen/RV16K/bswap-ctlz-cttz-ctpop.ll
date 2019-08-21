@@ -81,8 +81,7 @@ define i8 @test_cttz_i8(i8 %a) nounwind {
 ; RV16K-NEXT:	li	a0, 3855
 ; RV16K-NEXT:	and	a0, a1
 ; RV16K-NEXT:	li	a1, 257
-; RV16K-NEXT:	li	a2, __mulhi3
-; RV16K-NEXT:	jalr	a2
+; RV16K-NEXT:	jal	__mulhi3
 ; RV16K-NEXT:	mov	a1, a0
 ; RV16K-NEXT:	li	a0, 8
 ; RV16K-NEXT:	lsr	a1, a0
@@ -130,8 +129,7 @@ define i16 @test_cttz_i16(i16 %a) nounwind {
 ; RV16K-NEXT:	li	a0, 3855
 ; RV16K-NEXT:	and	a0, a1
 ; RV16K-NEXT:	li	a1, 257
-; RV16K-NEXT:	li	a2, __mulhi3
-; RV16K-NEXT:	jalr	a2
+; RV16K-NEXT:	jal	__mulhi3
 ; RV16K-NEXT:	mov	a1, a0
 ; RV16K-NEXT:	li	a0, 8
 ; RV16K-NEXT:	lsr	a1, a0
@@ -189,9 +187,7 @@ define i32 @test_cttz_i32(i32 %a) nounwind {
 ; RV16K-NEXT:	and	a0, s3
 ; RV16K-NEXT:	li	a1, 257
 ; RV16K-NEXT:	sw	a1, 4(sp)
-; RV16K-NEXT:	li	s2, __mulhi3
-; RV16K-NEXT:	jalr	s2
-; RV16K-NEXT:	mov	a2, s2
+; RV16K-NEXT:	jal	__mulhi3
 ; RV16K-NEXT:	mov	s2, a0
 ; RV16K-NEXT:	xor	s0, s1
 ; RV16K-NEXT:	addi	s1, -1
@@ -209,15 +205,15 @@ define i32 @test_cttz_i32(i32 %a) nounwind {
 ; RV16K-NEXT:	and	a0, s4
 ; RV16K-NEXT:	add	a0, s1
 ; RV16K-NEXT:	mov	a1, a0
-; RV16K-NEXT:	lw	a3, 2(sp)
-; RV16K-NEXT:	lsr	a1, a3
+; RV16K-NEXT:	lw	a2, 2(sp)
+; RV16K-NEXT:	lsr	a1, a2
 ; RV16K-NEXT:	add	a1, a0
 ; RV16K-NEXT:	and	s3, a1
 ; RV16K-NEXT:	li	s0, 8
 ; RV16K-NEXT:	lsr	s2, s0
 ; RV16K-NEXT:	mov	a0, s3
 ; RV16K-NEXT:	lw	a1, 4(sp)
-; RV16K-NEXT:	jalr	a2
+; RV16K-NEXT:	jal	__mulhi3
 ; RV16K-NEXT:	lw	a1, 10(sp)
 ; RV16K-NEXT:	cmpi	a1, 0
 ; RV16K-NEXT:	jne	.LBB4_2
@@ -271,8 +267,7 @@ define i8 @test_cttz_i8_zero_undef(i8 %a) nounwind {
 ; RV16K-NEXT:	li	a1, 3855
 ; RV16K-NEXT:	and	a0, a1
 ; RV16K-NEXT:	li	a1, 257
-; RV16K-NEXT:	li	a2, __mulhi3
-; RV16K-NEXT:	jalr	a2
+; RV16K-NEXT:	jal __mulhi3
 ; RV16K-NEXT:	li	a1, 8
 ; RV16K-NEXT:	lsr	a0, a1
 ; RV16K-NEXT:	lw	ra, 0(sp)
@@ -312,8 +307,7 @@ define i16 @test_cttz_i16_zero_undef(i16 %a) nounwind {
 ; RV16K-NEXT:	li	a1, 3855
 ; RV16K-NEXT:	and	a0, a1
 ; RV16K-NEXT:	li	a1, 257
-; RV16K-NEXT:	li	a2, __mulhi3
-; RV16K-NEXT:	jalr	a2
+; RV16K-NEXT:	jal	__mulhi3
 ; RV16K-NEXT:	li	a1, 8
 ; RV16K-NEXT:	lsr	a0, a1
 ; RV16K-NEXT:	lw	ra, 0(sp)
@@ -368,9 +362,7 @@ define i32 @test_cttz_i32_zero_undef(i32 %a) nounwind {
 ; RV16K-NEXT:	and	a0, s3
 ; RV16K-NEXT:	li	a1, 257
 ; RV16K-NEXT:	sw	a1, 4(sp)
-; RV16K-NEXT:	li	s2, __mulhi3
-; RV16K-NEXT:	jalr	s2
-; RV16K-NEXT:	mov	a2, s2
+; RV16K-NEXT:	jal	__mulhi3
 ; RV16K-NEXT:	mov	s2, a0
 ; RV16K-NEXT:	xor	s0, s1
 ; RV16K-NEXT:	addi	s1, -1
@@ -388,15 +380,15 @@ define i32 @test_cttz_i32_zero_undef(i32 %a) nounwind {
 ; RV16K-NEXT:	and	a0, s4
 ; RV16K-NEXT:	add	a0, s1
 ; RV16K-NEXT:	mov	a1, a0
-; RV16K-NEXT:	lw	a3, 2(sp)
-; RV16K-NEXT:	lsr	a1, a3
+; RV16K-NEXT:	lw	a2, 2(sp)
+; RV16K-NEXT:	lsr	a1, a2
 ; RV16K-NEXT:	add	a1, a0
 ; RV16K-NEXT:	and	s3, a1
 ; RV16K-NEXT:	li	s0, 8
 ; RV16K-NEXT:	lsr	s2, s0
 ; RV16K-NEXT:	mov	a0, s3
 ; RV16K-NEXT:	lw	a1, 4(sp)
-; RV16K-NEXT:	jalr	a2
+; RV16K-NEXT:	jal	__mulhi3
 ; RV16K-NEXT:	lw	a1, 10(sp)
 ; RV16K-NEXT:	cmpi	a1, 0
 ; RV16K-NEXT:	jne	.LBB7_2
@@ -467,8 +459,7 @@ define i16 @test_ctlz_i16(i16 %a) nounwind {
 ; RV16K-NEXT:	li	a0, 3855
 ; RV16K-NEXT:	and	a0, a3
 ; RV16K-NEXT:	li	a1, 257
-; RV16K-NEXT:	li	a2, __mulhi3
-; RV16K-NEXT:	jalr	a2
+; RV16K-NEXT:	jal	__mulhi3
 ; RV16K-NEXT:	mov	a1, a0
 ; RV16K-NEXT:	lsr	a1, s0
 ; RV16K-NEXT:.LBB8_2:                                # %cond.end
@@ -507,8 +498,7 @@ define i16 @test_ctpop_i16(i16 %a) nounwind {
 ; RV16K-NEXT:	li	a1, 3855
 ; RV16K-NEXT:	and	a0, a1
 ; RV16K-NEXT:	li	a1, 257
-; RV16K-NEXT:	li	a2, __mulhi3
-; RV16K-NEXT:	jalr	a2
+; RV16K-NEXT:	jal	__mulhi3
 ; RV16K-NEXT:	li	a1, 8
 ; RV16K-NEXT:	lsr	a0, a1
 ; RV16K-NEXT:	lw	ra, 0(sp)

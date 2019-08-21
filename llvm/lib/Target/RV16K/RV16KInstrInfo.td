@@ -189,7 +189,7 @@ let hasSideEffects = 0, mayLoad = 0, mayStore = 0 in {
   }
 
   let isCall = 1, Defs = [X0] in
-  def JAL : RV16KInstRR32<0b01110011, (outs), (ins simm16_lsb0_j:$imm),
+  def JAL : RV16KInstRR32<0b01110011, (outs), (ins simm16_lsb0:$imm),
                          "jal", "$imm"> {
     let rs = 0;
     let rd = 0;
@@ -282,9 +282,9 @@ let hasSideEffects = 0, mayStore = 0, mayLoad = 0,
 def PseudoBR : Pseudo<(outs), (ins simm16_lsb0_j:$imm15), [(br bb:$imm15)]>,
                PseudoInstExpansion<(J simm16_lsb0_j:$imm15)>;
 
-let isCall = 1, Defs=[X0] in
-def PseudoCALL : Pseudo<(outs), (ins GPR:$rs), [(Call GPR:$rs)]>,
-                 PseudoInstExpansion<(JALR GPR:$rs)>;
+def : Pat<(Call GPR:$rs), (JALR GPR:$rs)>;
+def : Pat<(Call tglobaladdr:$dst), (JAL tglobaladdr:$dst)>;
+def : Pat<(Call texternalsym:$dst), (JAL texternalsym:$dst)>;
 
 // Pessimistically assume the stack pointer will be clobbered
 let Defs = [X1], Uses = [X1] in {

@@ -9,8 +9,7 @@ define i16 @test_call_external(i16 %a) nounwind {
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
 ; RV16K-NEXT:	sw	ra, 0(sp)
-; RV16K-NEXT:	li	a1, external_function
-; RV16K-NEXT:	jalr	a1
+; RV16K-NEXT:	jal	external_function
 ; RV16K-NEXT:	lw	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
@@ -33,8 +32,7 @@ define i16 @test_call_defined(i16 %a) nounwind {
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
 ; RV16K-NEXT:	sw	ra, 0(sp)
-; RV16K-NEXT:	li	a1, defined_function
-; RV16K-NEXT:	jalr	a1
+; RV16K-NEXT:	jal	defined_function
 ; RV16K-NEXT:	lw	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra

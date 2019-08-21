@@ -7,8 +7,7 @@ define i16 @urem(i16 %a, i16 %b) nounwind {
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
 ; RV16K-NEXT:	sw	ra, 0(sp)
-; RV16K-NEXT:	li	a2, __umodhi3
-; RV16K-NEXT:	jalr	a2
+; RV16K-NEXT:	jal	__umodhi3
 ; RV16K-NEXT:	lw	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
@@ -22,8 +21,7 @@ define i16 @srem(i16 %a, i16 %b) nounwind {
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
 ; RV16K-NEXT:	sw	ra, 0(sp)
-; RV16K-NEXT:	li	a2, __modhi3
-; RV16K-NEXT:	jalr	a2
+; RV16K-NEXT:	jal	__modhi3
 ; RV16K-NEXT:	lw	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra

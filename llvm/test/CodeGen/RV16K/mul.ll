@@ -7,9 +7,8 @@ define i16 @square(i16 %a) nounwind {
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
 ; RV16K-NEXT:	sw	ra, 0(sp)
-; RV16K-NEXT:	li	a2, __mulhi3
 ; RV16K-NEXT:	mov	a1, a0
-; RV16K-NEXT:	jalr	a2
+; RV16K-NEXT:	jal	__mulhi3
 ; RV16K-NEXT:	lw	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
@@ -23,8 +22,7 @@ define i16 @mul(i16 %a, i16 %b) nounwind {
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
 ; RV16K-NEXT:	sw	ra, 0(sp)
-; RV16K-NEXT:	li	a2, __mulhi3
-; RV16K-NEXT:	jalr	a2
+; RV16K-NEXT:	jal	__mulhi3
 ; RV16K-NEXT:	lw	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
@@ -39,8 +37,7 @@ define i16 @mul_constant(i16 %a) nounwind {
 ; RV16K-NEXT:	addi	sp, -2
 ; RV16K-NEXT:	sw	ra, 0(sp)
 ; RV16K-NEXT:	li	a1, 5
-; RV16K-NEXT:	li	a2, __mulhi3
-; RV16K-NEXT:	jalr	a2
+; RV16K-NEXT:	jal	__mulhi3
 ; RV16K-NEXT:	lw	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
@@ -65,8 +62,7 @@ define i32 @mul32(i32 %a, i32 %b) nounwind {
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
 ; RV16K-NEXT:	sw	ra, 0(sp)
-; RV16K-NEXT:	li	a4, __mulsi3
-; RV16K-NEXT:	jalr	a4
+; RV16K-NEXT:	jal	__mulsi3
 ; RV16K-NEXT:	lw	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
@@ -82,8 +78,7 @@ define i32 @mul32_constant(i32 %a) nounwind {
 ; RV16K-NEXT:	sw	ra, 0(sp)
 ; RV16K-NEXT:	li	a2, 5
 ; RV16K-NEXT:	li	a3, 0
-; RV16K-NEXT:	li	a4, __mulsi3
-; RV16K-NEXT:	jalr	a4
+; RV16K-NEXT:	jal	__mulsi3
 ; RV16K-NEXT:	lw	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
