@@ -270,6 +270,8 @@ def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_NE), (JNE simm8_lsb0:$imm7)>;
 def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_B),  (JB  simm8_lsb0:$imm7)>;
 def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_BE), (JBE simm8_lsb0:$imm7)>;
 
+def : Pat<(brind GPR:$rs), (JALR GPR:$rs)>;
+
 let hasSideEffects = 0, mayStore = 0, mayLoad = 0,
     isBarrier = 1, isReturn = 1, isTerminator = 1 in
 def PseudoRET : Pseudo<(outs), (ins), [(RetFlag)]>,
