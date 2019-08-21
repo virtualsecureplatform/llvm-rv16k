@@ -130,6 +130,10 @@ RV16KTargetLowering::RV16KTargetLowering(const TargetMachine &TM,
   setOperationAction(ISD::UDIVREM, MVT::i16, Expand);
   setOperationAction(ISD::UDIV, MVT::i16, Expand);
 
+  setOperationAction(ISD::SHL_PARTS, MVT::i16, Expand);
+  setOperationAction(ISD::SRL_PARTS, MVT::i16, Expand);
+  setOperationAction(ISD::SRA_PARTS, MVT::i16, Expand);
+
   setOperationAction(ISD::ROTL, MVT::i16, Expand);
   setOperationAction(ISD::ROTR, MVT::i16, Expand);
   setOperationAction(ISD::BSWAP, MVT::i16, Expand);
