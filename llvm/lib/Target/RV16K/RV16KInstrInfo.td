@@ -126,6 +126,7 @@ let hasSideEffects = 0, mayLoad = 0, mayStore = 1, Defs = [FLAGS] in {
 // R: Instructions for arithmetic
 
 let hasSideEffects = 0, mayLoad = 0, mayStore = 0, Defs = [FLAGS] in {
+  let isMoveReg = 1 in
   def MOV : RV16KInstRR16<0b11100000, (outs GPR:$rd), (ins GPR:$rs),
                          "mov", "$rd, $rs">;
 
@@ -136,16 +137,20 @@ let hasSideEffects = 0, mayLoad = 0, mayStore = 0, Defs = [FLAGS] in {
 
 let hasSideEffects = 0, mayLoad = 0, mayStore = 0,
     Defs = [FLAGS], Constraints = "$rd = $rd_w" in {
-  def ADD : RV16KInstRR16<0b11100010, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
-                         "add", "$rd, $rs">;
+  let isCommutable = 1 in {
+    let isAdd = 1 in
+    def ADD : RV16KInstRR16<0b11100010, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
+                           "add", "$rd, $rs">;
+    def AND : RV16KInstRR16<0b11100100, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
+                           "and", "$rd, $rs">;
+    def OR  : RV16KInstRR16<0b11100101, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
+                           "or",  "$rd, $rs">;
+    def XOR : RV16KInstRR16<0b11100110, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
+                           "xor", "$rd, $rs">;
+  }
+
   def SUB : RV16KInstRR16<0b11100011, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
                          "sub", "$rd, $rs">;
-  def AND : RV16KInstRR16<0b11100100, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
-                         "and", "$rd, $rs">;
-  def OR  : RV16KInstRR16<0b11100101, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
-                         "or",  "$rd, $rs">;
-  def XOR : RV16KInstRR16<0b11100110, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
-                         "xor", "$rd, $rs">;
   def LSL : RV16KInstRR16<0b11101001, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
                          "lsl", "$rd, $rs">;
   def LSR : RV16KInstRR16<0b11101010, (outs GPR:$rd_w), (ins GPR:$rd, GPR:$rs),
@@ -158,6 +163,7 @@ let hasSideEffects = 0, mayLoad = 0, mayStore = 0,
 // I: Instructions for immediates
 
 let hasSideEffects = 0, mayLoad = 0, mayStore = 0, Defs = [FLAGS] in {
+  let isMoveImm = 1 in
   def LI : RV16KInstRR32<0b01111000, (outs GPR:$rd), (ins simm16:$imm),
                         "li", "$rd, $imm"> {
     let rs = 0;

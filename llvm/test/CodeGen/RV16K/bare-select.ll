@@ -10,8 +10,8 @@ define i16 @bare_select(i1 %a, i16 %b, i16 %c) {
 ; RV16K-NEXT:	mov	fp, sp
 ; RV16K-NEXT:	addi	fp, 2
 ; RV16K-NEXT:	li	a3, 1
-; RV16K-NEXT:	and	a0, a3
-; RV16K-NEXT:	cmpi	a0, 0
+; RV16K-NEXT:	and	a3, a0
+; RV16K-NEXT:	cmpi	a3, 0
 ; RV16K-NEXT:	jne	.LBB0_2
 ; RV16K-NEXT:# %bb.1:
 ; RV16K-NEXT:	mov	a1, a2
