@@ -108,6 +108,9 @@ RV16KTargetLowering::RV16KTargetLowering(const TargetMachine &TM,
     setLoadExtAction(N, MVT::i16, MVT::i1, Promote);
 
   // TODO: add all necessary setOperationAction calls.
+  for (auto VT : {MVT::i1, MVT::i8})
+    setOperationAction(ISD::SIGN_EXTEND_INREG, VT, Expand);
+
   setOperationAction(ISD::GlobalAddress, MVT::i16, Custom);
   setOperationAction(ISD::BRCOND, MVT::Other, Expand);
   setOperationAction(ISD::BR_CC, MVT::i16, Custom);
