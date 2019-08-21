@@ -60,6 +60,11 @@ bool llvm::LowerRV16KMachineOperandToMCOperand(const MachineOperand &MO,
     MCOp = LowerSymbolOperand(MO, AP.getSymbol(MO.getGlobal()), AP);
     break;
 
+  case MachineOperand::MO_BlockAddress:
+    MCOp = LowerSymbolOperand(
+        MO, AP.GetBlockAddressSymbol(MO.getBlockAddress()), AP);
+    break;
+
   case MachineOperand::MO_MachineBasicBlock:
     MCOp = MCOperand::createExpr(
         MCSymbolRefExpr::create(MO.getMBB()->getSymbol(), AP.OutContext));

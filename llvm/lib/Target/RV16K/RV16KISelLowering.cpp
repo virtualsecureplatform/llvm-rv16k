@@ -112,6 +112,8 @@ RV16KTargetLowering::RV16KTargetLowering(const TargetMachine &TM,
     setOperationAction(ISD::SIGN_EXTEND_INREG, VT, Expand);
 
   setOperationAction(ISD::GlobalAddress, MVT::i16, Custom);
+  setOperationAction(ISD::BlockAddress, MVT::i16, Custom);
+
   setOperationAction(ISD::BRCOND, MVT::Other, Expand);
   setOperationAction(ISD::BR_CC, MVT::i16, Custom);
 
@@ -160,6 +162,9 @@ SDValue RV16KTargetLowering::LowerOperation(SDValue Op,
   case ISD::GlobalAddress:
     return LowerGlobalAddress(Op, DAG);
 
+  case ISD::BlockAddress:
+    return LowerBlockAddress(Op, DAG);
+
   case ISD::BR_CC:
     return LowerBR_CC(Op, DAG);
 
@@ -181,6 +186,21 @@ SDValue RV16KTargetLowering::LowerGlobalAddress(SDValue Op,
 
   SDValue GA = DAG.getTargetGlobalAddress(GV, DL, Ty, Offset);
   return SDValue(DAG.getMachineNode(RV16K::LI, DL, Ty, GA), 0);
+}
+
+SDValue RV16KTargetLowering::LowerBlockAddress(SDValue Op,
+                                               SelectionDAG &DAG) const {
+  SDLoc DL(Op);
+  EVT Ty = Op.getValueType();
+  BlockAddressSDNode *N = cast<BlockAddressSDNode>(Op);
+  const BlockAddress *BA = N->getBlockAddress();
+  int64_t Offset = N->getOffset();
+
+  if (isPositionIndependent())
+    report_fatal_error("Unable to LowerBlockAddress");
+
+  SDValue BAVal = DAG.getTargetBlockAddress(BA, Ty, Offset);
+  return SDValue(DAG.getMachineNode(RV16K::LI, DL, Ty, BAVal), 0);
 }
 
 SDValue RV16KTargetLowering::LowerExternalSymbol(SDValue Op,
