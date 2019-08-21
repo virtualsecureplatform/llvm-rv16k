@@ -116,6 +116,7 @@ RV16KTargetLowering::RV16KTargetLowering(const TargetMachine &TM,
 
   setOperationAction(ISD::BRCOND, MVT::Other, Expand);
   setOperationAction(ISD::BR_CC, MVT::i16, Custom);
+  setOperationAction(ISD::BR_JT, MVT::Other, Expand);
 
   setOperationAction(ISD::SELECT, MVT::i16, Custom);
   setOperationAction(ISD::SELECT_CC, MVT::i16, Expand);
@@ -151,6 +152,9 @@ RV16KTargetLowering::RV16KTargetLowering(const TargetMachine &TM,
   // Function alignments (log2).
   setMinFunctionAlignment(1);
   setPrefFunctionAlignment(1);
+
+  // Effectively disable jump table generation.
+  setMinimumJumpTableEntries(INT_MAX);
 }
 
 SDValue RV16KTargetLowering::LowerOperation(SDValue Op,

@@ -23,6 +23,8 @@
 #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/raw_ostream.h"
 
+#define DEBUG_TYPE "mcinstlower"
+
 using namespace llvm;
 
 static MCOperand LowerSymbolOperand(const MachineOperand &MO, MCSymbol *Sym,
