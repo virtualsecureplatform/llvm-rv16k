@@ -101,6 +101,10 @@ def simm16_lsb0_j : Operand<OtherVT>, ImmLeaf<OtherVT, [{return isShiftedInt<15,
   let EncoderMethod = "getImmOpValue";
 }
 
+// Addressing modes.
+// Necessary because a frameindex can't be matched directly in a pattern.
+def AddrFI : ComplexPattern<iPTR, 1, "SelectAddrFI", [frameindex], []>;
+
 // M: Instructions for memory
 
 let hasSideEffects = 0, mayLoad = 1, mayStore = 0, Defs = [FLAGS] in {
@@ -234,20 +238,46 @@ def NOP : RV16KInstRR16<0b00000000, (outs), (ins), "nop", ""> {
 // Pseudo-instructions and codegen patterns
 
 def : Pat<(load GPR:$rs1), (LW GPR:$rs1, 0)>;
-def : Pat<(load (add GPR:$rs1, simm16_lsb0:$imm16)), (LW GPR:$rs1, simm16_lsb0:$imm16)>;
+def : Pat<(load AddrFI:$rs1), (LW AddrFI:$rs1, 0)>;
+def : Pat<(load (add GPR:$rs1, simm16_lsb0:$imm16)),
+          (LW GPR:$rs1, simm16_lsb0:$imm16)>;
+def : Pat<(load (add AddrFI:$rs1, simm16_lsb0:$imm16)),
+          (LW AddrFI:$rs1, simm16_lsb0:$imm16)>;
+
 def : Pat<(extloadi8 GPR:$rs1), (LB GPR:$rs1, 0)>;
-def : Pat<(extloadi8 (add GPR:$rs1, simm16:$imm16)), (LB GPR:$rs1, simm16:$imm16)>;
+def : Pat<(extloadi8 AddrFI:$rs1), (LB AddrFI:$rs1, 0)>;
+def : Pat<(extloadi8 (add GPR:$rs1, simm16:$imm16)),
+          (LB GPR:$rs1, simm16:$imm16)>;
+def : Pat<(extloadi8 (add AddrFI:$rs1, simm16:$imm16)),
+          (LB AddrFI:$rs1, simm16:$imm16)>;
+
 def : Pat<(sextloadi8 GPR:$rs1), (LB GPR:$rs1, 0)>;
-def : Pat<(sextloadi8 (add GPR:$rs1, simm16:$imm16)), (LB GPR:$rs1, simm16:$imm16)>;
+def : Pat<(sextloadi8 AddrFI:$rs1), (LB AddrFI:$rs1, 0)>;
+def : Pat<(sextloadi8 (add GPR:$rs1, simm16:$imm16)),
+          (LB GPR:$rs1, simm16:$imm16)>;
+def : Pat<(sextloadi8 (add AddrFI:$rs1, simm16:$imm16)),
+          (LB AddrFI:$rs1, simm16:$imm16)>;
+
 def : Pat<(zextloadi8 GPR:$rs1), (LBU GPR:$rs1, 0)>;
-def : Pat<(zextloadi8 (add GPR:$rs1, simm16:$imm16)), (LBU GPR:$rs1, simm16:$imm16)>;
+def : Pat<(zextloadi8 AddrFI:$rs1), (LBU AddrFI:$rs1, 0)>;
+def : Pat<(zextloadi8 (add GPR:$rs1, simm16:$imm16)),
+          (LBU GPR:$rs1, simm16:$imm16)>;
+def : Pat<(zextloadi8 (add AddrFI:$rs1, simm16:$imm16)),
+          (LBU AddrFI:$rs1, simm16:$imm16)>;
 
 def : Pat<(store GPR:$rs2, GPR:$rs1), (SW GPR:$rs2, GPR:$rs1, 0)>;
+def : Pat<(store GPR:$rs2, AddrFI:$rs1), (SW GPR:$rs2, AddrFI:$rs1, 0)>;
 def : Pat<(store GPR:$rs2, (add GPR:$rs1, simm16_lsb0:$imm16)),
           (SW GPR:$rs2, GPR:$rs1, simm16_lsb0:$imm16)>;
+def : Pat<(store GPR:$rs2, (add AddrFI:$rs1, simm16_lsb0:$imm16)),
+          (SW GPR:$rs2, AddrFI:$rs1, simm16_lsb0:$imm16)>;
+
 def : Pat<(truncstorei8 GPR:$rs2, GPR:$rs1), (SB GPR:$rs2, GPR:$rs1, 0)>;
+def : Pat<(truncstorei8 GPR:$rs2, AddrFI:$rs1), (SB GPR:$rs2, AddrFI:$rs1, 0)>;
 def : Pat<(truncstorei8 GPR:$rs2, (add GPR:$rs1, simm16:$imm16)),
           (SB GPR:$rs2, GPR:$rs1, simm16:$imm16)>;
+def : Pat<(truncstorei8 GPR:$rs2, (add AddrFI:$rs1, simm16:$imm16)),
+          (SB GPR:$rs2, AddrFI:$rs1, simm16:$imm16)>;
 
 def : Pat<(add GPR:$rs1, GPR:$rs2), (ADD GPR:$rs1, GPR:$rs2)>;
 def : Pat<(sub GPR:$rs1, GPR:$rs2), (SUB GPR:$rs1, GPR:$rs2)>;
