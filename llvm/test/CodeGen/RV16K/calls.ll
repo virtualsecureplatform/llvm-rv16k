@@ -54,3 +54,71 @@ define i16 @test_call_indirect(i16 (i16)* %a, i16 %b) nounwind {
   %1 = call i16 %a(i16 %b)
   ret i16 %1
 }
+
+declare i16 @external_many_args(i16, i16, i16, i16, i16, i16, i16, i16, i16, i16) nounwind
+
+define i16 @test_call_external_many_args(i16 %a) nounwind {
+; RV16K-LABEL: test_call_external_many_args:
+; RV16K:       # %bb.0:
+; RV16K-NEXT:	li	a1, 12
+; RV16K-NEXT:	sub	sp, a1
+; RV16K-NEXT:	sw	ra, 10(sp)
+; RV16K-NEXT:	sw	s0, 8(sp)
+; RV16K-NEXT:	mov	s0, a0
+; RV16K-NEXT:	sw	s0, 6(sp)
+; RV16K-NEXT:	sw	s0, 4(sp)
+; RV16K-NEXT:	sw	s0, 2(sp)
+; RV16K-NEXT:	sw	s0, 0(sp)
+; RV16K-NEXT:	mov	a1, s0
+; RV16K-NEXT:	mov	a2, s0
+; RV16K-NEXT:	mov	a3, s0
+; RV16K-NEXT:	mov	a4, s0
+; RV16K-NEXT:	mov	a5, s0
+; RV16K-NEXT:	jal	external_many_args
+; RV16K-NEXT:	mov	a0, s0
+; RV16K-NEXT:	lw	s0, 8(sp)
+; RV16K-NEXT:	lw	ra, 10(sp)
+; RV16K-NEXT:	li	a1, 12
+; RV16K-NEXT:	add	sp, a1
+; RV16K-NEXT:	jr	ra
+
+  %1 = call i16 @external_many_args(i16 %a, i16 %a, i16 %a, i16 %a, i16 %a,
+                                    i16 %a, i16 %a, i16 %a, i16 %a, i16 %a)
+  ret i16 %a
+}
+
+define i16 @defined_many_args(i16, i16, i16, i16, i16, i16, i16, i16, i16, i16 %j) nounwind {
+; RV16K-LABEL: defined_many_args:
+; RV16K:       # %bb.0:
+; RV16K-NEXT:	lw	a0, 6(sp)
+; RV16K-NEXT:	addi	a0, 1
+; RV16K-NEXT:	jr	ra
+  %added = add i16 %j, 1
+  ret i16 %added
+}
+
+define i16 @test_call_defined_many_args(i16 %a) nounwind {
+; RV16K-LABEL: test_call_defined_many_args:
+; RV16K:       # %bb.0:
+; RV16K-NEXT:	li	a1, 10
+; RV16K-NEXT:	sub	sp, a1
+; RV16K-NEXT:	sw	ra, 8(sp)
+; RV16K-NEXT:	sw	a0, 6(sp)
+; RV16K-NEXT:	sw	a0, 4(sp)
+; RV16K-NEXT:	sw	a0, 2(sp)
+; RV16K-NEXT:	sw	a0, 0(sp)
+; RV16K-NEXT:	mov	a1, a0
+; RV16K-NEXT:	mov	a2, a0
+; RV16K-NEXT:	mov	a3, a0
+; RV16K-NEXT:	mov	a4, a0
+; RV16K-NEXT:	mov	a5, a0
+; RV16K-NEXT:	jal	defined_many_args
+; RV16K-NEXT:	lw	ra, 8(sp)
+; RV16K-NEXT:	li	a1, 10
+; RV16K-NEXT:	add	sp, a1
+; RV16K-NEXT:	jr	ra
+
+  %1 = call i16 @defined_many_args(i16 %a, i16 %a, i16 %a, i16 %a, i16 %a,
+                                   i16 %a, i16 %a, i16 %a, i16 %a, i16 %a)
+  ret i16 %1
+}

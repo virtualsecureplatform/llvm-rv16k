@@ -26,7 +26,7 @@ def CC_RV16K : CallingConv<[
   CCIfType<[i16], CCAssignToReg<[ X8, X9, X10, X11, X12, X13 ]>>,
 
   // Could be assigned to the stack in 8-byte aligned units, but unsupported
-  CCAssignToStack<2, 2> // the slot's size, the stack alignment
+  CCAssignToStack<2, 2> // The slot's size, the stack alignment
 ]>;
 
 def CSR : CalleeSavedRegs<(add X0, X2, X3, X4, X5, X6, X7)>;
