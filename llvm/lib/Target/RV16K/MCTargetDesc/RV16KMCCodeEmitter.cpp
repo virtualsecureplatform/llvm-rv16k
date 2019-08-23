@@ -20,6 +20,7 @@
 #include "llvm/MC/MCContext.h"
 #include "llvm/MC/MCExpr.h"
 #include "llvm/MC/MCInst.h"
+#include "llvm/MC/MCInstBuilder.h"
 #include "llvm/MC/MCInstrDesc.h"
 #include "llvm/MC/MCInstrInfo.h"
 #include "llvm/MC/MCRegisterInfo.h"
@@ -67,6 +68,11 @@ public:
   unsigned getImmOpValue(const MCInst &MI, unsigned OpNo,
                          SmallVectorImpl<MCFixup> &Fixups,
                          const MCSubtargetInfo &STI) const;
+
+private:
+  void expandHalt(const MCInst &MI, raw_ostream &OS,
+                  SmallVectorImpl<MCFixup> &Fixups,
+                  const MCSubtargetInfo &STI) const;
 };
 } // end anonymous namespace
 
@@ -76,10 +82,26 @@ MCCodeEmitter *llvm::createRV16KMCCodeEmitter(const MCInstrInfo &MCII,
   return new RV16KMCCodeEmitter(Ctx, MCII);
 }
 
+void RV16KMCCodeEmitter::expandHalt(const MCInst &MI, raw_ostream &OS,
+                                    SmallVectorImpl<MCFixup> &Fixups,
+                                    const MCSubtargetInfo &STI) const {
+  // Emit J -2
+  MCInst TmpInst = MCInstBuilder(RV16K::J).addImm(-2);
+  uint32_t Binary = getBinaryCodeForInstr(TmpInst, Fixups, STI);
+  support::endian::write(OS, Binary, support::little);
+}
+
 void RV16KMCCodeEmitter::encodeInstruction(const MCInst &MI, raw_ostream &OS,
                                            SmallVectorImpl<MCFixup> &Fixups,
                                            const MCSubtargetInfo &STI) const {
   const MCInstrDesc &Desc = MCII.get(MI.getOpcode());
+
+  if (MI.getOpcode() == RV16K::PseudoHLT) {
+    expandHalt(MI, OS, Fixups, STI);
+    MCNumEmitted += 4;
+    return;
+  }
+
   // Get byte count of instruction.
   unsigned Size = Desc.getSize();
 

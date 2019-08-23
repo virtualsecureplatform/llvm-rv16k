@@ -302,6 +302,10 @@ def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_BE), (JBE simm8_lsb0:$imm7)>;
 
 def : Pat<(brind GPR:$rs), (JALR GPR:$rs)>;
 
+def : Pat<(Call GPR:$rs), (JALR GPR:$rs)>;
+def : Pat<(Call tglobaladdr:$dst), (JAL tglobaladdr:$dst)>;
+def : Pat<(Call texternalsym:$dst), (JAL texternalsym:$dst)>;
+
 let hasSideEffects = 0, mayStore = 0, mayLoad = 0,
     isBarrier = 1, isReturn = 1, isTerminator = 1 in
 def PseudoRET : Pseudo<(outs), (ins), [(RetFlag)]>,
@@ -311,10 +315,6 @@ let hasSideEffects = 0, mayStore = 0, mayLoad = 0,
     isBarrier = 1, isBranch = 1, isTerminator = 1 in
 def PseudoBR : Pseudo<(outs), (ins simm16_lsb0_j:$imm15), [(br bb:$imm15)]>,
                PseudoInstExpansion<(J simm16_lsb0_j:$imm15)>;
-
-def : Pat<(Call GPR:$rs), (JALR GPR:$rs)>;
-def : Pat<(Call tglobaladdr:$dst), (JAL tglobaladdr:$dst)>;
-def : Pat<(Call texternalsym:$dst), (JAL texternalsym:$dst)>;
 
 // Pessimistically assume the stack pointer will be clobbered
 let Defs = [X1], Uses = [X1] in {
@@ -337,3 +337,8 @@ def SelectCCri
              (ins GPR:$lhs, simm4:$rhs, i16imm:$imm, GPR:$src, GPR:$src2),
              [(set i16:$dst, (SelectCC GPR:$lhs, simm4:$rhs,
               (i16 imm:$imm), GPR:$src, GPR:$src2))]>;
+
+let hasSideEffects = 0, mayLoad = 0, mayStore = 0, isCodeGenOnly = 0 in
+def PseudoHLT : Pseudo<(outs), (ins), []> {
+  let AsmString = "hlt";
+}
