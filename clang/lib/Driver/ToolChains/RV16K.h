@@ -42,9 +42,27 @@ public:
   void
   AddClangSystemIncludeArgs(const llvm::opt::ArgList &DriverArgs,
                             llvm::opt::ArgStringList &CC1Args) const override {}
+
+protected:
+  Tool *buildLinker() const override;
 };
 
 } // end namespace toolchains
+
+namespace tools {
+namespace RV16K {
+class LLVM_LIBRARY_VISIBILITY Linker : public GnuTool {
+public:
+  Linker(const ToolChain &TC) : GnuTool("RV16K::Linker", "ld.lld", TC) {}
+  bool hasIntegratedCPP() const override { return false; }
+  bool isLinkJob() const override { return true; }
+  void ConstructJob(Compilation &C, const JobAction &JA,
+                    const InputInfo &Output, const InputInfoList &Inputs,
+                    const llvm::opt::ArgList &TCArgs,
+                    const char *LinkingOutput) const override;
+};
+} // namespace RV16K
+} // namespace tools
 } // end namespace driver
 } // end namespace clang
 
