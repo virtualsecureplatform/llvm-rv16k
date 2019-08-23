@@ -130,6 +130,7 @@ static std::tuple<ELFKind, uint16_t, uint8_t> parseEmulation(StringRef Emul) {
           .Cases("elf32btsmip", "elf32btsmipn32", {ELF32BEKind, EM_MIPS})
           .Cases("elf32ltsmip", "elf32ltsmipn32", {ELF32LEKind, EM_MIPS})
           .Case("elf32lriscv", {ELF32LEKind, EM_RISCV})
+          .Case("elf32rv16k", {ELF32LEKind, EM_RV16K})
           .Cases("elf32ppc", "elf32ppclinux", {ELF32BEKind, EM_PPC})
           .Case("elf64btsmip", {ELF64BEKind, EM_MIPS})
           .Case("elf64ltsmip", {ELF64LEKind, EM_MIPS})
@@ -1024,7 +1025,7 @@ static void setConfigs(opt::InputArgList &Args) {
   // that.
   Config->IsRela = M == EM_AARCH64 || M == EM_AMDGPU || M == EM_HEXAGON ||
                    M == EM_PPC || M == EM_PPC64 || M == EM_RISCV ||
-                   M == EM_X86_64;
+                   M == EM_RV16K || M == EM_X86_64;
 
   // If the output uses REL relocations we must store the dynamic relocation
   // addends to the output sections. We also store addends for RELA relocations

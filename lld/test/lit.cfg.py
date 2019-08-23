@@ -75,6 +75,7 @@ llvm_config.feature_config(
                           'MSP430': 'msp430',
                           'PowerPC': 'ppc',
                           'RISCV': 'riscv',
+                          'RV16K': 'rv16k',
                           'Sparc': 'sparc',
                           'WebAssembly': 'wasm',
                           'X86': 'x86'})

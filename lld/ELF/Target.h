@@ -150,6 +150,7 @@ TargetInfo *getMSP430TargetInfo();
 TargetInfo *getPPC64TargetInfo();
 TargetInfo *getPPCTargetInfo();
 TargetInfo *getRISCVTargetInfo();
+TargetInfo *getRV16KTargetInfo();
 TargetInfo *getSPARCV9TargetInfo();
 TargetInfo *getX32TargetInfo();
 TargetInfo *getX86TargetInfo();
