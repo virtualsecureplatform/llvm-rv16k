@@ -35,6 +35,9 @@ void RV16K::Linker::ConstructJob(Compilation &C, const JobAction &JA,
   // Place .data section to address 0x10000.
   CmdArgs.push_back("-Tdata=0x10000");
 
+  // TODO: The latest lld has --nmagic option, which is more suitable here?
+  CmdArgs.push_back("--omagic");
+
   CmdArgs.push_back("-o");
   CmdArgs.push_back(Output.getFilename());
   C.addCommand(llvm::make_unique<Command>(JA, *this, Args.MakeArgString(Linker),
