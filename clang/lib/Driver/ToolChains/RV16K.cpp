@@ -30,8 +30,10 @@ void RV16K::Linker::ConstructJob(Compilation &C, const JobAction &JA,
 
   AddLinkerInputs(ToolChain, Inputs, Args, CmdArgs, JA);
 
-  // The beginning of .text section should be placed address 0.
+  // Place .text section to address 0.
   CmdArgs.push_back("-Ttext=0");
+  // Place .data section to address 0x10000.
+  CmdArgs.push_back("-Tdata=0x10000");
 
   CmdArgs.push_back("-o");
   CmdArgs.push_back(Output.getFilename());

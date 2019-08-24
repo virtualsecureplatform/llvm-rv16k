@@ -57,7 +57,14 @@ void RV16K::relocateOne(uint8_t *Loc, const RelType Type,
                         const uint64_t Val) const {
   switch (Type) {
   case R_RV16K_16:
-    write16le(Loc, Val);
+    // ELF files for RV16K have to have two address spaces for ROM and RAM,
+    // which is not supported by ELF naively. Instead, in ELF's virtual
+    // address space we place .text section (ROM) to 0x00000000 and .data
+    // section (RAM) to 0x00010000. Since RV16K uses pc-relative relocations
+    // (R_PC) only in .text, this ad-hoc approach works. But for absolute
+    // relocations (R_ABS) in .data section some tricks should be made; only the
+    // bottom 16 bits of the Val does matter in ROM.
+    write16le(Loc, Val & 0xffff);
     break;
 
   case R_RV16K_PC8:
