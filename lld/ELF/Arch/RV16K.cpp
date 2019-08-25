@@ -45,12 +45,8 @@ RelExpr RV16K::getRelExpr(const RelType Type, const Symbol &S,
   case R_RV16K_PC8:
   case R_RV16K_PC16:
     return R_PC;
-
-  default:
-    error("unimplemented relocation type");
   }
-
-  assert(false);
+  llvm_unreachable("unimplemented relocation type");
 }
 
 void RV16K::relocateOne(uint8_t *Loc, const RelType Type,
