@@ -8,9 +8,9 @@ define i16 @test_call_external(i16 %a) nounwind {
 ; RV16K-LABEL: test_call_external:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	jal	external_function
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -31,9 +31,9 @@ define i16 @test_call_defined(i16 %a) nounwind {
 ; RV16K-LABEL: test_call_defined:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	jal	defined_function
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
   %1 = call i16 @defined_function(i16 %a) nounwind
@@ -44,11 +44,11 @@ define i16 @test_call_indirect(i16 (i16)* %a, i16 %b) nounwind {
 ; RV16K-LABEL: test_call_indirect:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:   addi sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	mov	a2, a0
 ; RV16K-NEXT:	mov	a0, a1
 ; RV16K-NEXT:	jalr	a2
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
   %1 = call i16 %a(i16 %b)
@@ -62,13 +62,13 @@ define i16 @test_call_external_many_args(i16 %a) nounwind {
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	li	a1, 12
 ; RV16K-NEXT:	sub	sp, a1
-; RV16K-NEXT:	sw	ra, 10(sp)
-; RV16K-NEXT:	sw	s0, 8(sp)
+; RV16K-NEXT:	swsp	ra, 10(sp)
+; RV16K-NEXT:	swsp	s0, 8(sp)
 ; RV16K-NEXT:	mov	s0, a0
-; RV16K-NEXT:	sw	s0, 6(sp)
-; RV16K-NEXT:	sw	s0, 4(sp)
-; RV16K-NEXT:	sw	s0, 2(sp)
-; RV16K-NEXT:	sw	s0, 0(sp)
+; RV16K-NEXT:	swsp	s0, 6(sp)
+; RV16K-NEXT:	swsp	s0, 4(sp)
+; RV16K-NEXT:	swsp	s0, 2(sp)
+; RV16K-NEXT:	swsp	s0, 0(sp)
 ; RV16K-NEXT:	mov	a1, s0
 ; RV16K-NEXT:	mov	a2, s0
 ; RV16K-NEXT:	mov	a3, s0
@@ -76,8 +76,8 @@ define i16 @test_call_external_many_args(i16 %a) nounwind {
 ; RV16K-NEXT:	mov	a5, s0
 ; RV16K-NEXT:	jal	external_many_args
 ; RV16K-NEXT:	mov	a0, s0
-; RV16K-NEXT:	lw	s0, 8(sp)
-; RV16K-NEXT:	lw	ra, 10(sp)
+; RV16K-NEXT:	lwsp	s0, 8(sp)
+; RV16K-NEXT:	lwsp	ra, 10(sp)
 ; RV16K-NEXT:	li	a1, 12
 ; RV16K-NEXT:	add	sp, a1
 ; RV16K-NEXT:	jr	ra
@@ -90,7 +90,7 @@ define i16 @test_call_external_many_args(i16 %a) nounwind {
 define i16 @defined_many_args(i16, i16, i16, i16, i16, i16, i16, i16, i16, i16 %j) nounwind {
 ; RV16K-LABEL: defined_many_args:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	lw	a0, 6(sp)
+; RV16K-NEXT:	lwsp	a0, 6(sp)
 ; RV16K-NEXT:	addi	a0, 1
 ; RV16K-NEXT:	jr	ra
   %added = add i16 %j, 1
@@ -102,18 +102,18 @@ define i16 @test_call_defined_many_args(i16 %a) nounwind {
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	li	a1, 10
 ; RV16K-NEXT:	sub	sp, a1
-; RV16K-NEXT:	sw	ra, 8(sp)
-; RV16K-NEXT:	sw	a0, 6(sp)
-; RV16K-NEXT:	sw	a0, 4(sp)
-; RV16K-NEXT:	sw	a0, 2(sp)
-; RV16K-NEXT:	sw	a0, 0(sp)
+; RV16K-NEXT:	swsp	ra, 8(sp)
+; RV16K-NEXT:	swsp	a0, 6(sp)
+; RV16K-NEXT:	swsp	a0, 4(sp)
+; RV16K-NEXT:	swsp	a0, 2(sp)
+; RV16K-NEXT:	swsp	a0, 0(sp)
 ; RV16K-NEXT:	mov	a1, a0
 ; RV16K-NEXT:	mov	a2, a0
 ; RV16K-NEXT:	mov	a3, a0
 ; RV16K-NEXT:	mov	a4, a0
 ; RV16K-NEXT:	mov	a5, a0
 ; RV16K-NEXT:	jal	defined_many_args
-; RV16K-NEXT:	lw	ra, 8(sp)
+; RV16K-NEXT:	lwsp	ra, 8(sp)
 ; RV16K-NEXT:	li	a1, 10
 ; RV16K-NEXT:	add	sp, a1
 ; RV16K-NEXT:	jr	ra

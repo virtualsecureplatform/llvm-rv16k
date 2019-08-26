@@ -21,9 +21,9 @@ define void @pass_uint8_as_uint8(i8 zeroext %a) nounwind {
 ; RV16K-LABEL: pass_uint8_as_uint8:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	jal	receive_uint8
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -37,9 +37,9 @@ define zeroext i8 @ret_callresult_uint8_as_uint8() nounwind {
 ; RV16K-LABEL: ret_callresult_uint8_as_uint8:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	jal	return_uint8
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -64,12 +64,12 @@ define void @pass_uint8_as_sint8(i8 zeroext %a) nounwind {
 ; RV16K-LABEL: pass_uint8_as_sint8:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	li	a1, 8
 ; RV16K-NEXT:	lsl	a0, a1
 ; RV16K-NEXT:	asr	a0, a1
 ; RV16K-NEXT:	jal	receive_sint8
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -81,12 +81,12 @@ define signext i8 @ret_callresult_uint8_as_sint8() nounwind {
 ; RV16K-LABEL: ret_callresult_uint8_as_sint8:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	jal	return_uint8
 ; RV16K-NEXT:	li	a1, 8
 ; RV16K-NEXT:	lsl	a0, a1
 ; RV16K-NEXT:	asr	a0, a1
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -109,9 +109,9 @@ define void @pass_uint8_as_anyint16(i8 zeroext %a) nounwind {
 ; RV16K-LABEL: pass_uint8_as_anyint16:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	jal	receive_anyint16
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -124,9 +124,9 @@ define signext i16 @ret_callresult_uint8_as_anyint16() nounwind {
 ; RV16K-LABEL: ret_callresult_uint8_as_anyint16:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	jal	return_uint8
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -149,11 +149,11 @@ define void @pass_sint8_as_uint8(i8 signext %a) nounwind {
 ; RV16K-LABEL: pass_sint8_as_uint8:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	li	a1, 255
 ; RV16K-NEXT:	and	a0, a1
 ; RV16K-NEXT:	jal	receive_uint8
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -167,11 +167,11 @@ define zeroext i8 @ret_callresult_sint8_as_uint8() nounwind {
 ; RV16K-LABEL: ret_callresult_sint8_as_uint8:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	jal	return_sint8
 ; RV16K-NEXT:	li	a1, 255
 ; RV16K-NEXT:	and	a0, a1
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -191,9 +191,9 @@ define void @pass_sint8_as_sint8(i8 signext %a) nounwind {
 ; RV16K-LABEL: pass_sint8_as_sint8:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	jal	receive_sint8
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -205,9 +205,9 @@ define signext i8 @ret_callresult_sint8_as_sint8() nounwind {
 ; RV16K-LABEL: ret_callresult_sint8_as_sint8:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	jal	return_sint8
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -228,9 +228,9 @@ define void @pass_sint8_as_anyint16(i8 signext %a) nounwind {
 ; RV16K-LABEL: pass_sint8_as_anyint16:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	jal	receive_anyint16
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -243,9 +243,9 @@ define signext i16 @ret_callresult_sint8_as_anyint16() nounwind {
 ; RV16K-LABEL: ret_callresult_sint8_as_anyint16:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	jal	return_sint8
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -269,11 +269,11 @@ define void @pass_anyint16_as_uint8(i16 signext %a) nounwind {
 ; RV16K-LABEL: pass_anyint16_as_uint8:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	li	a1, 255
 ; RV16K-NEXT:	and	a0, a1
 ; RV16K-NEXT:	jal	receive_uint8
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -288,11 +288,11 @@ define zeroext i8 @ret_callresult_anyint16_as_uint8() nounwind {
 ; RV16K-LABEL: ret_callresult_anyint16_as_uint8:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	jal	return_anyint16
 ; RV16K-NEXT:	li	a1, 255
 ; RV16K-NEXT:	and	a0, a1
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -317,12 +317,12 @@ define void @pass_anyint16_as_sint8(i16 signext %a) nounwind {
 ; RV16K-LABEL: pass_anyint16_as_sint8:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	li	a1, 8
 ; RV16K-NEXT:	lsl	a0, a1
 ; RV16K-NEXT:	asr	a0, a1
 ; RV16K-NEXT:	jal	receive_sint8
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -335,12 +335,12 @@ define signext i8 @ret_callresult_anyint16_as_sint8() nounwind {
 ; RV16K-LABEL: ret_callresult_anyint16_as_sint8:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	jal	return_anyint16
 ; RV16K-NEXT:	li	a1, 8
 ; RV16K-NEXT:	lsl	a0, a1
 ; RV16K-NEXT:	asr	a0, a1
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -361,9 +361,9 @@ define void @pass_anyint16_as_anyint16(i16 signext %a) nounwind {
 ; RV16K-LABEL: pass_anyint16_as_anyint16:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	jal	receive_anyint16
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
@@ -375,9 +375,9 @@ define signext i16 @ret_callresult_anyint16_as_anyint16() nounwind {
 ; RV16K-LABEL: ret_callresult_anyint16_as_anyint16:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	sw	ra, 0(sp)
+; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	jal	return_anyint16
-; RV16K-NEXT:	lw	ra, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 

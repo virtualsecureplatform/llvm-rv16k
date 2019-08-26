@@ -54,9 +54,6 @@ BitVector RV16KRegisterInfo::getReservedRegs(const MachineFunction &MF) const {
 void RV16KRegisterInfo::eliminateFrameIndex(MachineBasicBlock::iterator II,
                                             int SPAdj, unsigned FIOperandNum,
                                             RegScavenger *RS) const {
-  // TODO: this implementation is a temporary placeholder which does just
-  // enough to allow other aspects of code generation to be tested
-
   assert(SPAdj == 0 && "Unexpected non-zero SPAdj value");
 
   MachineInstr &MI = *II;

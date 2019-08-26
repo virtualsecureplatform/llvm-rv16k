@@ -23,6 +23,7 @@ add_llvm_target(RV16KCodeGen
   RV16KRegisterInfo.cpp
   RV16KSubtarget.cpp
   RV16KTargetMachine.cpp
+  RV16KUseLWSPSWSP.cpp
   )
 add_subdirectory(AsmParser)
 add_subdirectory(Disassembler)

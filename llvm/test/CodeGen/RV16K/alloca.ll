@@ -11,8 +11,8 @@ define void @simple_alloca(i32 %n) nounwind {
 ; RV16K-LABEL: simple_alloca:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -4
-; RV16K-NEXT:	sw	ra, 2(sp)
-; RV16K-NEXT:	sw	fp, 0(sp)
+; RV16K-NEXT:	swsp	ra, 2(sp)
+; RV16K-NEXT:	swsp	fp, 0(sp)
 ; RV16K-NEXT:	mov	fp, sp
 ; RV16K-NEXT:	addi	fp, 4
 ; RV16K-NEXT:	addi	a0, 1
@@ -24,8 +24,8 @@ define void @simple_alloca(i32 %n) nounwind {
 ; RV16K-NEXT:	jal notdead
 ; RV16K-NEXT:	mov	sp, fp
 ; RV16K-NEXT:	addi	sp, -4
-; RV16K-NEXT:	lw	fp, 0(sp)
-; RV16K-NEXT:	lw	ra, 2(sp)
+; RV16K-NEXT:	lwsp	fp, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 2(sp)
 ; RV16K-NEXT:	addi	sp, 4
 ; RV16K-NEXT:	jr	ra
 
@@ -41,9 +41,9 @@ define void @scoped_alloca(i32 %n) nounwind {
 ; RV16K-LABEL: scoped_alloca:
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -6
-; RV16K-NEXT:	sw	ra, 4(sp)
-; RV16K-NEXT:	sw	fp, 2(sp)
-; RV16K-NEXT:	sw	s0, 0(sp)
+; RV16K-NEXT:	swsp	ra, 4(sp)
+; RV16K-NEXT:	swsp	fp, 2(sp)
+; RV16K-NEXT:	swsp	s0, 0(sp)
 ; RV16K-NEXT:	mov	fp, sp
 ; RV16K-NEXT:	addi	fp, 6
 ; RV16K-NEXT:	addi	a0, 1
@@ -57,9 +57,9 @@ define void @scoped_alloca(i32 %n) nounwind {
 ; RV16K-NEXT:	mov	sp, s0
 ; RV16K-NEXT:	mov	sp, fp
 ; RV16K-NEXT:	addi	sp, -6
-; RV16K-NEXT:	lw	s0, 0(sp)
-; RV16K-NEXT:	lw	fp, 2(sp)
-; RV16K-NEXT:	lw	ra, 4(sp)
+; RV16K-NEXT:	lwsp	s0, 0(sp)
+; RV16K-NEXT:	lwsp	fp, 2(sp)
+; RV16K-NEXT:	lwsp	ra, 4(sp)
 ; RV16K-NEXT:	addi	sp, 6
 ; RV16K-NEXT:	jr	ra
 

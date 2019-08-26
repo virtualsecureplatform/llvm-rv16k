@@ -68,6 +68,8 @@ public:
   }
 
   bool addInstSelector() override;
+
+  void addPreEmitPass() override;
 };
 } // namespace
 
@@ -79,4 +81,8 @@ bool RV16KPassConfig::addInstSelector() {
   addPass(createRV16KISelDag(getRV16KTargetMachine()));
 
   return false;
+}
+
+void RV16KPassConfig::addPreEmitPass() {
+  addPass(createRV16KUseLWSPSWSPPass());
 }

@@ -33,6 +33,9 @@ bool LowerRV16KMachineOperandToMCOperand(const MachineOperand &MO,
                                          MCOperand &MCOp, const AsmPrinter &AP);
 
 FunctionPass *createRV16KISelDag(RV16KTargetMachine &TM);
+
+FunctionPass *createRV16KUseLWSPSWSPPass();
+void initializeRV16KUseLWSPSWSPPass(PassRegistry &);
 } // namespace llvm
 
 #endif
