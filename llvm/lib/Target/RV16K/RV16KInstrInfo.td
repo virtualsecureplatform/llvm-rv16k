@@ -342,3 +342,6 @@ let hasSideEffects = 0, mayLoad = 0, mayStore = 0, isCodeGenOnly = 0 in
 def PseudoHLT : Pseudo<(outs), (ins), []> {
   let AsmString = "hlt";
 }
+
+let hasSideEffects = 0, mayLoad = 0, mayStore = 0, Defs = [FLAGS] in
+def FRMIDX : Pseudo<(outs GPR:$rd), (ins GPR:$rs, simm16:$imm), []>;

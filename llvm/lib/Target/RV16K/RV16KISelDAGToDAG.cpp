@@ -53,13 +53,14 @@ void RV16KDAGToDAGISel::Select(SDNode *Node) {
   }
 
   if (Node->getOpcode() == ISD::FrameIndex) {
-    // SDLoc DL(Node);
-    // SDValue Imm = CurDAG->getTargetConstant(0, DL, MVT::i16);
-    // int FI = dyn_cast<FrameIndexSDNode>(Node)->getIndex();
-    // EVT VT = Node->getValueType(0);
-    // SDValue TFI = CurDAG->getTargetFrameIndex(FI, VT);
-    // ReplaceNode(Node, CurDAG->getMachineNode(RV16K::ADDI
-    llvm_unreachable("RV16KDAGToDAGISel::Select ; can't handle FrameIndex");
+    // Convert the frameindex into a temp instruction that will hold the
+    // effective address of the final stack slot.
+    int FI = cast<FrameIndexSDNode>(Node)->getIndex();
+    SDValue TFI = CurDAG->getTargetFrameIndex(FI, MVT::i16);
+
+    CurDAG->SelectNodeTo(Node, RV16K::FRMIDX, MVT::i16, TFI,
+                         CurDAG->getTargetConstant(0, SDLoc(Node), MVT::i16));
+    return;
   }
 
   // Select the default instruction.
