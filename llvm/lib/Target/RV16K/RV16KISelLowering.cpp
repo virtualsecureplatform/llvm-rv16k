@@ -73,25 +73,6 @@ static RV16K::CondCode getRV16KCondCode(ISD::CondCode CC) {
   }
 }
 
-static unsigned getJumpOpcodeForCondCode(RV16K::CondCode CC) {
-  switch (CC) {
-  default:
-    llvm_unreachable("Unsupported CondCode");
-  case RV16K::COND_L:
-    return RV16K::JL;
-  case RV16K::COND_LE:
-    return RV16K::JLE;
-  case RV16K::COND_E:
-    return RV16K::JE;
-  case RV16K::COND_NE:
-    return RV16K::JNE;
-  case RV16K::COND_B:
-    return RV16K::JB;
-  case RV16K::COND_BE:
-    return RV16K::JBE;
-  }
-}
-
 RV16KTargetLowering::RV16KTargetLowering(const TargetMachine &TM,
                                          const RV16KSubtarget &STI)
     : TargetLowering(TM), Subtarget(STI) {
@@ -233,15 +214,8 @@ SDValue RV16KTargetLowering::LowerBR_CC(SDValue Op, SelectionDAG &DAG) const {
   SDValue Dest = Op.getOperand(4);
   SDLoc DL(Op);
 
-  ISD::CondCode SetCCOpcode = cast<CondCodeSDNode>(Cond)->get();
-  normalizeSetCC(LHS, RHS, SetCCOpcode);
-  RV16K::CondCode CC = getRV16KCondCode(SetCCOpcode);
-
-  // Create new SelectionDAG nodes
-  SDValue TargetCC = DAG.getConstant(CC, DL, MVT::i16);
-  SDValue Cmp = DAG.getNode(RV16KISD::CMP, DL, MVT::Glue, LHS, RHS, TargetCC);
-  return DAG.getNode(RV16KISD::BR_CC, DL, Op.getValueType(), Chain, Dest,
-                     TargetCC, Cmp);
+  return DAG.getNode(RV16KISD::BR_CC, DL, Op.getValueType(), Chain, LHS, RHS,
+                     Dest, Cond);
 }
 
 SDValue RV16KTargetLowering::LowerSELECT(SDValue Op, SelectionDAG &DAG) const {
@@ -325,14 +299,20 @@ RV16KTargetLowering::EmitInstrWithCustomInserter(MachineInstr &MI,
   if (MIOpcode == RV16K::SelectCCrr) {
     unsigned LHS = MI.getOperand(1).getReg();
     unsigned RHS = MI.getOperand(2).getReg();
-    BuildMI(HeadMBB, DL, TII.get(RV16K::CMP)).addReg(LHS).addReg(RHS);
+    BuildMI(HeadMBB, DL, TII.get(RV16K::Bcc))
+        .addReg(LHS)
+        .addReg(RHS)
+        .addMBB(TailMBB)
+        .addImm(MI.getOperand(3).getImm());
   } else { // MIOpcode == RV16K::SelectCCri
     unsigned LHS = MI.getOperand(1).getReg();
     unsigned RHS = MI.getOperand(2).getImm();
-    BuildMI(HeadMBB, DL, TII.get(RV16K::CMPI)).addReg(LHS).addImm(RHS);
+    BuildMI(HeadMBB, DL, TII.get(RV16K::BccI))
+        .addReg(LHS)
+        .addImm(RHS)
+        .addMBB(TailMBB)
+        .addImm(MI.getOperand(3).getImm());
   }
-  RV16K::CondCode CC = static_cast<RV16K::CondCode>(MI.getOperand(3).getImm());
-  BuildMI(HeadMBB, DL, TII.get(getJumpOpcodeForCondCode(CC))).addMBB(TailMBB);
 
   // IfFalseMBB just falls through to TailMBB.
   IfFalseMBB->addSuccessor(TailMBB);
@@ -607,8 +587,6 @@ const char *RV16KTargetLowering::getTargetNodeName(unsigned Opcode) const {
     return "RV16KISD::RET_FLAG";
   case RV16KISD::CALL:
     return "RV16KISD::CALL";
-  case RV16KISD::CMP:
-    return "RV16KISD::CMP";
   case RV16KISD::BR_CC:
     return "RV16KISD::BR_CC";
   case RV16KISD::SELECT_CC:

@@ -15,6 +15,7 @@ add_public_tablegen_target(RV16KCommonTableGen)
 
 add_llvm_target(RV16KCodeGen
   RV16KAsmPrinter.cpp
+  RV16KExpandPseudoInsts.cpp
   RV16KFrameLowering.cpp
   RV16KInstrInfo.cpp
   RV16KISelDAGToDAG.cpp

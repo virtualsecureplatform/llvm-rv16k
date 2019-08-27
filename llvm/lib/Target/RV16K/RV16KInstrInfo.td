@@ -21,9 +21,9 @@ def RV16K_COND_NE  : PatLeaf<(i16 3)>;
 def RV16K_COND_B   : PatLeaf<(i16 4)>;
 def RV16K_COND_BE  : PatLeaf<(i16 5)>;
 
-def SDT_RV16KCmp      : SDTypeProfile<0,  2, [SDTCisSameAs<0, 1>]>;
-def SDT_RV16KBrCC     : SDTypeProfile<0,  2, [SDTCisVT<0, OtherVT>,
-                                                  SDTCisVT<1, i16>]>;
+def SDT_RV16KBrCC     : SDTypeProfile<0, 4, [SDTCisVT<0, i16>,
+                                             SDTCisVT<1, i16>,
+                                             SDTCisVT<2, OtherVT>]>;
 
 def SDT_RV16KCall         : SDTypeProfile<0, -1, [SDTCisVT<0, i16>]>;
 def SDT_RV16KCallSeqStart : SDCallSeqStart<[SDTCisVT<0, i16>, SDTCisVT<1, i16>]>;
@@ -34,8 +34,7 @@ def SDT_RV16KSelectCC     : SDTypeProfile<1, 5, [SDTCisSameAs<1, 2>,
                                                  SDTCisSameAs<0, 4>,
                                                  SDTCisSameAs<4, 5>]>;
 
-def RV16KCmp : SDNode<"RV16KISD::CMP", SDT_RV16KCmp, [SDNPOutGlue]>;
-def RV16KBrCC : SDNode<"RV16KISD::BR_CC", SDT_RV16KBrCC, [SDNPHasChain, SDNPInGlue]>;
+def RV16KBrCC : SDNode<"RV16KISD::BR_CC", SDT_RV16KBrCC, [SDNPHasChain]>;
 
 def Call         : SDNode<"RV16KISD::CALL", SDT_RV16KCall,
                           [SDNPHasChain, SDNPOptInGlue, SDNPOutGlue,
@@ -291,15 +290,6 @@ def : Pat<(sra GPR:$rs1, GPR:$rs2), (ASR GPR:$rs1, GPR:$rs2)>;
 def : Pat<(simm16:$imm16), (LI simm16:$imm16)>;
 def : Pat<(add GPR:$rs1, simm4:$imm4), (ADDI GPR:$rs1, simm4:$imm4)>;
 
-def : Pat<(RV16KCmp GPR:$rs1, simm4:$imm4), (CMPI GPR:$rs1, simm4:$imm4)>;
-def : Pat<(RV16KCmp GPR:$rs1, GPR:$rs2), (CMP GPR:$rs1, GPR:$rs2)>;
-def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_L),  (JL  simm8_lsb0:$imm7)>;
-def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_LE), (JLE simm8_lsb0:$imm7)>;
-def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_E),  (JE  simm8_lsb0:$imm7)>;
-def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_NE), (JNE simm8_lsb0:$imm7)>;
-def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_B),  (JB  simm8_lsb0:$imm7)>;
-def : Pat<(RV16KBrCC bb:$imm7, RV16K_COND_BE), (JBE simm8_lsb0:$imm7)>;
-
 def : Pat<(brind GPR:$rs), (JALR GPR:$rs)>;
 
 def : Pat<(Call GPR:$rs), (JALR GPR:$rs)>;
@@ -345,3 +335,52 @@ def PseudoHLT : Pseudo<(outs), (ins), []> {
 
 let hasSideEffects = 0, mayLoad = 0, mayStore = 0, Defs = [FLAGS] in
 def FRMIDX : Pseudo<(outs GPR:$rd), (ins GPR:$rs, simm16:$imm), []>;
+
+let hasSideEffects = 0, mayLoad = 0, mayStore = 0,
+    isBranch = 1, isTerminator = 1, Defs = [FLAGS] in {
+  def Bcc  : Pseudo<(outs), (ins GPR:$lhs, GPR:$rhs,   simm8_lsb0:$dst, i16imm:$cc), []>;
+  def BccI : Pseudo<(outs), (ins GPR:$lhs, simm4:$rhs, simm8_lsb0:$dst, i16imm:$cc), []>;
+}
+
+// ==
+def : Pat<(RV16KBrCC GPR:$lhs, GPR:$rhs,   bb:$dst,         SETEQ ),
+          (Bcc       GPR:$lhs, GPR:$rhs,   simm8_lsb0:$dst, RV16K_COND_E )>;
+def : Pat<(RV16KBrCC GPR:$lhs, simm4:$rhs, bb:$dst,         SETEQ ),
+          (BccI      GPR:$lhs, simm4:$rhs, simm8_lsb0:$dst, RV16K_COND_E )>;
+// !=
+def : Pat<(RV16KBrCC GPR:$lhs, GPR:$rhs,   bb:$dst,         SETNE ),
+          (Bcc       GPR:$lhs, GPR:$rhs,   simm8_lsb0:$dst, RV16K_COND_NE)>;
+def : Pat<(RV16KBrCC GPR:$lhs, simm4:$rhs, bb:$dst,         SETNE ),
+          (BccI      GPR:$lhs, simm4:$rhs, simm8_lsb0:$dst, RV16K_COND_NE)>;
+// signed <
+def : Pat<(RV16KBrCC GPR:$lhs, GPR:$rhs,   bb:$dst,         SETLT ),
+          (Bcc       GPR:$lhs, GPR:$rhs,   simm8_lsb0:$dst, RV16K_COND_L )>;
+def : Pat<(RV16KBrCC GPR:$lhs, simm4:$rhs, bb:$dst,         SETLT ),
+          (BccI      GPR:$lhs, simm4:$rhs, simm8_lsb0:$dst, RV16K_COND_L )>;
+// signed <=
+def : Pat<(RV16KBrCC GPR:$lhs, GPR:$rhs,   bb:$dst,         SETLE ),
+          (Bcc       GPR:$lhs, GPR:$rhs,   simm8_lsb0:$dst, RV16K_COND_LE)>;
+def : Pat<(RV16KBrCC GPR:$lhs, simm4:$rhs, bb:$dst,         SETLE ),
+          (BccI      GPR:$lhs, simm4:$rhs, simm8_lsb0:$dst, RV16K_COND_LE)>;
+// signed >
+def : Pat<(RV16KBrCC GPR:$lhs, GPR:$rhs,   bb:$dst,         SETGT ),
+          (Bcc       GPR:$rhs, GPR:$lhs,   simm8_lsb0:$dst, RV16K_COND_L )>;
+// signed >=
+def : Pat<(RV16KBrCC GPR:$lhs, GPR:$rhs,   bb:$dst,         SETGE ),
+          (Bcc       GPR:$rhs, GPR:$lhs,   simm8_lsb0:$dst, RV16K_COND_LE)>;
+// unsigned <
+def : Pat<(RV16KBrCC GPR:$lhs, GPR:$rhs,   bb:$dst,         SETULT),
+          (Bcc       GPR:$lhs, GPR:$rhs,   simm8_lsb0:$dst, RV16K_COND_B )>;
+def : Pat<(RV16KBrCC GPR:$lhs, simm4:$rhs, bb:$dst,         SETULT),
+          (BccI      GPR:$lhs, simm4:$rhs, simm8_lsb0:$dst, RV16K_COND_B )>;
+// unsigned <=
+def : Pat<(RV16KBrCC GPR:$lhs, GPR:$rhs,   bb:$dst,         SETULE),
+          (Bcc       GPR:$lhs, GPR:$rhs,   simm8_lsb0:$dst, RV16K_COND_BE)>;
+def : Pat<(RV16KBrCC GPR:$lhs, simm4:$rhs, bb:$dst,         SETULE),
+          (BccI      GPR:$lhs, simm4:$rhs, simm8_lsb0:$dst, RV16K_COND_BE)>;
+// unsigned >
+def : Pat<(RV16KBrCC GPR:$lhs, GPR:$rhs,   bb:$dst,         SETUGT),
+          (Bcc       GPR:$rhs, GPR:$lhs,   simm8_lsb0:$dst, RV16K_COND_B )>;
+// unsigned >=
+def : Pat<(RV16KBrCC GPR:$lhs, GPR:$rhs,   bb:$dst,         SETUGE),
+          (Bcc       GPR:$rhs, GPR:$lhs,   simm8_lsb0:$dst, RV16K_COND_BE)>;

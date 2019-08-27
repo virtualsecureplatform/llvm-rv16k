@@ -70,6 +70,7 @@ public:
   bool addInstSelector() override;
 
   void addPreEmitPass() override;
+  void addPreEmitPass2() override;
 };
 } // namespace
 
@@ -85,4 +86,8 @@ bool RV16KPassConfig::addInstSelector() {
 
 void RV16KPassConfig::addPreEmitPass() {
   addPass(createRV16KUseLWSPSWSPPass());
+}
+
+void RV16KPassConfig::addPreEmitPass2() {
+  addPass(createRV16KExpandPseudoPass(), false, true);
 }

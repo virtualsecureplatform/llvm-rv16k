@@ -27,6 +27,8 @@
 #define GET_INSTRINFO_CTOR_DTOR
 #include "RV16KGenInstrInfo.inc"
 
+#define DEBUG_TYPE "rv16k-instr-info"
+
 using namespace llvm;
 
 RV16KInstrInfo::RV16KInstrInfo()
@@ -75,3 +77,10 @@ void RV16KInstrInfo::loadRegFromStackSlot(MachineBasicBlock &MBB,
 
   BuildMI(MBB, I, DL, get(RV16K::LW), DstReg).addFrameIndex(FI).addImm(0);
 }
+
+
+
+
+
+
+

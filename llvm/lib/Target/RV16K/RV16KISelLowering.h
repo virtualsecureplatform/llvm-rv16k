@@ -26,8 +26,6 @@ enum NodeType : unsigned {
   FIRST_NUMBER = ISD::BUILTIN_OP_END,
   RET_FLAG,
   CALL,
-
-  CMP,
   BR_CC,
   SELECT_CC,
 };

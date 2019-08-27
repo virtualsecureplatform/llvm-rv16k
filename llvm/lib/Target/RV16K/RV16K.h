@@ -36,6 +36,9 @@ FunctionPass *createRV16KISelDag(RV16KTargetMachine &TM);
 
 FunctionPass *createRV16KUseLWSPSWSPPass();
 void initializeRV16KUseLWSPSWSPPass(PassRegistry &);
+
+FunctionPass *createRV16KExpandPseudoPass();
+void initializeRV16KExpandPseudoPass(PassRegistry &);
 } // namespace llvm
 
 #endif

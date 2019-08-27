@@ -39,6 +39,7 @@ public:
                             MachineBasicBlock::iterator I, unsigned DstReg,
                             int FI, const TargetRegisterClass *RC,
                             const TargetRegisterInfo *TRI) const override;
+
 };
 
 namespace RV16K {
