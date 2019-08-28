@@ -50,13 +50,11 @@ define i8 @test_cttz_i8(i8 %a) nounwind {
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
 ; RV16K-NEXT:	swsp	ra, 0(sp)
-; RV16K-NEXT:	li	a1, 8
-; RV16K-NEXT:	li	a2, 255
-; RV16K-NEXT:	and	a2, a0
-; RV16K-NEXT:	cmpi	a2, 0
+; RV16K-NEXT:	li	a1, 255
+; RV16K-NEXT:	and	a1, a0
+; RV16K-NEXT:	cmpi	a1, 0
 ; RV16K-NEXT:	je	.LBB2_2
-; RV16K-NEXT:	j	.LBB2_1
-; RV16K-NEXT:.LBB2_1:                                # %cond.false
+; RV16K-NEXT:# %bb.1:                                # %cond.false
 ; RV16K-NEXT:	li	a1, -1
 ; RV16K-NEXT:	xor	a1, a0
 ; RV16K-NEXT:	addi	a0, -1
@@ -82,11 +80,12 @@ define i8 @test_cttz_i8(i8 %a) nounwind {
 ; RV16K-NEXT:	and	a0, a1
 ; RV16K-NEXT:	li	a1, 257
 ; RV16K-NEXT:	jal	__mulhi3
-; RV16K-NEXT:	mov	a1, a0
+; RV16K-NEXT:	li	a1, 8
+; RV16K-NEXT:	lsr	a0, a1
+; RV16K-NEXT:	j	.LBB2_3
+; RV16K-NEXT:.LBB2_2:
 ; RV16K-NEXT:	li	a0, 8
-; RV16K-NEXT:	lsr	a1, a0
-; RV16K-NEXT:.LBB2_2:                                # %cond.end
-; RV16K-NEXT:	mov	a0, a1
+; RV16K-NEXT:.LBB2_3:                                # %cond.end
 ; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
@@ -100,11 +99,9 @@ define i16 @test_cttz_i16(i16 %a) nounwind {
 ; RV16K:       # %bb.0:
 ; RV16K-NEXT:	addi	sp, -2
 ; RV16K-NEXT:	swsp	ra, 0(sp)
-; RV16K-NEXT:	li	a1, 16
 ; RV16K-NEXT:	cmpi	a0, 0
 ; RV16K-NEXT:	je	.LBB3_2
-; RV16K-NEXT:	j	.LBB3_1
-; RV16K-NEXT:.LBB3_1:                                # %cond.false
+; RV16K-NEXT:# %bb.1:                                # %cond.false
 ; RV16K-NEXT:	li	a1, -1
 ; RV16K-NEXT:	xor	a1, a0
 ; RV16K-NEXT:	addi	a0, -1
@@ -130,11 +127,12 @@ define i16 @test_cttz_i16(i16 %a) nounwind {
 ; RV16K-NEXT:	and	a0, a1
 ; RV16K-NEXT:	li	a1, 257
 ; RV16K-NEXT:	jal	__mulhi3
-; RV16K-NEXT:	mov	a1, a0
-; RV16K-NEXT:	li	a0, 8
-; RV16K-NEXT:	lsr	a1, a0
-; RV16K-NEXT:.LBB3_2:                                # %cond.end
-; RV16K-NEXT:	mov	a0, a1
+; RV16K-NEXT:	li	a1, 8
+; RV16K-NEXT:	lsr	a0, a1
+; RV16K-NEXT:	j	.LBB3_3
+; RV16K-NEXT:.LBB3_2:
+; RV16K-NEXT:	li	a0, 16
+; RV16K-NEXT:.LBB3_3:                                # %cond.end
 ; RV16K-NEXT:	lwsp	ra, 0(sp)
 ; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
@@ -174,19 +172,19 @@ define i32 @test_cttz_i32(i32 %a) nounwind {
 ; RV16K-NEXT:	mov	a0, a1
 ; RV16K-NEXT:	and	a0, s4
 ; RV16K-NEXT:	li	a2, 2
-; RV16K-NEXT:	swsp	a2, 0(sp)
+; RV16K-NEXT:	swsp	a2, 2(sp)
 ; RV16K-NEXT:	lsr	a1, a2
 ; RV16K-NEXT:	and	a1, s4
 ; RV16K-NEXT:	add	a1, a0
 ; RV16K-NEXT:	li	a2, 4
-; RV16K-NEXT:	swsp	a2, 2(sp)
+; RV16K-NEXT:	swsp	a2, 4(sp)
 ; RV16K-NEXT:	mov	a0, a1
 ; RV16K-NEXT:	lsr	a0, a2
 ; RV16K-NEXT:	add	a0, a1
 ; RV16K-NEXT:	li	s3, 3855
 ; RV16K-NEXT:	and	a0, s3
 ; RV16K-NEXT:	li	a1, 257
-; RV16K-NEXT:	swsp	a1, 4(sp)
+; RV16K-NEXT:	swsp	a1, 0(sp)
 ; RV16K-NEXT:	jal	__mulhi3
 ; RV16K-NEXT:	mov	s2, a0
 ; RV16K-NEXT:	xor	s0, s1
@@ -199,20 +197,19 @@ define i32 @test_cttz_i32(i32 %a) nounwind {
 ; RV16K-NEXT:	and	a0, a1
 ; RV16K-NEXT:	sub	s1, a0
 ; RV16K-NEXT:	mov	a0, s1
-; RV16K-NEXT:	lwsp	a1, 0(sp)
+; RV16K-NEXT:	lwsp	a1, 2(sp)
 ; RV16K-NEXT:	lsr	a0, a1
 ; RV16K-NEXT:	and	s1, s4
 ; RV16K-NEXT:	and	a0, s4
 ; RV16K-NEXT:	add	a0, s1
 ; RV16K-NEXT:	mov	a1, a0
-; RV16K-NEXT:	lwsp	a2, 2(sp)
+; RV16K-NEXT:	lwsp	a2, 4(sp)
 ; RV16K-NEXT:	lsr	a1, a2
 ; RV16K-NEXT:	add	a1, a0
 ; RV16K-NEXT:	and	s3, a1
 ; RV16K-NEXT:	li	s0, 8
-; RV16K-NEXT:	lsr	s2, s0
 ; RV16K-NEXT:	mov	a0, s3
-; RV16K-NEXT:	lwsp	a1, 4(sp)
+; RV16K-NEXT:	lwsp	a1, 0(sp)
 ; RV16K-NEXT:	jal	__mulhi3
 ; RV16K-NEXT:	lwsp	a1, 10(sp)
 ; RV16K-NEXT:	cmpi	a1, 0
@@ -221,7 +218,10 @@ define i32 @test_cttz_i32(i32 %a) nounwind {
 ; RV16K-NEXT:	lsr	a0, s0
 ; RV16K-NEXT:	li	s2, 16
 ; RV16K-NEXT:	add	s2, a0
+; RV16K-NEXT:	j	.LBB4_3
 ; RV16K-NEXT:.LBB4_2:
+; RV16K-NEXT:	lsr	s2, s0
+; RV16K-NEXT:.LBB4_3:
 ; RV16K-NEXT:	li	a1, 0
 ; RV16K-NEXT:	mov	a0, s2
 ; RV16K-NEXT:	lwsp	s4, 12(sp)
@@ -349,19 +349,19 @@ define i32 @test_cttz_i32_zero_undef(i32 %a) nounwind {
 ; RV16K-NEXT:	mov	a0, a1
 ; RV16K-NEXT:	and	a0, s4
 ; RV16K-NEXT:	li	a2, 2
-; RV16K-NEXT:	swsp	a2, 0(sp)
+; RV16K-NEXT:	swsp	a2, 2(sp)
 ; RV16K-NEXT:	lsr	a1, a2
 ; RV16K-NEXT:	and	a1, s4
 ; RV16K-NEXT:	add	a1, a0
 ; RV16K-NEXT:	li	a2, 4
-; RV16K-NEXT:	swsp	a2, 2(sp)
+; RV16K-NEXT:	swsp	a2, 4(sp)
 ; RV16K-NEXT:	mov	a0, a1
 ; RV16K-NEXT:	lsr	a0, a2
 ; RV16K-NEXT:	add	a0, a1
 ; RV16K-NEXT:	li	s3, 3855
 ; RV16K-NEXT:	and	a0, s3
 ; RV16K-NEXT:	li	a1, 257
-; RV16K-NEXT:	swsp	a1, 4(sp)
+; RV16K-NEXT:	swsp	a1, 0(sp)
 ; RV16K-NEXT:	jal	__mulhi3
 ; RV16K-NEXT:	mov	s2, a0
 ; RV16K-NEXT:	xor	s0, s1
@@ -374,20 +374,19 @@ define i32 @test_cttz_i32_zero_undef(i32 %a) nounwind {
 ; RV16K-NEXT:	and	a0, a1
 ; RV16K-NEXT:	sub	s1, a0
 ; RV16K-NEXT:	mov	a0, s1
-; RV16K-NEXT:	lwsp	a1, 0(sp)
+; RV16K-NEXT:	lwsp	a1, 2(sp)
 ; RV16K-NEXT:	lsr	a0, a1
 ; RV16K-NEXT:	and	s1, s4
 ; RV16K-NEXT:	and	a0, s4
 ; RV16K-NEXT:	add	a0, s1
 ; RV16K-NEXT:	mov	a1, a0
-; RV16K-NEXT:	lwsp	a2, 2(sp)
+; RV16K-NEXT:	lwsp	a2, 4(sp)
 ; RV16K-NEXT:	lsr	a1, a2
 ; RV16K-NEXT:	add	a1, a0
 ; RV16K-NEXT:	and	s3, a1
 ; RV16K-NEXT:	li	s0, 8
-; RV16K-NEXT:	lsr	s2, s0
 ; RV16K-NEXT:	mov	a0, s3
-; RV16K-NEXT:	lwsp	a1, 4(sp)
+; RV16K-NEXT:	lwsp	a1, 0(sp)
 ; RV16K-NEXT:	jal	__mulhi3
 ; RV16K-NEXT:	lwsp	a1, 10(sp)
 ; RV16K-NEXT:	cmpi	a1, 0
@@ -396,7 +395,10 @@ define i32 @test_cttz_i32_zero_undef(i32 %a) nounwind {
 ; RV16K-NEXT:	lsr	a0, s0
 ; RV16K-NEXT:	li	s2, 16
 ; RV16K-NEXT:	add	s2, a0
+; RV16K-NEXT:	j	.LBB7_3
 ; RV16K-NEXT:.LBB7_2:
+; RV16K-NEXT:	lsr	s2, s0
+; RV16K-NEXT:.LBB7_3:
 ; RV16K-NEXT:	li	a1, 0
 ; RV16K-NEXT:	mov	a0, s2
 ; RV16K-NEXT:	lwsp	s4, 12(sp)
@@ -419,11 +421,9 @@ define i16 @test_ctlz_i16(i16 %a) nounwind {
 ; RV16K-NEXT:	addi	sp, -4
 ; RV16K-NEXT:	swsp	ra, 2(sp)
 ; RV16K-NEXT:	swsp	s0, 0(sp)
-; RV16K-NEXT:	li	a1, 16
 ; RV16K-NEXT:	cmpi	a0, 0
 ; RV16K-NEXT:	je	.LBB8_2
-; RV16K-NEXT:	j	.LBB8_1
-; RV16K-NEXT:.LBB8_1:                                # %cond.false
+; RV16K-NEXT:# %bb.1:                                # %cond.false
 ; RV16K-NEXT:	li	a1, 1
 ; RV16K-NEXT:	mov	a2, a0
 ; RV16K-NEXT:	lsr	a2, a1
@@ -460,10 +460,11 @@ define i16 @test_ctlz_i16(i16 %a) nounwind {
 ; RV16K-NEXT:	and	a0, a3
 ; RV16K-NEXT:	li	a1, 257
 ; RV16K-NEXT:	jal	__mulhi3
-; RV16K-NEXT:	mov	a1, a0
-; RV16K-NEXT:	lsr	a1, s0
-; RV16K-NEXT:.LBB8_2:                                # %cond.end
-; RV16K-NEXT:	mov	a0, a1
+; RV16K-NEXT:	lsr	a0, s0
+; RV16K-NEXT:	j	.LBB8_3
+; RV16K-NEXT:.LBB8_2:
+; RV16K-NEXT:	li	a0, 16
+; RV16K-NEXT:.LBB8_3:                                # %cond.end
 ; RV16K-NEXT:	lwsp	s0, 0(sp)
 ; RV16K-NEXT:	lwsp	ra, 2(sp)
 ; RV16K-NEXT:	addi	sp, 4

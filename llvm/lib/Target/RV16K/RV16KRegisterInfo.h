@@ -46,6 +46,10 @@ struct RV16KRegisterInfo : public RV16KGenRegisterInfo {
   bool requiresFrameIndexScavenging(const MachineFunction &MF) const override {
     return true;
   }
+
+  bool trackLivenessAfterRegAlloc(const MachineFunction &MF) const override {
+    return true;
+  }
 };
 } // namespace llvm
 

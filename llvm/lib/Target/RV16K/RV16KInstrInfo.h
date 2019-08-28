@@ -16,6 +16,7 @@
 #define LLVM_LIB_TARGET_RV16K_RV16KINSTRINFO_H
 
 #include "RV16KRegisterInfo.h"
+#include "llvm/CodeGen/RegisterScavenging.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
 
 #define GET_INSTRINFO_HEADER
@@ -24,6 +25,8 @@
 namespace llvm {
 
 class RV16KInstrInfo : public RV16KGenInstrInfo {
+private:
+  std::unique_ptr<RegScavenger> RS;
 
 public:
   RV16KInstrInfo();
@@ -40,6 +43,23 @@ public:
                             int FI, const TargetRegisterClass *RC,
                             const TargetRegisterInfo *TRI) const override;
 
+  bool analyzeBranch(MachineBasicBlock &MBB, MachineBasicBlock *&TBB,
+                     MachineBasicBlock *&FBB,
+                     SmallVectorImpl<MachineOperand> &Cond,
+                     bool AllowModify) const override;
+  unsigned insertBranch(MachineBasicBlock &MBB, MachineBasicBlock *TBB,
+                        MachineBasicBlock *FBB, ArrayRef<MachineOperand> Cond,
+                        const DebugLoc &dl,
+                        int *BytesAdded = nullptr) const override;
+  unsigned removeBranch(MachineBasicBlock &MBB,
+                        int *BytesRemoved = nullptr) const override;
+  bool
+  reverseBranchCondition(SmallVectorImpl<MachineOperand> &Cond) const override;
+
+  unsigned getInstSizeInBytes(const MachineInstr &MI) const override;
+  bool isBranchOffsetInRange(unsigned BranchOpc,
+                             int64_t BrOffset) const override;
+  MachineBasicBlock *getBranchDestBlock(const MachineInstr &MI) const override;
 };
 
 namespace RV16K {

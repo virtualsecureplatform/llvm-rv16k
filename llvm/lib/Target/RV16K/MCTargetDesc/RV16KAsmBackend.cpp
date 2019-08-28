@@ -27,6 +27,8 @@
 #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/raw_ostream.h"
 
+#define DEBUG_TYPE "rv16k-asm-backend"
+
 using namespace llvm;
 
 namespace {
@@ -117,7 +119,8 @@ static uint64_t adjustFixupValue(const MCFixup &Fixup, uint64_t Value,
 
   case RV16K::fixup_rv16k_pcrel_8bit:
     if (!isInt<8>(Value))
-      Ctx.reportError(Fixup.getLoc(), "fixup value out of range");
+      Ctx.reportError(Fixup.getLoc(),
+                      "fixup value out of range (signed 8 bits)");
     if (Value & 0x1)
       Ctx.reportError(Fixup.getLoc(), "fixup value must be 2-byte aligned");
 
@@ -126,7 +129,8 @@ static uint64_t adjustFixupValue(const MCFixup &Fixup, uint64_t Value,
 
   case RV16K::fixup_rv16k_pcrel_16bit:
     if (!isInt<16>(Value))
-      Ctx.reportError(Fixup.getLoc(), "fixup value out of range");
+      Ctx.reportError(Fixup.getLoc(),
+                      "fixup value out of range (signed 16 bits)");
     if (Value & 0x1)
       Ctx.reportError(Fixup.getLoc(), "fixup value must be 2-byte aligned");
 

@@ -302,7 +302,8 @@ def PseudoRET : Pseudo<(outs), (ins), [(RetFlag)]>,
                 PseudoInstExpansion<(JR X0)>;
 
 let hasSideEffects = 0, mayStore = 0, mayLoad = 0,
-    isBarrier = 1, isBranch = 1, isTerminator = 1 in
+    isBarrier = 1, isBranch = 1, isTerminator = 1,
+    Size = 4 /* Expand into 32-bit instruction J */in
 def PseudoBR : Pseudo<(outs), (ins simm16_lsb0_j:$imm15), [(br bb:$imm15)]>,
                PseudoInstExpansion<(J simm16_lsb0_j:$imm15)>;
 
@@ -328,7 +329,8 @@ def SelectCCri
              [(set i16:$dst, (SelectCC GPR:$lhs, simm4:$rhs,
               (i16 imm:$imm), GPR:$src, GPR:$src2))]>;
 
-let hasSideEffects = 0, mayLoad = 0, mayStore = 0, isCodeGenOnly = 0 in
+let hasSideEffects = 0, mayLoad = 0, mayStore = 0, isCodeGenOnly = 0,
+    Size = 4 /* Expand into 32-bit instruction J */ in
 def PseudoHLT : Pseudo<(outs), (ins), []> {
   let AsmString = "hlt";
 }
@@ -337,7 +339,8 @@ let hasSideEffects = 0, mayLoad = 0, mayStore = 0, Defs = [FLAGS] in
 def FRMIDX : Pseudo<(outs GPR:$rd), (ins GPR:$rs, simm16:$imm), []>;
 
 let hasSideEffects = 0, mayLoad = 0, mayStore = 0,
-    isBranch = 1, isTerminator = 1, Defs = [FLAGS] in {
+    isBranch = 1, isTerminator = 1, Defs = [FLAGS],
+    Size = 4 /* equals to CMP/CMPI + Jcc */ in {
   def Bcc  : Pseudo<(outs), (ins GPR:$lhs, GPR:$rhs,   simm8_lsb0:$dst, i16imm:$cc), []>;
   def BccI : Pseudo<(outs), (ins GPR:$lhs, simm4:$rhs, simm8_lsb0:$dst, i16imm:$cc), []>;
 }

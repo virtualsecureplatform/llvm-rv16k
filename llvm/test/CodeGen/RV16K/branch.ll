@@ -4,64 +4,53 @@
 
 define void @foo(i16 %a, i16 *%b, i1 %c) {
 ; RV16K-LABEL: foo:
-; RV16K:       # %bb.0:
+; RV16K-NEXT:# %bb.0:
 ; RV16K-NEXT:	lw	a3, 0(a1)
 ; RV16K-NEXT:	cmp	a3, a0
 ; RV16K-NEXT:	je	.LBB0_12
-; RV16K-NEXT:	j	.LBB0_1
-; RV16K-NEXT:.LBB0_1:                                # %test2
+; RV16K-NEXT:# %bb.1:                                # %test2
 ; RV16K-NEXT:	lw	a3, 0(a1)
 ; RV16K-NEXT:	cmp	a3, a0
 ; RV16K-NEXT:	jne	.LBB0_12
-; RV16K-NEXT:	j	.LBB0_2
-; RV16K-NEXT:.LBB0_2:                                # %test3
+; RV16K-NEXT:# %bb.2:                                # %test3
 ; RV16K-NEXT:	lw	a3, 0(a1)
 ; RV16K-NEXT:	cmp	a3, a0
 ; RV16K-NEXT:	jl	.LBB0_12
-; RV16K-NEXT:	j	.LBB0_3
-; RV16K-NEXT:.LBB0_3:                                # %test4
+; RV16K-NEXT:# %bb.3:                                # %test4
 ; RV16K-NEXT:	lw	a3, 0(a1)
 ; RV16K-NEXT:	cmp	a0, a3
 ; RV16K-NEXT:	jle	.LBB0_12
-; RV16K-NEXT:	j	.LBB0_4
-; RV16K-NEXT:.LBB0_4:                                # %test5
+; RV16K-NEXT:# %bb.4:                                # %test5
 ; RV16K-NEXT:	lw	a3, 0(a1)
 ; RV16K-NEXT:	cmp	a3, a0
 ; RV16K-NEXT:	jb	.LBB0_12
-; RV16K-NEXT:	j	.LBB0_5
-; RV16K-NEXT:.LBB0_5:                                # %test6
+; RV16K-NEXT:# %bb.5:                                # %test6
 ; RV16K-NEXT:	lw	a3, 0(a1)
 ; RV16K-NEXT:	cmp	a0, a3
 ; RV16K-NEXT:	jbe	.LBB0_12
-; RV16K-NEXT:	j	.LBB0_6
-; RV16K-NEXT:.LBB0_6:                                # %test7
+; RV16K-NEXT:# %bb.6:                                # %test7
 ; RV16K-NEXT:	lw	a3, 0(a1)
 ; RV16K-NEXT:	cmp	a0, a3
 ; RV16K-NEXT:	jl	.LBB0_12
-; RV16K-NEXT:	j	.LBB0_7
-; RV16K-NEXT:.LBB0_7:                                # %test8
+; RV16K-NEXT:# %bb.7:                                # %test8
 ; RV16K-NEXT:	lw	a3, 0(a1)
 ; RV16K-NEXT:	cmp	a3, a0
 ; RV16K-NEXT:	jle	.LBB0_12
-; RV16K-NEXT:	j	.LBB0_8
-; RV16K-NEXT:.LBB0_8:                                # %test9
+; RV16K-NEXT:# %bb.8:                                # %test9
 ; RV16K-NEXT:	lw	a3, 0(a1)
 ; RV16K-NEXT:	cmp	a0, a3
 ; RV16K-NEXT:	jb	.LBB0_12
-; RV16K-NEXT:	j	.LBB0_9
-; RV16K-NEXT:.LBB0_9:                                # %test10
+; RV16K-NEXT:# %bb.9:                                # %test10
 ; RV16K-NEXT:	lw	a3, 0(a1)
 ; RV16K-NEXT:	cmp	a3, a0
 ; RV16K-NEXT:	jbe	.LBB0_12
-; RV16K-NEXT:	j	.LBB0_10
-; RV16K-NEXT:.LBB0_10:                               # %test11
+; RV16K-NEXT:# %bb.10:                               # %test11
 ; RV16K-NEXT:	lw	a0, 0(a1)
 ; RV16K-NEXT:	li	a0, 1
 ; RV16K-NEXT:	and	a2, a0
 ; RV16K-NEXT:	cmpi	a2, 0
 ; RV16K-NEXT:	jne	.LBB0_12
-; RV16K-NEXT:	j	.LBB0_11
-; RV16K-NEXT:.LBB0_11:                               # %test12
+; RV16K-NEXT:# %bb.11:                               # %test12
 ; RV16K-NEXT:	lw	a0, 0(a1)
 ; RV16K-NEXT:.LBB0_12:                               # %end
 ; RV16K-NEXT:	jr	ra

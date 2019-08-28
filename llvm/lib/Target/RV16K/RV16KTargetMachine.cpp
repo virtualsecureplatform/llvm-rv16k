@@ -86,6 +86,7 @@ bool RV16KPassConfig::addInstSelector() {
 
 void RV16KPassConfig::addPreEmitPass() {
   addPass(createRV16KUseLWSPSWSPPass());
+  addPass(&BranchRelaxationPassID);
 }
 
 void RV16KPassConfig::addPreEmitPass2() {
