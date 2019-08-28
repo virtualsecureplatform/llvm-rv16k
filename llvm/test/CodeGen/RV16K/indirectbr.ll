@@ -5,13 +5,9 @@
 define i16 @indirectbr(i8* %target) nounwind {
 ; RV16K-LABEL: indirectbr:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	swsp	ra, 0(sp)
-; RV16K-NEXT:	jalr	a0
-; RV16K-NEXT:# %bb.1:                                # %test_label
+; RV16K-NEXT:	jr	a0
+; RV16K-NEXT:.LBB0_1:
 ; RV16K-NEXT:	li	a0, 0
-; RV16K-NEXT:	lwsp	ra, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   indirectbr i8* %target, [label %test_label]
@@ -24,15 +20,11 @@ ret:
 define i16 @indirectbr_with_offset(i8* %a) nounwind {
 ; RV16K-LABEL: indirectbr_with_offset:
 ; RV16K:       # %bb.0:
-; RV16K-NEXT:	addi	sp, -2
-; RV16K-NEXT:	swsp	ra, 0(sp)
 ; RV16K-NEXT:	li	a1, 1380
 ; RV16K-NEXT:	add	a1, a0
-; RV16K-NEXT:	jalr	a1
-; RV16K-NEXT:# %bb.1:                                # %test_label
+; RV16K-NEXT:	jr	a1
+; RV16K-NEXT:.LBB1_1:
 ; RV16K-NEXT:	li	a0, 0
-; RV16K-NEXT:	lwsp	ra, 0(sp)
-; RV16K-NEXT:	addi	sp, 2
 ; RV16K-NEXT:	jr	ra
 
   %target = getelementptr i8, i8* %a, i16 1380

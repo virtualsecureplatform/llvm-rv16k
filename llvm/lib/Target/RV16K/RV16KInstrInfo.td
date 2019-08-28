@@ -290,7 +290,7 @@ def : Pat<(sra GPR:$rs1, GPR:$rs2), (ASR GPR:$rs1, GPR:$rs2)>;
 def : Pat<(simm16:$imm16), (LI simm16:$imm16)>;
 def : Pat<(add GPR:$rs1, simm4:$imm4), (ADDI GPR:$rs1, simm4:$imm4)>;
 
-def : Pat<(brind GPR:$rs), (JALR GPR:$rs)>;
+def : Pat<(brind GPR:$rs), (JR GPR:$rs)>;
 
 def : Pat<(Call GPR:$rs), (JALR GPR:$rs)>;
 def : Pat<(Call tglobaladdr:$dst), (JAL tglobaladdr:$dst)>;

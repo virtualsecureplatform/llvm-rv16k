@@ -4,45 +4,39 @@
 
 define void @jt(i16 %in, i16* %out) {
 ; RV16K-LABEL: jt:
-; RV16K:       # %bb.0: # %entry
+; RV16K:       # %bb.0:
 ; RV16K-NEXT:	li	a2, 2
 ; RV16K-NEXT:	cmp	a2, a0
-; RV16K-NEXT:	jl	.LBB0_3
-; RV16K-NEXT:	j	.LBB0_1
-; RV16K-NEXT:.LBB0_1:                                # %entry
+; RV16K-NEXT:	jl	.LBB0_4
+; RV16K-NEXT:# %bb.1:
 ; RV16K-NEXT:	cmpi	a0, 1
-; RV16K-NEXT:	je	.LBB0_5
-; RV16K-NEXT:	j	.LBB0_2
-; RV16K-NEXT:.LBB0_2:                                # %entry
+; RV16K-NEXT:	je	.LBB0_7
+; RV16K-NEXT:# %bb.2:
 ; RV16K-NEXT:	cmpi	a0, 2
-; RV16K-NEXT:	je	.LBB0_6
-; RV16K-NEXT:	j	.LBB0_9
-; RV16K-NEXT:.LBB0_6:                                # %bb2
+; RV16K-NEXT:	jne	.LBB0_9
+; RV16K-NEXT:# %bb.3:                                # %bb2
 ; RV16K-NEXT:	li	a0, 3
 ; RV16K-NEXT:	sw	a0, 0(a1)
-; RV16K-NEXT:	j	.LBB0_9
-; RV16K-NEXT:.LBB0_3:                                # %entry
+; RV16K-NEXT:	jr	ra
+; RV16K-NEXT:.LBB0_4:
 ; RV16K-NEXT:	cmpi	a0, 3
-; RV16K-NEXT:	je	.LBB0_7
-; RV16K-NEXT:	j	.LBB0_4
-; RV16K-NEXT:.LBB0_4:                                # %entry
-; RV16K-NEXT:	cmpi	a0, 4
 ; RV16K-NEXT:	je	.LBB0_8
-; RV16K-NEXT:	j	.LBB0_9
-; RV16K-NEXT:.LBB0_8:                                # %bb4
+; RV16K-NEXT:# %bb.5:
+; RV16K-NEXT:	cmpi	a0, 4
+; RV16K-NEXT:	jne	.LBB0_9
+; RV16K-NEXT:# %bb.6:                                # %bb4
 ; RV16K-NEXT:	li	a0, 1
 ; RV16K-NEXT:	sw	a0, 0(a1)
-; RV16K-NEXT:.LBB0_9:                                # %exit
 ; RV16K-NEXT:	jr	ra
-; RV16K-NEXT:.LBB0_5:                                # %bb1
+; RV16K-NEXT:.LBB0_7:                                # %bb1
 ; RV16K-NEXT:	li	a0, 4
 ; RV16K-NEXT:	sw	a0, 0(a1)
-; RV16K-NEXT:	j	.LBB0_9
-; RV16K-NEXT:.LBB0_7:                                # %bb3
+; RV16K-NEXT:	jr	ra
+; RV16K-NEXT:.LBB0_8:                                # %bb3
 ; RV16K-NEXT:	sw	a2, 0(a1)
-; RV16K-NEXT:	j	.LBB0_9
+; RV16K-NEXT:.LBB0_9:                                # %exit
+; RV16K-NEXT:	jr	ra
 
-entry:
   switch i16 %in, label %exit [
     i16 1, label %bb1
     i16 2, label %bb2
