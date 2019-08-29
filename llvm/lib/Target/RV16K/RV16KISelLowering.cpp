@@ -402,7 +402,8 @@ SDValue RV16KTargetLowering::LowerCall(CallLoweringInfo &CLI,
   SmallVectorImpl<ISD::InputArg> &Ins = CLI.Ins;
   SDValue Chain = CLI.Chain;
   SDValue Callee = CLI.Callee;
-  CLI.IsTailCall = false;
+  bool &IsTailCall = CLI.IsTailCall;
+  IsTailCall = false;
   CallingConv::ID CallConv = CLI.CallConv;
   bool IsVarArg = CLI.IsVarArg;
   EVT PtrVT = getPointerTy(DAG.getDataLayout());
@@ -421,10 +422,27 @@ SDValue RV16KTargetLowering::LowerCall(CallLoweringInfo &CLI,
   // Get a count of how many bytes are to be pushed on the stack.
   unsigned NumBytes = ArgCCInfo.getNextStackOffset();
 
-  for (auto &Arg : Outs) {
-    if (!Arg.Flags.isByVal())
+  // Create local copies for byval args
+  SmallVector<SDValue, 8> ByValArgs;
+  for (unsigned i = 0, e = Outs.size(); i != e; ++i) {
+    ISD::ArgFlagsTy Flags = Outs[i].Flags;
+    if (!Flags.isByVal())
       continue;
-    report_fatal_error("Passing arguments byval not yet implemented");
+
+    SDValue Arg = OutVals[i];
+    unsigned Size = Flags.getByValSize();
+    unsigned Align = Flags.getByValAlign();
+
+    int FI = MF.getFrameInfo().CreateStackObject(Size, Align,
+                                                 /*isSillSlot=*/false);
+    SDValue FIPtr = DAG.getFrameIndex(FI, MVT::i16);
+    SDValue SizeNode = DAG.getConstant(Size, DL, MVT::i16);
+
+    Chain = DAG.getMemcpy(Chain, DL, FIPtr, Arg, SizeNode, Align,
+                          /*IsVolatile=*/false,
+                          /*AlwaysInline=*/false, IsTailCall,
+                          MachinePointerInfo(), MachinePointerInfo());
+    ByValArgs.push_back(FIPtr);
   }
 
   Chain = DAG.getCALLSEQ_START(Chain, NumBytes, 0, CLI.DL);
