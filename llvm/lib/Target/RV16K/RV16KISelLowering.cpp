@@ -342,6 +342,7 @@ SDValue RV16KTargetLowering::LowerFormalArguments(
   default:
     report_fatal_error("Unsupported calling convention");
   case CallingConv::C:
+  case CallingConv::Fast:
     break;
   }
 

@@ -122,3 +122,34 @@ define i16 @test_call_defined_many_args(i16 %a) nounwind {
                                    i16 %a, i16 %a, i16 %a, i16 %a, i16 %a)
   ret i16 %1
 }
+
+; Ensure that calls to fastcc functions aren't rejected. Such calls may be
+; introduced when compiling with optimisation.
+
+define fastcc i16 @fastcc_function(i16 %a, i16 %b) nounwind {
+; RV16K-LABEL: fastcc_function:
+; RV16K:       # %bb.0:
+; RV16K-NEXT:	add	a0, a1
+; RV16K-NEXT:	jr	ra
+
+ %1 = add i16 %a, %b
+ ret i16 %1
+}
+
+define i16 @test_call_fastcc(i16 %a, i16 %b) nounwind {
+; RV16K-LABEL: test_call_fastcc:
+; RV16K:       # %bb.0:
+; RV16K-NEXT:	addi	sp, -4
+; RV16K-NEXT:	swsp	ra, 2(sp)
+; RV16K-NEXT:	swsp	s0, 0(sp)
+; RV16K-NEXT:	mov	s0, a0
+; RV16K-NEXT:	jal	fastcc_function
+; RV16K-NEXT:	mov	a0, s0
+; RV16K-NEXT:	lwsp	s0, 0(sp)
+; RV16K-NEXT:	lwsp	ra, 2(sp)
+; RV16K-NEXT:	addi	sp, 4
+; RV16K-NEXT:	jr	ra
+
+  %1 = call fastcc i16 @fastcc_function(i16 %a, i16 %b)
+  ret i16 %a
+}
