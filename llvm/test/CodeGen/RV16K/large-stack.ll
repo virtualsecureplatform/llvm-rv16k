@@ -9,14 +9,16 @@
 define void @test() nounwind {
 ; RV16K-WITHFP-LABEL: test:
 ; RV16K-WITHFP:       # %bb.0:
-; RV16K-WITHFP-NEXT:	li	a0, 30002
+; RV16K-WITHFP-NEXT:	li	a0, 30004
 ; RV16K-WITHFP-NEXT:	sub	sp, a0
+; RV16K-WITHFP-NEXT:	sw	ra, 30002(sp)
 ; RV16K-WITHFP-NEXT:	sw	fp, 30000(sp)
 ; RV16K-WITHFP-NEXT:	mov	fp, sp
-; RV16K-WITHFP-NEXT:	li	a0, 30002
+; RV16K-WITHFP-NEXT:	li	a0, 30004
 ; RV16K-WITHFP-NEXT:	add	fp, a0
 ; RV16K-WITHFP-NEXT:	lw	fp, 30000(sp)
-; RV16K-WITHFP-NEXT:	li	a0, 30002
+; RV16K-WITHFP-NEXT:	lw	ra, 30002(sp)
+; RV16K-WITHFP-NEXT:	li	a0, 30004
 ; RV16K-WITHFP-NEXT:	add	sp, a0
 ; RV16K-WITHFP-NEXT:	jr	ra
 

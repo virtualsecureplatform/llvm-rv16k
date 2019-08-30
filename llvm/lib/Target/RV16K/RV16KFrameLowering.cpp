@@ -212,8 +212,10 @@ void RV16KFrameLowering::determineCalleeSaves(MachineFunction &MF,
                                               BitVector &SavedRegs,
                                               RegScavenger *RS) const {
   TargetFrameLowering::determineCalleeSaves(MF, SavedRegs, RS);
-  // Unconditionally spill FP only if the function uses a frame
+  // Unconditionally spill FP and RA only if the function uses a frame
   // pointer.
-  if (hasFP(MF))
+  if (hasFP(MF)) {
+    SavedRegs.set(RV16K::X0);
     SavedRegs.set(RV16K::X2);
+  }
 }
