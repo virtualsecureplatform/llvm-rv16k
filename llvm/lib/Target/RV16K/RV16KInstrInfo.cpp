@@ -351,9 +351,12 @@ unsigned RV16KInstrInfo::getInstSizeInBytes(const MachineInstr &MI) const {
   case TargetOpcode::DBG_VALUE:
     return 0;
 
-  case TargetOpcode::INLINEASM:
-    llvm_unreachable(
-        "RV16KInstrInfo::getInstSizeInBytes ; TargetOpcode::INLINEASM");
+  case TargetOpcode::INLINEASM: {
+    const MachineFunction &MF = *MI.getParent()->getParent();
+    const auto &TM = static_cast<const RV16KTargetMachine &>(MF.getTarget());
+    return getInlineAsmLength(MI.getOperand(0).getSymbolName(),
+                              *TM.getMCAsmInfo());
+  }
   }
 }
 

@@ -329,6 +329,25 @@ RV16KTargetLowering::EmitInstrWithCustomInserter(MachineInstr &MI,
   return TailMBB;
 }
 
+std::pair<unsigned, const TargetRegisterClass *>
+RV16KTargetLowering::getRegForInlineAsmConstraint(const TargetRegisterInfo *TRI,
+                                                  StringRef Constraint,
+                                                  MVT VT) const {
+  // First, see if this is a constraint that directly corresponds to a
+  // RV16K register class.
+  if (Constraint.size() == 1) {
+    // GCC Constraint Letters
+    switch (Constraint[0]) {
+    case 'r': // GENERAL_REGS
+      return std::make_pair(0U, &RV16K::GPRRegClass);
+    default:
+      break;
+    }
+  }
+
+  return TargetLowering::getRegForInlineAsmConstraint(TRI, Constraint, VT);
+}
+
 // Calling Convention Implementation.
 #include "RV16KGenCallingConv.inc"
 
