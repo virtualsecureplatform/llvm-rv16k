@@ -94,7 +94,7 @@ def simm16_lsb0 : Operand<i16>, ImmLeaf<i16, [{return isShiftedInt<15, 1>(Imm);}
   let EncoderMethod = "getImmOpValue";
 }
 
-def simm16_lsb0_j : Operand<OtherVT>, ImmLeaf<OtherVT, [{return isShiftedInt<15, 1>(Imm);}]> {
+def simm16_lsb0_j : Operand<OtherVT> {
   let ParserMatchClass = SImmAsmOperand<16, "Lsb0">;
   let DecoderMethod = "decodeSImmOperand<16>";
   let EncoderMethod = "getImmOpValue";
@@ -290,6 +290,7 @@ def : Pat<(sra GPR:$rs1, GPR:$rs2), (ASR GPR:$rs1, GPR:$rs2)>;
 def : Pat<(simm16:$imm16), (LI simm16:$imm16)>;
 def : Pat<(add GPR:$rs1, simm4:$imm4), (ADDI GPR:$rs1, simm4:$imm4)>;
 
+def : Pat<(br bb:$imm), (J simm16_lsb0_j:$imm)>;
 def : Pat<(brind GPR:$rs), (JR GPR:$rs)>;
 
 def : Pat<(Call GPR:$rs), (JALR GPR:$rs)>;
@@ -300,12 +301,6 @@ let hasSideEffects = 0, mayStore = 0, mayLoad = 0,
     isBarrier = 1, isReturn = 1, isTerminator = 1 in
 def PseudoRET : Pseudo<(outs), (ins), [(RetFlag)]>,
                 PseudoInstExpansion<(JR X0)>;
-
-let hasSideEffects = 0, mayStore = 0, mayLoad = 0,
-    isBarrier = 1, isBranch = 1, isTerminator = 1,
-    Size = 4 /* Expand into 32-bit instruction J */in
-def PseudoBR : Pseudo<(outs), (ins simm16_lsb0_j:$imm15), [(br bb:$imm15)]>,
-               PseudoInstExpansion<(J simm16_lsb0_j:$imm15)>;
 
 // Pessimistically assume the stack pointer will be clobbered
 let Defs = [X1], Uses = [X1] in {

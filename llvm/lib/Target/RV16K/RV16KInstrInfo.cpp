@@ -374,7 +374,6 @@ bool RV16KInstrInfo::isBranchOffsetInRange(unsigned BranchOp,
   case RV16K::BccI:
     return isInt<8>(BrOffset - 2);
 
-  case RV16K::PseudoBR:
   case RV16K::J:
   case RV16K::JAL:
     return isInt<16>(BrOffset);
