@@ -25,8 +25,7 @@ namespace toolchains {
 class LLVM_LIBRARY_VISIBILITY RV16KToolChain : public Generic_ELF {
 public:
   RV16KToolChain(const Driver &D, const llvm::Triple &Triple,
-                 const llvm::opt::ArgList &Args)
-      : Generic_ELF(D, Triple, Args) {}
+                 const llvm::opt::ArgList &Args);
 
   bool IsIntegratedAssemblerDefault() const override { return true; }
 

@@ -14,6 +14,13 @@ using namespace clang::driver::tools;
 using namespace clang;
 using namespace llvm::opt;
 
+RV16KToolChain::RV16KToolChain(const Driver &D, const llvm::Triple &Triple,
+                               const llvm::opt::ArgList &Args)
+    : Generic_ELF(D, Triple, Args) {
+  if (!D.SysRoot.empty())
+    getFilePaths().push_back(D.SysRoot);
+}
+
 Tool *RV16KToolChain::buildLinker() const {
   return new tools::RV16K::Linker(*this);
 }
@@ -24,17 +31,48 @@ void RV16K::Linker::ConstructJob(Compilation &C, const JobAction &JA,
                                  const ArgList &Args,
                                  const char *LinkingOutput) const {
   const ToolChain &ToolChain = getToolChain();
+  const Driver &D = ToolChain.getDriver();
   ArgStringList CmdArgs;
+
+  if (!D.SysRoot.empty())
+    CmdArgs.push_back(Args.MakeArgString("--sysroot=" + D.SysRoot));
 
   std::string Linker = getToolChain().GetProgramPath(getShortName());
 
+  bool WantCRTs =
+      !Args.hasArg(options::OPT_nostdlib, options::OPT_nostartfiles);
+
+  if (WantCRTs) {
+    // A runtime script to call function main and halt, something like this:
+    //
+    // .global _start
+    // _start:
+    // 	jal main
+    // 	hlt
+    CmdArgs.push_back(Args.MakeArgString(ToolChain.GetFilePath("crt0.o")));
+  }
+
+  Args.AddAllArgs(CmdArgs, options::OPT_L);
+  ToolChain.AddFilePathLibArgs(Args, CmdArgs);
+
   AddLinkerInputs(ToolChain, Inputs, Args, CmdArgs, JA);
 
-  // Place .text section to address 0.
-  CmdArgs.push_back("-Ttext=0");
-  // Place .data section to address 0x10000.
-  CmdArgs.push_back("-Tdata=0x10000");
+  // A linker script to get a correct ELF executable file for RAM and ROM,
+  // something like this:
+  //
+  // SECTIONS
+  // {
+  //     . = 0x00000000;
+  //     .text : { *(.text) }
+  //     . = 0x00010000;
+  //     .data : { *(.data) }
+  //     .rodata : { *(.rodata) }
+  //     .bss : { *(.bss) }
+  // }
+  CmdArgs.push_back(
+      Args.MakeArgString("--script=" + ToolChain.GetFilePath("rv16k.lds")));
 
+  // To make the output as small as possible.
   // TODO: The latest lld has --nmagic option, which is more suitable here?
   CmdArgs.push_back("--omagic");
 
