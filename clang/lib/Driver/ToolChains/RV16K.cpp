@@ -71,6 +71,11 @@ void RV16K::Linker::ConstructJob(Compilation &C, const JobAction &JA,
 
   AddLinkerInputs(ToolChain, Inputs, Args, CmdArgs, JA);
 
+  if (!Args.hasArg(options::OPT_nostdlib) &&
+      !Args.hasArg(options::OPT_nodefaultlibs)) {
+    CmdArgs.push_back("-lc");
+  }
+
   // A linker script to get a correct ELF executable file for RAM and ROM,
   // something like this:
   //
