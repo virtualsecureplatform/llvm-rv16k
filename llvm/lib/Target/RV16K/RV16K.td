@@ -44,4 +44,5 @@ def RV16KAsmParser : AsmParser {
 def RV16K : Target {
   let InstructionSet = RV16KInstrInfo;
   let AssemblyParsers = [RV16KAsmParser];
+  let AllowRegisterRenaming = 1;
 }

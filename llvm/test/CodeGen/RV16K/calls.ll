@@ -65,15 +65,15 @@ define i16 @test_call_external_many_args(i16 %a) nounwind {
 ; RV16K-NEXT:	swsp	ra, 10(sp)
 ; RV16K-NEXT:	swsp	s0, 8(sp)
 ; RV16K-NEXT:	mov	s0, a0
-; RV16K-NEXT:	swsp	s0, 6(sp)
-; RV16K-NEXT:	swsp	s0, 4(sp)
-; RV16K-NEXT:	swsp	s0, 2(sp)
-; RV16K-NEXT:	swsp	s0, 0(sp)
-; RV16K-NEXT:	mov	a1, s0
-; RV16K-NEXT:	mov	a2, s0
-; RV16K-NEXT:	mov	a3, s0
-; RV16K-NEXT:	mov	a4, s0
-; RV16K-NEXT:	mov	a5, s0
+; RV16K-NEXT:	swsp	a0, 6(sp)
+; RV16K-NEXT:	swsp	a0, 4(sp)
+; RV16K-NEXT:	swsp	a0, 2(sp)
+; RV16K-NEXT:	swsp	a0, 0(sp)
+; RV16K-NEXT:	mov	a1, a0
+; RV16K-NEXT:	mov	a2, a0
+; RV16K-NEXT:	mov	a3, a0
+; RV16K-NEXT:	mov	a4, a0
+; RV16K-NEXT:	mov	a5, a0
 ; RV16K-NEXT:	jal	external_many_args
 ; RV16K-NEXT:	mov	a0, s0
 ; RV16K-NEXT:	lwsp	s0, 8(sp)
