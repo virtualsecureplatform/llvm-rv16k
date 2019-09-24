@@ -50,6 +50,10 @@ def SelectCC     : SDNode<"RV16KISD::SELECT_CC", SDT_RV16KSelectCC,
 def RetFlag : SDNode<"RV16KISD::RET_FLAG", SDTNone,
                      [SDNPHasChain, SDNPOptInGlue, SDNPVariadic]>;
 
+def Tail : SDNode<"RV16KISD::TAIL", SDT_RV16KCall,
+                  [SDNPHasChain, SDNPOptInGlue, SDNPOutGlue,
+                   SDNPVariadic]>;
+
 class ImmAsmOperand<string prefix, int width, string suffix> : AsmOperandClass {
   let Name = prefix # "Imm" # width # suffix;
   let RenderMethod = "addImmOperands";
@@ -302,12 +306,27 @@ let hasSideEffects = 0, mayStore = 0, mayLoad = 0,
 def PseudoRET : Pseudo<(outs), (ins), [(RetFlag)]>,
                 PseudoInstExpansion<(JR X0)>;
 
+let hasSideEffects = 0, mayStore = 0, mayLoad = 0,
+    isCall = 1, isTerminator = 1, isReturn = 1, isBarrier = 1 in {
+  def PseudoTAIL : Pseudo<(outs), (ins simm16_lsb0:$imm), []>,
+                   PseudoInstExpansion<(J simm16_lsb0_j:$imm)>;
+  def PseudoTAILIndirect
+      : Pseudo<(outs), (ins GPRTC:$rs), []>,
+        PseudoInstExpansion<(JR GPR:$rs)>;
+}
+
+def : Pat<(Tail tglobaladdr:$dst),
+          (PseudoTAIL tglobaladdr:$dst)>;
+def : Pat<(Tail texternalsym:$dst),
+          (PseudoTAIL texternalsym:$dst)>;
+def : Pat<(Tail GPRTC:$rs), (PseudoTAILIndirect GPRTC:$rs)>;
+
 // Pessimistically assume the stack pointer will be clobbered
 let Defs = [X1], Uses = [X1] in {
-def ADJCALLSTACKDOWN : Pseudo<(outs), (ins i16imm:$amt1, i16imm:$amt2),
-                              [(CallSeqStart timm:$amt1, timm:$amt2)]>;
-def ADJCALLSTACKUP   : Pseudo<(outs), (ins i16imm:$amt1, i16imm:$amt2),
-                              [(CallSeqEnd timm:$amt1, timm:$amt2)]>;
+  def ADJCALLSTACKDOWN : Pseudo<(outs), (ins i16imm:$amt1, i16imm:$amt2),
+                                [(CallSeqStart timm:$amt1, timm:$amt2)]>;
+  def ADJCALLSTACKUP   : Pseudo<(outs), (ins i16imm:$amt1, i16imm:$amt2),
+                                [(CallSeqEnd timm:$amt1, timm:$amt2)]>;
 }
 
 let usesCustomInserter = 1 in

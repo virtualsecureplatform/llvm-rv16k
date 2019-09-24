@@ -28,6 +28,7 @@ enum NodeType : unsigned {
   CALL,
   BR_CC,
   SELECT_CC,
+  TAIL,
 };
 }
 
@@ -79,6 +80,10 @@ private:
   SDValue LowerSELECT(SDValue Op, SelectionDAG &DAG) const;
   SDValue LowerFRAMEADDR(SDValue Op, SelectionDAG &DAG) const;
   SDValue LowerRETURNADDR(SDValue Op, SelectionDAG &DAG) const;
+
+  bool IsEligibleForTailCallOptimization(
+      CCState &CCInfo, CallLoweringInfo &CLI, MachineFunction &MF,
+      const SmallVector<CCValAssign, 16> &ArgLocs) const;
 };
 } // namespace llvm
 

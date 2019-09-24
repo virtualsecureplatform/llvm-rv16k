@@ -58,3 +58,10 @@ def FLAGS_REG_CLASS : RegisterClass<"RV16K", [i16], 16, (add FLAGS)> {
   let CopyCost = -1;  // Don't allow copying of status registers.
   let isAllocatable = 0;
 }
+
+// For indirect tail calls, we can't use callee-saved registers, as they are
+// restored to the saved value before the tail call, which would clobber a call
+// address.
+def GPRTC : RegisterClass<"RV16K", [i16], 16, (add
+  X8, X9, X10, X11, X12, X13, X14, X15
+  )>;
