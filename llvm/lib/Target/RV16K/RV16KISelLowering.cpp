@@ -527,9 +527,10 @@ SDValue RV16KTargetLowering::LowerCall(CallLoweringInfo &CLI,
   SmallVector<std::pair<unsigned, SDValue>, 8> RegsToPass;
   SmallVector<SDValue, 8> MemOpChains;
   SDValue StackPtr;
-  for (unsigned I = 0, E = ArgLocs.size(); I != E; ++I) {
+  for (unsigned I = 0, E = ArgLocs.size(), J = 0; I != E; ++I) {
     CCValAssign &VA = ArgLocs[I];
     SDValue ArgValue = OutVals[I];
+    ISD::ArgFlagsTy Flags = Outs[I].Flags;
 
     // Promote the value if needed.
     // For now, only handle fully promoted arguments.
@@ -539,6 +540,10 @@ SDValue RV16KTargetLowering::LowerCall(CallLoweringInfo &CLI,
     default:
       llvm_unreachable("Unknown loc info!");
     }
+
+    // Use local copy if it is a byval arg.
+    if (Flags.isByVal())
+      ArgValue = ByValArgs[J++];
 
     if (VA.isRegLoc()) {
       // Queue up the argument copies and emit them at the end.

@@ -36,8 +36,9 @@ define void @caller() {
 ; RV16K-NEXT:	lw	a0, 0(a0)
 ; RV16K-NEXT:	swsp	a0, 2(sp)
 ; RV16K-NEXT:	li	a0, foo
-; RV16K-NEXT:	lw	a1, 0(a0)
-; RV16K-NEXT:	swsp	a1, 0(sp)
+; RV16K-NEXT:	lw	a0, 0(a0)
+; RV16K-NEXT:	swsp	a0, 0(sp)
+; RV16K-NEXT:	mov	a0, sp
 ; RV16K-NEXT:	jal	callee
 ; RV16K-NEXT:	lwsp	ra, 10(sp)
 ; RV16K-NEXT:	li	a0, 12
