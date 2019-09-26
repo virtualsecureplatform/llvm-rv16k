@@ -108,6 +108,12 @@ def simm16_lsb0_j : Operand<OtherVT> {
 // Necessary because a frameindex can't be matched directly in a pattern.
 def AddrFI : ComplexPattern<iPTR, 1, "SelectAddrFI", [frameindex], []>;
 
+/// Predicates
+
+def IsOrAdd: PatFrag<(ops node:$A, node:$B), (or node:$A, node:$B), [{
+  return isOrEquivalentToAdd(N);
+}]>;
+
 // M: Instructions for memory
 
 let hasSideEffects = 0, mayLoad = 1, mayStore = 0, Defs = [FLAGS] in {
@@ -246,6 +252,8 @@ def : Pat<(load (add GPR:$rs1, simm16_lsb0:$imm16)),
           (LW GPR:$rs1, simm16_lsb0:$imm16)>;
 def : Pat<(load (add AddrFI:$rs1, simm16_lsb0:$imm16)),
           (LW AddrFI:$rs1, simm16_lsb0:$imm16)>;
+def : Pat<(load (IsOrAdd AddrFI:$rs1, simm16_lsb0:$imm16)),
+          (LW AddrFI:$rs1, simm16_lsb0:$imm16)>;
 
 def : Pat<(extloadi8 GPR:$rs1), (LB GPR:$rs1, 0)>;
 def : Pat<(extloadi8 AddrFI:$rs1), (LB AddrFI:$rs1, 0)>;
@@ -253,6 +261,8 @@ def : Pat<(extloadi8 (add GPR:$rs1, simm16:$imm16)),
           (LB GPR:$rs1, simm16:$imm16)>;
 def : Pat<(extloadi8 (add AddrFI:$rs1, simm16:$imm16)),
           (LB AddrFI:$rs1, simm16:$imm16)>;
+def : Pat<(extloadi8 (IsOrAdd AddrFI:$rs1, simm16_lsb0:$imm16)),
+          (LB AddrFI:$rs1, simm16_lsb0:$imm16)>;
 
 def : Pat<(sextloadi8 GPR:$rs1), (LB GPR:$rs1, 0)>;
 def : Pat<(sextloadi8 AddrFI:$rs1), (LB AddrFI:$rs1, 0)>;
@@ -260,6 +270,8 @@ def : Pat<(sextloadi8 (add GPR:$rs1, simm16:$imm16)),
           (LB GPR:$rs1, simm16:$imm16)>;
 def : Pat<(sextloadi8 (add AddrFI:$rs1, simm16:$imm16)),
           (LB AddrFI:$rs1, simm16:$imm16)>;
+def : Pat<(sextloadi8 (IsOrAdd AddrFI:$rs1, simm16_lsb0:$imm16)),
+          (LB AddrFI:$rs1, simm16_lsb0:$imm16)>;
 
 def : Pat<(zextloadi8 GPR:$rs1), (LBU GPR:$rs1, 0)>;
 def : Pat<(zextloadi8 AddrFI:$rs1), (LBU AddrFI:$rs1, 0)>;
@@ -267,12 +279,16 @@ def : Pat<(zextloadi8 (add GPR:$rs1, simm16:$imm16)),
           (LBU GPR:$rs1, simm16:$imm16)>;
 def : Pat<(zextloadi8 (add AddrFI:$rs1, simm16:$imm16)),
           (LBU AddrFI:$rs1, simm16:$imm16)>;
+def : Pat<(zextloadi8 (IsOrAdd AddrFI:$rs1, simm16_lsb0:$imm16)),
+          (LBU AddrFI:$rs1, simm16_lsb0:$imm16)>;
 
 def : Pat<(store GPR:$rs2, GPR:$rs1), (SW GPR:$rs2, GPR:$rs1, 0)>;
 def : Pat<(store GPR:$rs2, AddrFI:$rs1), (SW GPR:$rs2, AddrFI:$rs1, 0)>;
 def : Pat<(store GPR:$rs2, (add GPR:$rs1, simm16_lsb0:$imm16)),
           (SW GPR:$rs2, GPR:$rs1, simm16_lsb0:$imm16)>;
 def : Pat<(store GPR:$rs2, (add AddrFI:$rs1, simm16_lsb0:$imm16)),
+          (SW GPR:$rs2, AddrFI:$rs1, simm16_lsb0:$imm16)>;
+def : Pat<(store GPR:$rs2, (IsOrAdd AddrFI:$rs1, simm16_lsb0:$imm16)),
           (SW GPR:$rs2, AddrFI:$rs1, simm16_lsb0:$imm16)>;
 
 def : Pat<(truncstorei8 GPR:$rs2, GPR:$rs1), (SB GPR:$rs2, GPR:$rs1, 0)>;
